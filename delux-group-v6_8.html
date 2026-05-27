@@ -1,0 +1,3559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delux Group — By & Makes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Josefin+Sans:wght@100;300;400;600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* BY — preto e prata */
+  --by-dark:   #0d0d0d;
+  --by-mid:    #1a1a1a;
+  --by-silver: #c0c8d4;
+  --by-silver-bright: #e8ecf0;
+  --by-silver-dim: #6a7480;
+  --by-accent: #d4d8de;
+
+  /* MAKES — rosa e branco */
+  --mk-pink:   #e8317a;
+  --mk-pink2:  #f472a8;
+  --mk-pink3:  #fce4ef;
+  --mk-white:  #ffffff;
+  --mk-cream:  #fff5f9;
+  --mk-rose:   #c01f60;
+
+  /* shared */
+  --gap: 2px;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; cursor: default; }
+
+body {
+  background: #0a0a0a;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* CUSTOM CURSOR */
+#cursor {
+  display: none !important;
+  position: fixed;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background 0.3s, width 0.2s, height 0.2s;
+  mix-blend-mode: difference;
+  background: white;
+}
+#cursor.on-by { background: var(--by-silver); }
+#cursor.on-mk { background: var(--mk-pink); }
+#cursor.hover { width: 32px; height: 32px; }
+
+/* ================= LANDING ================= */
+#landing {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+#landing.exiting { opacity: 0; transform: scale(1.04); pointer-events: none; }
+
+/* SPLIT BACKGROUND */
+.split-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.split-left {
+  flex: 1;
+  background: var(--by-dark);
+  position: relative;
+  overflow: hidden;
+  transition: flex 0.6s cubic-bezier(.4,0,.2,1);
+}
+.split-right {
+  flex: 1;
+  background: var(--mk-cream);
+  position: relative;
+  overflow: hidden;
+  transition: flex 0.6s cubic-bezier(.4,0,.2,1);
+}
+
+.split-left:hover { flex: 1.2; }
+.split-right:hover { flex: 1.2; }
+
+/* subtle textures */
+.split-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(192,200,212,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(192,200,212,0.04) 0%, transparent 50%);
+}
+.split-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 40%, rgba(232,49,122,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(232,49,122,0.07) 0%, transparent 50%);
+}
+
+/* BIG BG LETTERS */
+.bg-letter {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 40vw;
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.055;
+  letter-spacing: -0.05em;
+}
+.split-left .bg-letter { left: -3%; color: white; }
+.split-right .bg-letter { right: -3%; color: var(--mk-pink); }
+
+/* DIVIDER LINE */
+.divider {
+  position: absolute;
+  left: 50%;
+  top: 0; bottom: 0;
+  width: var(--gap);
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0.5) 50%,
+    rgba(255,255,255,0.15) 80%,
+    transparent 100%
+  );
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* AVATAR WRAP — center */
+.center-logo-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+  pointer-events: none;
+  padding: 2.5rem 3rem 2rem;
+  background: rgba(5,5,5,0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(192,200,212,0.12);
+  border-right: 1px solid rgba(232,49,122,0.12);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  min-width: 320px;
+}
+
+.center-logo-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: logo-breathe 6s ease-in-out infinite;
+}
+
+@keyframes logo-breathe {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+.center-logo-pre {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.7em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 8px;
+}
+
+.center-logo-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(5rem, 10vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  background: linear-gradient(140deg, #ffffff 0%, #e8ecf0 25%, #f472a8 65%, #e8317a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px rgba(232,49,122,0.6)) drop-shadow(0 0 12px rgba(255,255,255,0.3));
+}
+
+.center-logo-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.65em;
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(232,49,122,0.7), 0 0 4px rgba(255,255,255,0.5);
+  margin-top: 0px;
+}
+
+.center-logo-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(192,200,212,0.5), rgba(232,49,122,0.7), rgba(192,200,212,0.5));
+  margin: 16px auto;
+}
+
+.center-brand-pills {
+  display: flex;
+  gap: 40px;
+  pointer-events: all;
+  margin-top: 4px;
+}
+
+.center-pill {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 10px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.center-pill.by-pill-btn {
+  background: rgba(13,13,13,0.85);
+  border: 1px solid rgba(192,200,212,0.35);
+  color: var(--by-silver-bright);
+  backdrop-filter: blur(12px);
+}
+.center-pill.by-pill-btn:hover {
+  background: rgba(192,200,212,0.15);
+  border-color: var(--by-silver);
+  transform: translateY(-2px);
+}
+
+.center-pill.mk-pill-btn {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(232,49,122,0.4);
+  color: var(--mk-pink);
+  backdrop-filter: blur(12px);
+}
+.center-pill.mk-pill-btn:hover {
+  background: var(--mk-pink);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* SIDE CONTENT — left (By) */
+.side-content {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 15;
+  pointer-events: none;
+}
+
+.side-content.left-content { left: 6%; text-align: left; }
+.side-content.right-content { right: 6%; text-align: right; }
+
+.side-tag {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+.left-content .side-tag { color: var(--by-silver-dim); }
+.right-content .side-tag { color: rgba(232,49,122,0.6); }
+
+.side-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.left-content .side-title { color: var(--by-silver-bright); }
+.right-content .side-title { color: var(--mk-rose); }
+
+.side-sub {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+  max-width: 180px;
+}
+.left-content .side-sub { color: var(--by-silver-dim); }
+.right-content .side-sub { color: rgba(192,100,120,0.7); margin-left: auto; }
+
+.side-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+  max-width: 200px;
+}
+.right-content .side-pills { justify-content: flex-end; margin-left: auto; }
+
+.pill {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 50px;
+}
+.by-pill {
+  border: 1px solid rgba(192,200,212,0.2);
+  color: var(--by-silver-dim);
+}
+.mk-pill {
+  border: 1px solid rgba(232,49,122,0.25);
+  color: rgba(232,49,122,0.7);
+}
+
+/* CLICK AREAS */
+.click-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3rem;
+  transition: background 0.3s;
+}
+.click-zone:hover { background: rgba(255,255,255,0.02); }
+
+.enter-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.click-zone:hover .enter-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.by-zone .enter-btn {
+  background: rgba(192,200,212,0.1);
+  border: 1px solid rgba(192,200,212,0.3);
+  color: var(--by-silver-bright);
+}
+.mk-zone .enter-btn {
+  background: rgba(232,49,122,0.15);
+  border: 1px solid rgba(232,49,122,0.4);
+  color: var(--mk-pink);
+}
+
+/* BOTTOM HINT */
+.bottom-hint {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.hint-text {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+.hint-arrow {
+  display: flex;
+  gap: 20px;
+}
+.hint-arrow span {
+  font-size: 10px;
+  color: rgba(255,255,255,0.15);
+  animation: hint-pulse 2s ease-in-out infinite;
+}
+.hint-arrow span:last-child { animation-delay: 0.4s; }
+@keyframes hint-pulse { 0%,100%{opacity:0.2} 50%{opacity:0.6} }
+
+/* ========== DELUX BY PAGE ========== */
+#page-by {
+  display: none;
+  min-height: 100vh;
+  background: var(--by-dark);
+  color: var(--by-silver-bright);
+  font-family: 'Josefin Sans', sans-serif;
+  position: relative;
+}
+
+#page-by.active { display: block; }
+
+/* WATERMARK */
+#page-by::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background-image:
+    repeating-linear-gradient(
+      -35deg,
+      transparent 0px,
+      transparent 140px,
+      rgba(192,200,212,0.018) 140px,
+      rgba(192,200,212,0.018) 141px
+    );
+}
+
+.by-watermark {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  overflow: hidden;
+}
+
+.by-watermark-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.045;
+  user-select: none;
+}
+
+.by-wm-pre {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: clamp(0.7rem, 1.2vw, 1rem);
+  letter-spacing: 0.7em;
+  text-transform: uppercase;
+  color: var(--by-silver);
+  margin-bottom: 4px;
+}
+
+.by-wm-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(6rem, 14vw, 14rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: 0.06em;
+  color: var(--by-silver-bright);
+  white-space: nowrap;
+}
+
+.by-wm-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 3vw, 3.5rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.5em;
+  color: var(--by-silver);
+  margin-top: 4px;
+}
+
+.by-wm-divider {
+  width: 80px;
+  height: 1px;
+  background: var(--by-silver);
+  margin: 12px auto;
+  opacity: 0.5;
+}
+
+.by-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 3.5rem;
+  background: rgba(13,13,13,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(192,200,212,0.07);
+}
+.by-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--by-silver-bright);
+  text-decoration: none;
+}
+.by-logo span { color: var(--by-silver-dim); font-style: italic; font-weight: 300; }
+.by-nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.by-nav-links a {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--by-silver-dim);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.by-nav-links a:hover { color: var(--by-silver-bright); }
+.back-btn {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: rgba(192,200,212,0.08);
+  border: 1px solid rgba(192,200,212,0.15);
+  color: var(--by-silver);
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.back-btn:hover { background: rgba(192,200,212,0.15); color: var(--by-silver-bright); }
+
+.by-hero {
+  min-height: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  position: relative;
+  overflow: hidden;
+  padding-top: 68px;
+}
+.by-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 60%, rgba(192,200,212,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 30%, rgba(192,200,212,0.04) 0%, transparent 50%);
+  animation: hero-bg-shift 8s ease-in-out infinite alternate;
+}
+@keyframes hero-bg-shift {
+  from { opacity: 0.6; }
+  to   { opacity: 1; }
+}
+.by-hero-big {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40vw;
+  font-weight: 700;
+  color: rgba(192,200,212,0.025);
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  letter-spacing: -0.1em;
+}
+
+/* HERO RIBBON */
+.by-hero-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, rgba(212,168,67,0.15), rgba(212,168,67,0.06));
+  border: 1px solid rgba(212,168,67,0.3);
+  border-left: 3px solid #d4a843;
+  color: #d4a843;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 0 50px 50px 0;
+  margin-bottom: 1.8rem;
+  width: fit-content;
+  animation: ribbon-glow 3s ease-in-out infinite;
+}
+@keyframes ribbon-glow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
+  50%      { box-shadow: 0 0 16px 0 rgba(212,168,67,0.15); }
+}
+.by-ribbon-icon { font-size: 1rem; }
+
+/* ANIMATED TAGS */
+.by-hero-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+.by-hero-tag {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 1px solid rgba(192,200,212,0.15);
+  color: var(--by-silver-dim);
+  transition: all 0.3s;
+}
+.by-hero-tag.active,
+.by-hero-tag:hover {
+  border-color: var(--by-silver);
+  color: var(--by-silver-bright);
+  background: rgba(192,200,212,0.06);
+}
+
+/* SCROLL HINT */
+.by-scroll-hint {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 3rem;
+}
+.by-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--by-silver-dim), transparent);
+  animation: scroll-drop 1.8s ease-in-out infinite;
+}
+@keyframes scroll-drop {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+}
+.by-scroll-hint span {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(192,200,212,0.3);
+}
+.by-hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 2rem 2rem 2rem 4.5rem;
+  position: relative;
+  z-index: 2;
+}
+.by-eyebrow {
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--by-silver-dim);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.by-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--by-silver-dim); }
+.by-h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(4rem, 8.5vw, 8.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--by-silver-bright);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.06em;
+}
+.by-h1 em { font-style: italic; color: var(--by-silver); }
+.by-desc { font-size: 16px; line-height: 2; color: var(--by-silver-dim); max-width: 26rem; margin-bottom: 3rem; letter-spacing: 0.05em; }
+.by-actions { display: flex; gap: 1rem; align-items: center; }
+.btn-by-solid {
+  background: var(--by-silver);
+  color: var(--by-dark);
+  padding: 0.85rem 2.2rem;
+  border-radius: 0;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-family: 'Josefin Sans', sans-serif;
+  display: inline-block;
+}
+.btn-by-solid:hover { background: var(--by-silver-bright); }
+.btn-by-ghost {
+  border: 1px solid rgba(192,200,212,0.25);
+  color: var(--by-silver-dim);
+  padding: 0.85rem 1.8rem;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.btn-by-ghost:hover { border-color: var(--by-silver); color: var(--by-silver-bright); }
+
+.by-hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  overflow: visible;
+}
+
+/* ── BY HERO SLIDESHOW ── */
+.by-hero-blob {
+  position: absolute;
+  inset: -20px;
+  background: rgba(192,200,212,0.06);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: mkmorph 8s ease-in-out infinite;
+  display: none;
+  z-index: 1;
+}
+.by-hero-blob.visible { display: block; }
+
+.by-hero-slideshow {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  min-height: 480px;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.by-hero-placeholder {
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed rgba(192,200,212,0.12);
+  border-radius: 4px;
+  background: rgba(192,200,212,0.02);
+  gap: 12px;
+}
+.by-hero-placeholder-icon { font-size: 3rem; opacity: 0.2; }
+.by-hero-placeholder-text {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(192,200,212,0.2);
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.by-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  transform: translateX(110%);
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.5s ease;
+  will-change: transform, opacity;
+}
+.by-slide.active {
+  position: relative;
+  transform: translateX(0);
+  opacity: 1;
+}
+.by-slide.leaving {
+  position: absolute;
+  transform: translateX(-110%);
+  opacity: 0;
+}
+
+.by-slide-dots {
+  display: none;
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 7px;
+  z-index: 10;
+}
+.by-slide-dots.visible { display: flex; }
+.by-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: 1px solid rgba(192,200,212,0.4);
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.by-dot.active {
+  background: var(--by-silver-bright);
+  transform: scale(1.25);
+  border-color: var(--by-silver-bright);
+}
+
+.by-section { padding: 7rem 4.5rem; }
+.by-section-label {
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--by-silver-dim); margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.by-section-label::before { content: ''; width: 16px; height: 1px; background: var(--by-silver-dim); display: block; }
+.by-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+  color: var(--by-silver-bright);
+  margin-bottom: 4rem;
+  line-height: 1.2;
+}
+.by-section-title em { font-style: italic; color: var(--by-silver); }
+
+.by-col-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(192,200,212,0.06);
+}
+.by-col-card {
+  background: var(--by-dark);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+  cursor: default;
+}
+.by-col-card:hover { background: var(--by-mid); }
+.by-col-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--by-silver); transition: width 0.4s; }
+.by-col-card:hover::after { width: 100%; }
+.by-col-num { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 700; color: rgba(192,200,212,0.06); margin-bottom: 2rem; }
+.by-col-icon { font-size: 1.8rem; margin-bottom: 1.2rem; }
+.by-col-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--by-silver-bright); margin-bottom: 0.6rem; }
+.by-col-desc { font-size: 11px; letter-spacing: 0.05em; line-height: 1.9; color: var(--by-silver-dim); }
+
+.by-footer-cta {
+  padding: 6rem 4.5rem;
+  background: var(--by-mid);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(192,200,212,0.06);
+}
+.by-footer-cta h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--by-silver-bright); }
+.by-footer-cta h2 em { font-style: italic; color: var(--by-silver); }
+
+/* ========== DELUX MAKES PAGE ========== */
+#page-makes {
+  display: none;
+  min-height: 100vh;
+  background: var(--mk-cream);
+  font-family: 'Nunito', sans-serif;
+}
+#page-makes.active { display: block; }
+
+.mk-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 3rem;
+  background: rgba(255,245,249,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(232,49,122,0.1);
+}
+.mk-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--mk-pink);
+  text-decoration: none;
+}
+.mk-logo span { font-style: italic; color: var(--mk-rose); }
+.mk-nav-links { display: flex; gap: 2rem; list-style: none; }
+.mk-nav-links a {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  color: rgba(192,100,120,0.7); text-decoration: none; transition: color 0.3s;
+}
+.mk-nav-links a:hover { color: var(--mk-pink); }
+.back-btn-mk {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  background: var(--mk-pink3); border: 1px solid rgba(232,49,122,0.2);
+  color: var(--mk-pink); padding: 0.5rem 1.2rem; border-radius: 50px;
+  cursor: pointer; transition: all 0.3s; font-family: 'Nunito', sans-serif;
+}
+.back-btn-mk:hover { background: var(--mk-pink); color: white; }
+
+.mk-hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 68px;
+  position: relative;
+  overflow: hidden;
+}
+.mk-hero-circles {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.mk-circle {
+  position: absolute; border-radius: 50%;
+}
+.mk-circle-1 { width:500px;height:500px;top:-150px;right:-80px;background:rgba(232,49,122,0.07); }
+.mk-circle-2 { width:300px;height:300px;bottom:-80px;left:-40px;background:rgba(240,204,122,0.06); }
+
+.mk-hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 4rem 3rem 4rem 4rem; position: relative; z-index: 2;
+}
+.mk-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--mk-pink3); color: var(--mk-pink);
+  padding: 0.4rem 1rem; border-radius: 50px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  margin-bottom: 1.5rem; width: fit-content;
+}
+.mk-h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 6vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1.0;
+  color: #1a0a10;
+  margin-bottom: 1.2rem;
+}
+.mk-h1 em { font-style: italic; color: var(--mk-pink); }
+.mk-h1 .gold { color: #d4a843; }
+.mk-desc { font-size: 13px; line-height: 1.9; color: #9e6679; max-width: 28rem; margin-bottom: 2.5rem; }
+.mk-actions { display: flex; gap: 1rem; align-items: center; }
+.btn-mk-pink {
+  background: var(--mk-pink); color: white;
+  padding: 0.85rem 2rem; border-radius: 50px;
+  font-size: 11px; font-weight: 700; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.3s;
+}
+.btn-mk-pink:hover { background: var(--mk-rose); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,49,122,0.3); }
+.btn-mk-ghost {
+  border: 2px solid var(--mk-pink); color: var(--mk-pink);
+  padding: 0.8rem 1.8rem; border-radius: 50px;
+  font-size: 11px; font-weight: 700; text-decoration: none;
+  transition: all 0.3s;
+}
+.btn-mk-ghost:hover { background: var(--mk-pink3); }
+
+/* ── MK HERO RIGHT — SLIDESHOW GERENCIADO ── */
+.mk-hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  overflow: visible;
+}
+
+/* Blob decorativo */
+.mk-hero-blob {
+  position: absolute;
+  inset: -20px;
+  background: rgba(232,49,122,0.07);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: mkmorph 8s ease-in-out infinite;
+  display: none;
+  z-index: 1;
+}
+.mk-hero-blob.visible { display: block; }
+@keyframes mkmorph {
+  0%,100%{border-radius:40% 60% 70% 30% / 40% 50% 60% 50%}
+  50%{border-radius:60% 40% 30% 70% / 60% 30% 70% 40%}
+}
+
+/* Wrapper do slideshow */
+.mk-hero-slideshow {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  min-height: 480px;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+/* Placeholder quando não há imagem */
+.mk-hero-placeholder {
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed rgba(232,49,122,0.2);
+  border-radius: 20px;
+  background: rgba(232,49,122,0.03);
+  gap: 12px;
+}
+.mk-hero-placeholder-icon { font-size: 3rem; opacity: 0.3; }
+.mk-hero-placeholder-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  color: rgba(192,100,120,0.4);
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+/* Slides individuais */
+.mk-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(232,49,122,0.18);
+  /* começa fora à direita */
+  transform: translateX(110%);
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.5s ease;
+  will-change: transform, opacity;
+}
+/* slide ativo: na tela, ocupa espaço */
+.mk-slide.active {
+  position: relative;
+  transform: translateX(0);
+  opacity: 1;
+}
+/* slide saindo: vai para a esquerda, absoluto para não empurrar layout */
+.mk-slide.leaving {
+  position: absolute;
+  transform: translateX(-110%);
+  opacity: 0;
+}
+
+/* Dots indicadores */
+.mk-slide-dots {
+  display: none;
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 7px;
+  z-index: 10;
+}
+.mk-slide-dots.visible { display: flex; }
+.mk-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid rgba(232,49,122,0.5);
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.mk-dot.active {
+  background: var(--mk-pink);
+  transform: scale(1.25);
+  border-color: var(--mk-pink);
+}
+
+/* MK marquee */
+.mk-marquee { background: var(--mk-pink); overflow: hidden; padding: 0.8rem 0; }
+.mk-marquee-track { display: flex; animation: mkmq 18s linear infinite; white-space: nowrap; }
+.mk-mq-item { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: white; padding: 0 2rem; display: flex; align-items: center; gap: 1rem; }
+.mk-mq-item::after { content: '♥'; color: rgba(255,255,255,0.4); }
+@keyframes mkmq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* MK products */
+.mk-section { padding: 6rem 4rem; }
+.mk-section.alt { background: white; }
+.mk-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--mk-pink); display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+.mk-label::before { content: ''; width: 16px; height: 2px; background: var(--mk-pink); border-radius: 2px; display: block; }
+.mk-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #1a0a10; margin-bottom: 3rem; line-height: 1.2; }
+.mk-title em { font-style: italic; color: var(--mk-pink); }
+
+.mk-prod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.mk-card {
+  background: white; border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(232,49,122,0.07);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.mk-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(232,49,122,0.12); }
+.mk-card-img { width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:3rem; }
+.mk-card-badge { position:absolute; top:10px; left:10px; background:var(--mk-pink); color:white; padding:3px 10px; border-radius:50px; font-size:9px; font-weight:700; letter-spacing:1px; }
+.mk-card-body { padding:1rem 1.2rem 1.4rem; }
+.mk-card-name { font-weight:700; color:#1a0a10; font-size:13px; margin-bottom:3px; }
+.mk-card-cat { font-size:11px; color:#9e6679; margin-bottom:10px; }
+.mk-card-price { display:flex; align-items:center; justify-content:space-between; }
+.mk-price { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--mk-pink); }
+.mk-add { width:32px;height:32px;border-radius:50%;background:var(--mk-pink3);color:var(--mk-pink);border:none;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.3s; }
+.mk-add:hover { background:var(--mk-pink);color:white; }
+.mk-card-wrap { position:relative; }
+
+/* MK stats */
+.mk-stats-bar {
+  background: var(--mk-pink);
+  display: grid; grid-template-columns: repeat(4,1fr);
+  text-align: center;
+}
+.mk-stat-item { padding: 2.5rem 1rem; border-right: 1px solid rgba(255,255,255,0.1); }
+.mk-stat-item:last-child { border-right: none; }
+.mk-stat-num { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:700; color:white; display:block; }
+.mk-stat-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.7); }
+
+/* ── LOOKS GRID ── */
+.by-looks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.by-look-card {
+  background: var(--by-dark);
+  border: 1px solid rgba(192,200,212,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+  cursor: default;
+}
+.by-look-card:hover {
+  border-color: rgba(192,200,212,0.25);
+  transform: translateY(-4px);
+}
+.by-look-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--by-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  border-bottom: 1px solid rgba(192,200,212,0.06);
+  position: relative;
+}
+.by-look-body { padding: 1.2rem 1.4rem 1.6rem; }
+.by-look-tag {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--by-silver-dim);
+  margin-bottom: 6px;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.by-look-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--by-silver-bright);
+  margin-bottom: 8px;
+}
+.by-look-desc {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  color: var(--by-silver-dim);
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+/* ── SOBRE & CONTATO ── */
+.by-sobre-contato-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+}
+.by-sobre {
+  background: var(--by-dark);
+  padding: 7rem 4.5rem;
+  border-right: 1px solid rgba(192,200,212,0.07);
+  position: relative;
+  overflow: hidden;
+}
+.by-sobre::before {
+  content: 'BY';
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20rem;
+  font-weight: 700;
+  color: rgba(192,200,212,0.03);
+  right: -3rem;
+  bottom: -4rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.by-contato {
+  background: var(--by-mid);
+  padding: 7rem 4.5rem;
+}
+/* AWARD BADGE */
+.by-award-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(212,168,67,0.12) 0%, rgba(192,200,212,0.06) 100%);
+  border: 1px solid rgba(212,168,67,0.35);
+  border-left: 3px solid #d4a843;
+  padding: 1rem 1.4rem;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.by-award-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(212,168,67,0.05), transparent);
+  pointer-events: none;
+}
+.by-award-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(212,168,67,0.5));
+}
+.by-award-text { flex: 1; }
+.by-award-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #d4a843;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+.by-award-sub {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(212,168,67,0.65);
+  margin-top: 3px;
+}
+.by-award-seal {
+  font-size: 1.4rem;
+  color: rgba(212,168,67,0.4);
+  flex-shrink: 0;
+  animation: seal-spin 8s linear infinite;
+}
+@keyframes seal-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.by-sobre-text {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  line-height: 2;
+  color: var(--by-silver-dim);
+  max-width: 26rem;
+  margin-bottom: 2.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.by-sobre-values { display: flex; flex-direction: column; gap: 1.4rem; }
+.by-value-item { display: flex; gap: 1rem; align-items: flex-start; }
+.by-value-icon {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(192,200,212,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  color: var(--by-silver);
+}
+.by-value-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--by-silver-bright);
+  margin-bottom: 3px;
+}
+.by-value-desc {
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--by-silver-dim);
+  line-height: 1.7;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+/* ── CONTACT FORM ── */
+.by-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 0.5rem;
+}
+.by-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.by-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.by-form-group label {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--by-silver-dim);
+  font-family: 'Josefin Sans', sans-serif;
+}
+.by-form-group input,
+.by-form-group select,
+.by-form-group textarea {
+  background: rgba(255,255,255,0.04);
+  border: none;
+  border-bottom: 1px solid rgba(192,200,212,0.18);
+  color: var(--by-silver-bright);
+  padding: 0.75rem 0;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.3s;
+  width: 100%;
+  letter-spacing: 0.05em;
+}
+.by-form-group select { cursor: pointer; appearance: none; }
+.by-form-group select option { background: var(--by-mid); }
+.by-form-group input::placeholder,
+.by-form-group textarea::placeholder { color: rgba(192,200,212,0.2); }
+.by-form-group input:focus,
+.by-form-group select:focus,
+.by-form-group textarea:focus { border-bottom-color: var(--by-silver); }
+.by-form-group textarea { resize: none; height: 80px; }
+.by-form-btn {
+  background: transparent;
+  border: 1px solid rgba(192,200,212,0.25);
+  color: var(--by-silver);
+  padding: 0.9rem 2.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+.by-form-btn:hover {
+  background: var(--by-silver);
+  color: var(--by-dark);
+}
+
+/* SHARED FOOTER */
+.brand-footer {
+  padding: 2.5rem 4rem;
+  display: flex; justify-content:space-between; align-items:center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.by-footer-area { background: var(--by-mid); }
+.mk-footer-area { background: #fff5f9; border-top-color: rgba(232,49,122,0.1); }
+
+.brand-footer-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; }
+.by-footer-area .brand-footer-name { color: var(--by-silver); }
+.mk-footer-area .brand-footer-name { color: var(--mk-pink); }
+.brand-footer-copy { font-size:11px; }
+.by-footer-area .brand-footer-copy { color: var(--by-silver-dim); }
+.mk-footer-area .brand-footer-copy { color: #9e6679; }
+.brand-footer-social { display:flex; gap:1.5rem; }
+.brand-footer-social a { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:color 0.3s; }
+.by-footer-area .brand-footer-social a { color: var(--by-silver-dim); }
+.by-footer-area .brand-footer-social a:hover { color: var(--by-silver-bright); }
+.mk-footer-area .brand-footer-social a { color: #9e6679; }
+.mk-footer-area .brand-footer-social a:hover { color: var(--mk-pink); }
+
+/* TRANSITIONS */
+.page-enter {
+  animation: pageIn 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── GALERIA DE FOTOS — BY ── */
+#by-gallery-section { padding: 7rem 4.5rem; background: var(--by-mid); }
+.pub-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.pub-photo {
+  background: var(--by-dark);
+  border: 1px solid rgba(192,200,212,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.pub-photo:hover { border-color: rgba(192,200,212,0.2); }
+.pub-photo-img img { width:100%; display:block; aspect-ratio:1; object-fit:cover; }
+.pub-photo-title {
+  padding: 0.6rem 0.8rem;
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  color: var(--by-silver-dim); font-family:'Josefin Sans',sans-serif;
+}
+
+/* ── GALERIA DE FOTOS — MAKES ── */
+#mk-gallery-section { padding: 6rem 4rem; background: white; }
+.mk-pub-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.mk-pub-photo {
+  background: var(--mk-pink3);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.mk-pub-photo:hover { box-shadow: 0 8px 24px rgba(232,49,122,0.15); }
+.mk-pub-photo img { width:100%; display:block; aspect-ratio:1; object-fit:cover; }
+.mk-pub-photo-title {
+  padding: 0.6rem 0.8rem;
+  font-size:11px; font-weight:700;
+  color: var(--mk-rose);
+}
+
+/* ── BANNER SECTIONS ── */
+.pub-banner-wrap { display:none; margin-bottom:0; }
+.pub-banner-img { width:100%; display:block; max-height:400px; object-fit:cover; }
+.pub-banner-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.5rem,3vw,2.5rem);
+  font-weight:300;
+  padding:1.5rem 4.5rem;
+}
+.by-banner-title { color:var(--by-silver-bright); background:var(--by-dark); }
+.mk-banner-title { color:var(--mk-pink); background:var(--mk-cream); }
+
+/* ── POSTS ── */
+.pub-posts-list { display:flex; flex-direction:column; gap:1.5rem; margin-top:2rem; }
+.pub-post {
+  padding: 1.5rem;
+  border-left: 2px solid rgba(192,200,212,0.2);
+}
+.by-posts-wrap .pub-post { border-left-color: rgba(192,200,212,0.2); background: rgba(255,255,255,0.02); }
+.mk-posts-wrap .pub-post { border-left-color: rgba(232,49,122,0.2); background: rgba(232,49,122,0.03); border-radius:0 12px 12px 0; }
+.pub-post-dt { font-size:9px; letter-spacing:3px; text-transform:uppercase; opacity:0.5; margin-bottom:4px; font-family:'Josefin Sans',sans-serif; }
+.by-posts-wrap .pub-post-dt { color:var(--by-silver-dim); }
+.mk-posts-wrap .pub-post-dt { color:var(--mk-pink); }
+.pub-post-ttl { font-family:'Cormorant Garamond',serif; font-size:1.2rem; margin-bottom:6px; }
+.by-posts-wrap .pub-post-ttl { color:var(--by-silver-bright); }
+.mk-posts-wrap .pub-post-ttl { color:#1a0a10; }
+.pub-post-body { font-size:12px; line-height:1.8; }
+.by-posts-wrap .pub-post-body { color:var(--by-silver-dim); font-family:'Josefin Sans',sans-serif; }
+.mk-posts-wrap .pub-post-body { color:#9e6679; }
+
+/* ============================
+   ADMIN PANEL
+   ============================ */
+#adm-login-modal {
+  position: fixed; inset:0; z-index:1000;
+  display:none; align-items:center; justify-content:center;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+}
+.adm-login-box {
+  background: #111;
+  border: 1px solid rgba(192,200,212,0.12);
+  padding: 3rem 2.5rem;
+  width: 340px;
+  display: flex; flex-direction:column; gap:1.2rem;
+}
+.adm-login-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; font-weight:600;
+  color:var(--by-silver-bright);
+  letter-spacing:0.08em;
+  margin-bottom:0.5rem;
+}
+.adm-pwd-wrap { position:relative; }
+.adm-pwd-wrap input {
+  width:100%; background:rgba(255,255,255,0.04);
+  border:none; border-bottom:1px solid rgba(192,200,212,0.2);
+  color:var(--by-silver-bright); padding:0.7rem 2.5rem 0.7rem 0;
+  font-family:'Josefin Sans',sans-serif; font-size:13px;
+  outline:none; letter-spacing:0.05em;
+}
+.adm-pwd-toggle {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--by-silver-dim); cursor:pointer; font-size:0.85rem; padding:4px;
+}
+.adm-login-err {
+  display:none; font-size:11px; color:#ff7070;
+  background:rgba(255,80,80,0.08); border:1px solid rgba(255,80,80,0.2);
+  padding:0.5rem 0.8rem; border-radius:4px; letter-spacing:0.05em;
+}
+.adm-login-actions { display:flex; gap:0.8rem; margin-top:0.5rem; }
+.adm-btn-primary {
+  flex:1; background:var(--by-silver); color:var(--by-dark);
+  border:none; padding:0.75rem; cursor:pointer;
+  font-family:'Josefin Sans',sans-serif; font-size:10px;
+  font-weight:600; letter-spacing:3px; text-transform:uppercase;
+  transition:background 0.3s;
+}
+.adm-btn-primary:hover { background:var(--by-silver-bright); }
+.adm-btn-primary.mk { background:var(--mk-pink); color:white; border-radius:50px; }
+.adm-btn-primary.mk:hover { background:var(--mk-rose); }
+.adm-btn-sec {
+  background:transparent; border:1px solid rgba(192,200,212,0.2);
+  color:var(--by-silver-dim); padding:0.75rem 1.2rem;
+  cursor:pointer; font-family:'Josefin Sans',sans-serif;
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  transition:all 0.3s;
+}
+.adm-btn-sec:hover { border-color:var(--by-silver); color:var(--by-silver-bright); }
+
+#adm-panel {
+  position:fixed; inset:0; z-index:900;
+  display:none; flex-direction:row;
+  background:#0d0d0d;
+  font-family:'Josefin Sans',sans-serif;
+}
+
+/* SIDEBAR */
+.adm-sidebar {
+  width: 220px; flex-shrink:0;
+  background: #111;
+  border-right:1px solid rgba(192,200,212,0.08);
+  display:flex; flex-direction:column;
+  padding: 2rem 0 1.5rem;
+}
+.adm-sidebar-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem; font-weight:600;
+  color:var(--by-silver-bright);
+  padding:0 1.5rem;
+  margin-bottom:0.5rem;
+  letter-spacing:0.08em;
+}
+.adm-sidebar-logo span { font-style:italic; color:var(--mk-pink); font-weight:300; }
+.adm-sidebar-sub {
+  font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--by-silver-dim); padding:0 1.5rem;
+  margin-bottom:2rem;
+}
+.adm-sb-group { margin-bottom:1.5rem; }
+.adm-sb-group-label {
+  font-size:8px; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(192,200,212,0.25); padding:0 1.5rem;
+  margin-bottom:0.5rem; display:block;
+}
+.adm-sb-btn {
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:0.65rem 1.5rem;
+  background:none; border:none;
+  color:var(--by-silver-dim); cursor:pointer;
+  font-family:'Josefin Sans',sans-serif;
+  font-size:11px; letter-spacing:0.05em;
+  text-align:left; transition:all 0.2s;
+  border-left:2px solid transparent;
+}
+.adm-sb-btn:hover { color:var(--by-silver-bright); background:rgba(255,255,255,0.03); }
+.adm-sb-btn.active {
+  color:var(--by-silver-bright);
+  background:rgba(192,200,212,0.06);
+  border-left-color:var(--by-silver);
+}
+.adm-sb-btn.mk-btn.active {
+  color:var(--mk-pink);
+  background:rgba(232,49,122,0.05);
+  border-left-color:var(--mk-pink);
+}
+.adm-sb-icon { font-size:1rem; width:18px; text-align:center; }
+.adm-sb-spacer { flex:1; }
+.adm-sidebar-logout {
+  padding:0 1.5rem;
+}
+.adm-logout-btn {
+  width:100%; padding:0.6rem 1rem;
+  background:rgba(255,80,80,0.06);
+  border:1px solid rgba(255,80,80,0.15);
+  color:rgba(255,120,120,0.7);
+  cursor:pointer; font-family:'Josefin Sans',sans-serif;
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  transition:all 0.3s; border-radius:4px;
+}
+.adm-logout-btn:hover { background:rgba(255,80,80,0.12); color:#ff7070; }
+
+/* MAIN CONTENT */
+.adm-main {
+  flex:1; overflow-y:auto;
+  padding:2.5rem 3rem;
+  background:#0d0d0d;
+}
+.adm-main-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.8rem; font-weight:600;
+  color:var(--by-silver-bright);
+  margin-bottom:0.4rem; letter-spacing:0.06em;
+}
+.adm-main-sub {
+  font-size:10px; letter-spacing:0.1em;
+  color:var(--by-silver-dim); margin-bottom:2rem;
+}
+.adm-divider { height:1px; background:rgba(192,200,212,0.07); margin:2rem 0; }
+
+.adm-tab { display:none; }
+
+/* Upload zone genérico */
+.adm-upload-zone {
+  border:2px dashed rgba(192,200,212,0.15);
+  padding:2.5rem;
+  text-align:center;
+  cursor:pointer;
+  transition:border-color 0.3s;
+  position:relative;
+}
+.adm-upload-zone:hover { border-color:rgba(192,200,212,0.35); }
+.adm-upload-zone input[type=file] {
+  position:absolute; inset:0; opacity:0; cursor:pointer;
+}
+.adm-upload-icon { font-size:2rem; margin-bottom:0.6rem; }
+.adm-upload-label {
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--by-silver-dim);
+}
+.adm-upload-hint {
+  font-size:9px; color:rgba(192,200,212,0.3);
+  margin-top:0.4rem;
+}
+.adm-upload-zone.mk-zone-style {
+  border-color:rgba(232,49,122,0.2);
+}
+.adm-upload-zone.mk-zone-style:hover { border-color:rgba(232,49,122,0.45); }
+
+/* Banner preview */
+.adm-banner-preview { display:none; margin-top:1.2rem; }
+.adm-banner-preview img { width:100%; max-height:200px; object-fit:cover; border-radius:4px; }
+.adm-banner-form { display:none; margin-top:1rem; gap:0.8rem; display:none; flex-direction:column; }
+.adm-banner-inp {
+  background:rgba(255,255,255,0.04);
+  border:none; border-bottom:1px solid rgba(192,200,212,0.15);
+  color:var(--by-silver-bright); padding:0.6rem 0;
+  font-family:'Josefin Sans',sans-serif; font-size:12px;
+  outline:none; width:100%;
+}
+.adm-banner-inp::placeholder { color:rgba(192,200,212,0.2); }
+.adm-banner-actions { display:flex; gap:0.6rem; margin-top:0.5rem; }
+.adm-btn-danger {
+  background:transparent; border:1px solid rgba(255,80,80,0.25);
+  color:rgba(255,120,120,0.6); padding:0.5rem 1rem;
+  cursor:pointer; font-family:'Josefin Sans',sans-serif;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  transition:all 0.3s; border-radius:4px;
+}
+.adm-btn-danger:hover { background:rgba(255,80,80,0.08); color:#ff7070; }
+.adm-empty-hint {
+  font-size:11px; color:rgba(192,200,212,0.25);
+  text-align:center; padding:2rem; letter-spacing:0.05em;
+}
+
+/* ── HERO IMAGE TAB (Makes) ── */
+.adm-hero-preview-wrap {
+  position: relative;
+  display: none;
+  margin-top: 1.2rem;
+}
+.adm-hero-preview-wrap img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(232,49,122,0.2);
+}
+.adm-hero-preview-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--mk-pink);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 50px;
+}
+.adm-hero-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.adm-hero-info {
+  font-size: 11px;
+  color: rgba(192,100,120,0.6);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  margin-top: 0.8rem;
+}
+
+/* Photo grid admin */
+.adm-photos-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:1rem; margin-top:1rem;
+}
+.adm-photo { background:rgba(255,255,255,0.03); border:1px solid rgba(192,200,212,0.08); border-radius:4px; overflow:hidden; }
+.adm-photo-img { position:relative; }
+.adm-photo-img img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+.adm-photo-x {
+  position:absolute; top:6px; right:6px;
+  background:rgba(0,0,0,0.6); color:white; border:none;
+  width:22px; height:22px; border-radius:50%;
+  cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.adm-photo-x:hover { background:rgba(200,0,0,0.7); }
+.adm-photo-title-inp {
+  width:100%; background:none; border:none;
+  border-top:1px solid rgba(192,200,212,0.08);
+  color:var(--by-silver-dim); padding:0.5rem 0.6rem;
+  font-family:'Josefin Sans',sans-serif; font-size:10px;
+  outline:none;
+}
+.adm-photo-title-inp::placeholder { color:rgba(192,200,212,0.15); }
+
+/* Posts admin */
+.adm-post-compose {
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(192,200,212,0.08);
+  padding:1.5rem; margin-bottom:2rem;
+  display:flex; flex-direction:column; gap:0.8rem;
+}
+.adm-post-compose.mk { border-color:rgba(232,49,122,0.12); }
+.adm-post-inp {
+  background:rgba(255,255,255,0.04); border:none;
+  border-bottom:1px solid rgba(192,200,212,0.15);
+  color:var(--by-silver-bright); padding:0.6rem 0;
+  font-family:'Josefin Sans',sans-serif; font-size:12px;
+  outline:none; width:100%; letter-spacing:0.03em;
+}
+.adm-post-inp.mk { border-bottom-color:rgba(232,49,122,0.2); color:#ffffff; }
+.adm-post-inp::placeholder { color:rgba(192,200,212,0.2); }
+.adm-post-inp.mk::placeholder { color:rgba(232,49,122,0.25); }
+.adm-post-area {
+  background:rgba(255,255,255,0.04); border:none;
+  border-bottom:1px solid rgba(192,200,212,0.15);
+  color:var(--by-silver-bright); padding:0.6rem 0;
+  font-family:'Josefin Sans',sans-serif; font-size:12px;
+  outline:none; width:100%; resize:none; height:80px;
+  letter-spacing:0.03em;
+}
+.adm-post-area.mk { border-bottom-color:rgba(232,49,122,0.2); color:#ffffff; }
+.adm-post-area::placeholder { color:rgba(192,200,212,0.2); }
+.adm-post-area.mk::placeholder { color:rgba(232,49,122,0.25); }
+.adm-posts-list { display:flex; flex-direction:column; gap:0.8rem; }
+.adm-post-item {
+  background:rgba(255,255,255,0.02); border:1px solid rgba(192,200,212,0.07);
+  padding:1rem 1.2rem; display:flex; gap:1rem; align-items:flex-start;
+}
+.adm-post-item.mk { background:rgba(232,49,122,0.03); border-color:rgba(232,49,122,0.1); }
+.adm-post-dt { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--by-silver-dim); margin-bottom:3px; }
+.adm-post-ttl { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--by-silver-bright); margin-bottom:2px; }
+.adm-post-item.mk .adm-post-ttl { color:#ffffff; }
+.adm-post-body { font-size:11px; color:rgba(192,200,212,0.4); line-height:1.6; }
+.adm-post-item.mk .adm-post-body { color:#9e6679; }
+.adm-post-del {
+  background:rgba(255,80,80,0.06); border:1px solid rgba(255,80,80,0.15);
+  color:rgba(255,120,120,0.6); padding:0.35rem 0.8rem;
+  cursor:pointer; font-family:'Josefin Sans',sans-serif;
+  font-size:9px; letter-spacing:1px; transition:all 0.2s; border-radius:4px;
+  white-space:nowrap; flex-shrink:0;
+}
+.adm-post-del:hover { background:rgba(255,80,80,0.12); color:#ff7070; }
+
+/* ── TEXTO BRANCO EM TODOS OS INPUTS DO PAINEL ADMIN ── */
+#adm-panel input,
+#adm-panel textarea,
+#adm-panel select {
+  color: #ffffff !important;
+}
+#adm-panel input::placeholder,
+#adm-panel textarea::placeholder {
+  color: rgba(255,255,255,0.25) !important;
+}
+
+/* Config tab */
+.adm-cfg-section {
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(192,200,212,0.07);
+  padding:1.5rem 2rem; margin-bottom:1.5rem;
+}
+.adm-cfg-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; color:var(--by-silver-bright);
+  margin-bottom:1rem; letter-spacing:0.05em;
+}
+.adm-cfg-pwd-row { display:flex; flex-direction:column; gap:0.8rem; }
+.adm-cfg-inp {
+  background:rgba(255,255,255,0.04); border:none;
+  border-bottom:1px solid rgba(192,200,212,0.15);
+  color:var(--by-silver-bright); padding:0.6rem 0;
+  font-family:'Josefin Sans',sans-serif; font-size:12px;
+  outline:none; width:100%;
+}
+.adm-cfg-inp::placeholder { color:rgba(192,200,212,0.2); }
+.adm-cfg-msg {
+  display:none; padding:0.5rem 0.8rem;
+  font-size:11px; border-radius:4px; margin-top:0.5rem;
+}
+.adm-stats-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;
+}
+.adm-stat-box {
+  background:rgba(255,255,255,0.02); border:1px solid rgba(192,200,212,0.07);
+  padding:1.2rem; text-align:center;
+}
+.adm-stat-num {
+  font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700;
+  color:var(--by-silver-bright); display:block;
+}
+.adm-stat-label {
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--by-silver-dim); margin-top:2px;
+}
+
+/* RESPONSIVE */
+@media (max-width:900px) {
+  #cursor { display: none; }
+  body { cursor: auto; }
+  .split-bg { flex-direction: column; }
+  .split-left:hover, .split-right:hover { flex: 1; }
+  .side-content { display: none; }
+  .center-logo-wrap { min-width: 260px; padding: 1.5rem 1.8rem; }
+  .center-logo-main { font-size: clamp(3.5rem, 14vw, 6rem); }
+  .center-logo-sub { font-size: clamp(1.2rem, 5vw, 2rem); }
+  .center-brand-pills { gap: 16px; }
+  .bottom-hint { display: none; }
+  .bg-letter { font-size: 60vw; }
+  .by-nav, .mk-nav { padding: 1rem 1.2rem; }
+  .by-nav-links, .mk-nav-links { display: none; }
+  .back-btn, .back-btn-mk { font-size: 8px; padding: 0.4rem 0.9rem; }
+  .by-hero { grid-template-columns: 1fr; padding-top: 64px; }
+  .by-hero-right { display: none; }
+  .by-hero-left { padding: 2rem 1.5rem; }
+  .by-h1 { font-size: clamp(3rem, 12vw, 5rem); }
+  .mk-hero { grid-template-columns: 1fr; }
+  .mk-hero-right { display: none; }
+  .mk-hero-left { padding: 2rem 1.5rem; }
+  .by-col-grid { grid-template-columns: 1fr; }
+  .by-sobre-contato-wrap { grid-template-columns: 1fr; }
+  .by-form-row { grid-template-columns: 1fr; }
+  .by-section, .mk-section { padding: 4rem 1.5rem; }
+  .mk-prod-grid { grid-template-columns: repeat(2,1fr); }
+  .mk-stats-bar { grid-template-columns: repeat(2,1fr); }
+  .by-footer-cta { flex-direction:column; gap:1.5rem; text-align:center; padding: 4rem 2rem; }
+  .brand-footer { flex-direction:column; gap:1rem; text-align:center; padding:2rem 1.5rem; }
+  .adm-sidebar { width: 60px; }
+  .adm-sidebar-logo, .adm-sidebar-sub, .adm-sb-group-label, .adm-sb-btn span, .adm-sidebar-logout { display:none; }
+  .adm-sb-btn { justify-content:center; padding:0.8rem; }
+  .adm-sb-icon { width:auto; }
+  .adm-main { padding:1.5rem; }
+  .by-looks-grid { grid-template-columns: repeat(2,1fr); }
+  .pub-photos-grid { grid-template-columns: repeat(2,1fr); }
+  .adm-stats-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- ============================================================
+     LANDING
+     ============================================================ -->
+<div id="landing">
+  <div class="split-bg">
+    <div class="split-left">
+      <div class="bg-letter">B</div>
+      <!-- SIDE CONTENT LEFT (By) -->
+      <div class="side-content left-content">
+        <span class="side-tag">Moda Feminina</span>
+        <div class="side-title">Delux<br><em>By</em></div>
+        <p class="side-sub">Roupas que contam histórias. Estilo com sofisticação.</p>
+        <div class="side-pills">
+          <span class="pill by-pill">Elegância em cada detalhe</span>
+          <span class="pill by-pill">Sofisticação que veste sua essência</span>
+          <span class="pill by-pill">Coleção exclusiva feminina</span>
+        </div>
+      </div>
+      <div class="click-zone by-zone" onclick="enterSite('by')">
+        <button class="enter-btn">Entrar</button>
+      </div>
+    </div>
+
+    <div class="split-right">
+      <div class="bg-letter">M</div>
+      <!-- SIDE CONTENT RIGHT (Makes) -->
+      <div class="side-content right-content">
+        <span class="side-tag">Beleza & Maquiagem</span>
+        <div class="side-title">Delux<br><em>Makes</em></div>
+        <p class="side-sub">Arte em cada traço. Beleza que transforma.</p>
+        <div class="side-pills">
+          <span class="pill mk-pill">Make artística premium</span>
+          <span class="pill mk-pill">Cursos e produtos</span>
+          <span class="pill mk-pill">Transformação visual</span>
+        </div>
+      </div>
+      <div class="click-zone mk-zone" onclick="enterSite('makes')">
+        <button class="enter-btn">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="center-logo-wrap">
+    <div class="center-logo-group">
+      <span class="center-logo-pre">universo</span>
+      <div class="center-logo-main">Delux</div>
+      <div class="center-logo-sub">Group</div>
+    </div>
+    <div class="center-logo-divider"></div>
+    <div class="center-brand-pills">
+      <button class="center-pill by-pill-btn" onclick="enterSite('by')">Delux By</button>
+      <button class="center-pill mk-pill-btn" onclick="enterSite('makes')">Delux Makes</button>
+    </div>
+  </div>
+
+  <div class="bottom-hint">
+    <span class="hint-text">escolha seu universo</span>
+    <div class="hint-arrow"><span>←</span><span>→</span></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DELUX BY PAGE
+     ============================================================ -->
+<div id="page-by">
+
+  <div class="by-watermark" aria-hidden="true">
+    <div class="by-watermark-inner">
+      <span class="by-wm-pre">universo</span>
+      <div class="by-wm-main">Delux</div>
+      <div class="by-wm-divider"></div>
+      <div class="by-wm-sub">By</div>
+    </div>
+  </div>
+
+  <nav class="by-nav">
+    <a href="#" class="by-logo">Delux <span>By</span></a>
+    <ul class="by-nav-links">
+      <li><a href="#by-colecoes">Coleções</a></li>
+      <li><a href="#by-gallery-section">Galeria</a></li>
+      <li><a href="#by-sobre-contato">Sobre</a></li>
+      <li><a href="#by-sobre-contato">Contato</a></li>
+    </ul>
+    <button class="back-btn" onclick="goBack()">← Voltar</button>
+  </nav>
+
+  <!-- BY BANNER (admin) -->
+  <div class="pub-banner-wrap" id="by-banner-wrap">
+    <img id="by-banner-img" src="" alt="Banner Delux By" class="pub-banner-img">
+    <div class="pub-banner-title by-banner-title" id="by-banner-title" style="display:none;"></div>
+  </div>
+
+  <section class="by-hero">
+    <div class="by-hero-bg"></div>
+    <div class="by-hero-big" aria-hidden="true">B</div>
+
+    <div class="by-hero-left">
+      <div class="by-eyebrow">Delux By — Moda Feminina</div>
+
+      <div class="by-hero-ribbon">
+        <span class="by-ribbon-icon">🏆</span>
+        Melhor Loja Feminina da Baixada Santista
+      </div>
+
+      <h1 class="by-h1">Veste<br>quem <em>você</em><br>é</h1>
+      <p class="by-desc">Curadoria exclusiva de moda feminina. Peças selecionadas com propósito, elegância e atitude para a mulher que sabe o que quer.</p>
+
+      <div class="by-hero-tags">
+        <span class="by-hero-tag active">Novidades</span>
+        <span class="by-hero-tag">Essentials</span>
+        <span class="by-hero-tag">Glam Night</span>
+        <span class="by-hero-tag">Day Casual</span>
+      </div>
+
+      <div class="by-actions">
+        <a href="#by-colecoes" class="btn-by-solid">Ver Coleções</a>
+        <a href="#by-sobre-contato" class="btn-by-ghost">Sobre nós</a>
+      </div>
+
+      <div class="by-scroll-hint">
+        <div class="by-scroll-line"></div>
+        <span>Scroll para explorar</span>
+      </div>
+    </div>
+
+    <div class="by-hero-right">
+      <div class="by-hero-blob" id="by-hero-blob"></div>
+
+      <!-- Placeholder (visível quando sem imagens) -->
+      <div class="by-hero-placeholder" id="by-hero-placeholder">
+        <div class="by-hero-placeholder-icon">🖼️</div>
+        <div class="by-hero-placeholder-text">Imagens serão definidas<br>pelo administrador</div>
+      </div>
+
+      <!-- Slideshow wrapper com dots dentro -->
+      <div style="position:relative; width:100%; max-width:400px;">
+        <div class="by-hero-slideshow" id="by-hero-slideshow" style="display:none;"></div>
+        <div class="by-slide-dots" id="by-slide-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS -->
+  <div class="by-section" id="by-colecoes">
+    <div class="by-section-label">Nossas coleções</div>
+    <h2 class="by-section-title">Estilo para cada<br><em>momento</em></h2>
+    <div class="by-col-grid">
+      <div class="by-col-card" id="by-col-card-0">
+        <div class="by-col-num">01</div>
+        <div class="by-col-icon" id="by-col-icon-0">🖤</div>
+        <div class="by-col-img-wrap" id="by-col-img-wrap-0" style="display:none;margin-bottom:1rem;">
+          <img id="by-col-img-0" src="" alt="" style="width:100%;border-radius:4px;aspect-ratio:4/3;object-fit:cover;">
+        </div>
+        <div class="by-col-name" id="by-col-name-0">Essentials</div>
+        <p class="by-col-desc" id="by-col-desc-0">Peças clássicas em preto e neutros que nunca saem de moda. O básico que não é básico.</p>
+      </div>
+      <div class="by-col-card" id="by-col-card-1">
+        <div class="by-col-num">02</div>
+        <div class="by-col-icon" id="by-col-icon-1">✦</div>
+        <div class="by-col-img-wrap" id="by-col-img-wrap-1" style="display:none;margin-bottom:1rem;">
+          <img id="by-col-img-1" src="" alt="" style="width:100%;border-radius:4px;aspect-ratio:4/3;object-fit:cover;">
+        </div>
+        <div class="by-col-name" id="by-col-name-1">Glam Night</div>
+        <p class="by-col-desc" id="by-col-desc-1">Looks sofisticados para noites especiais. Brilho, elegância e muito charme.</p>
+      </div>
+      <div class="by-col-card" id="by-col-card-2">
+        <div class="by-col-num">03</div>
+        <div class="by-col-icon" id="by-col-icon-2">🌿</div>
+        <div class="by-col-img-wrap" id="by-col-img-wrap-2" style="display:none;margin-bottom:1rem;">
+          <img id="by-col-img-2" src="" alt="" style="width:100%;border-radius:4px;aspect-ratio:4/3;object-fit:cover;">
+        </div>
+        <div class="by-col-name" id="by-col-name-2">Day Casual</div>
+        <p class="by-col-desc" id="by-col-desc-2">Conforto e estilo para o dia a dia. Para a mulher que quer se sentir linda a qualquer hora.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALERIA BY -->
+  <div class="by-section" id="by-gallery-section" style="background:var(--by-mid); display:none;">
+    <div class="by-section-label">Galeria</div>
+    <h2 class="by-section-title">Nossos <em>looks</em></h2>
+    <div class="pub-photos-grid" id="by-photos-grid"></div>
+  </div>
+
+  <!-- POSTS BY (abaixo dos looks) -->
+  <div class="by-section by-posts-wrap" id="by-posts-section" style="display:none; padding-top:4rem; padding-bottom:4rem;">
+    <div class="by-section-label">Novidades</div>
+    <h2 class="by-section-title">Nossos <em>posts</em></h2>
+    <div class="pub-posts-list" id="by-posts-list"></div>
+  </div>
+
+  <!-- SOBRE & CONTATO -->
+  <div id="by-sobre-contato" class="by-sobre-contato-wrap">
+    <div class="by-sobre">
+      <div class="by-section-label" style="color:var(--by-silver);">Nossa história</div>
+      <h2 class="by-section-title" style="color:var(--by-silver-bright);">Sobre a<br><em>Delux By</em></h2>
+
+      <div class="by-award-badge">
+        <div class="by-award-icon">🏆</div>
+        <div class="by-award-text">
+          <div class="by-award-title">Melhor Loja Feminina</div>
+          <div class="by-award-sub">Melhor Loja Feminina da Baixada Santista</div>
+        </div>
+        <div class="by-award-seal">✦</div>
+      </div>
+
+      <p class="by-sobre-text">Darllene, proprietária da <strong style="color:var(--by-silver-bright)">Delux By</strong>, é reconhecida como a <strong style="color:var(--by-silver-bright)">melhor loja feminina da Baixada Santista</strong> — uma conquista que reflete o compromisso de cada dia com elegância, qualidade e a mulher que nos escolhe.</p>
+      <p class="by-sobre-text" style="margin-top:-1rem;">Nascemos do desejo de vestir a mulher que sabe quem é. Cada peça é escolhida com intenção — para que você carregue sofisticação e atitude em cada detalhe do seu guarda-roupa.</p>
+
+      <div class="by-sobre-values">
+        <div class="by-value-item">
+          <div class="by-value-icon">🏆</div>
+          <div>
+            <div class="by-value-title">Premiação regional</div>
+            <div class="by-value-desc">Melhor loja feminina da Baixada Santista.</div>
+          </div>
+        </div>
+        <div class="by-value-item">
+          <div class="by-value-icon">✦</div>
+          <div>
+            <div class="by-value-title">Curadoria exclusiva</div>
+            <div class="by-value-desc">Peças selecionadas com propósito e estética refinada.</div>
+          </div>
+        </div>
+        <div class="by-value-item">
+          <div class="by-value-icon">💎</div>
+          <div>
+            <div class="by-value-title">Qualidade acima de tudo</div>
+            <div class="by-value-desc">Do tecido ao acabamento, cada detalhe importa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="by-contato">
+      <div class="by-section-label">Fale conosco</div>
+      <h2 class="by-section-title">Entre em <em>contato</em></h2>
+      <form class="by-contact-form" onsubmit="return false;">
+        <div class="by-form-row">
+          <div class="by-form-group">
+            <label>Nome</label>
+            <input type="text" placeholder="Seu nome completo">
+          </div>
+          <div class="by-form-group">
+            <label>E-mail</label>
+            <input type="email" placeholder="seu@email.com">
+          </div>
+        </div>
+        <div class="by-form-group">
+          <label>Assunto</label>
+          <select>
+            <option value="">Selecione...</option>
+            <option>Informações sobre produto</option>
+            <option>Encomenda especial</option>
+            <option>Parcerias</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="by-form-group">
+          <label>Mensagem</label>
+          <textarea placeholder="Sua mensagem..."></textarea>
+        </div>
+        <button class="by-form-btn" type="submit">Enviar mensagem</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="brand-footer by-footer-area">
+    <span class="brand-footer-name">Delux <em>By</em></span>
+    <span class="brand-footer-copy">© 2025 Delux Group. Todos os direitos reservados.</span>
+    <div class="brand-footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================================================
+     DELUX MAKES PAGE
+     ============================================================ -->
+<div id="page-makes">
+
+  <nav class="mk-nav">
+    <a href="#" class="mk-logo">Delux <span>Makes</span></a>
+    <ul class="mk-nav-links">
+      <li><a href="#mk-produtos">Produtos</a></li>
+      <li><a href="#mk-gallery-section">Galeria</a></li>
+      <li><a href="#mk-sobre">Sobre</a></li>
+      <li><a href="#mk-sobre">Contato</a></li>
+    </ul>
+    <button class="back-btn-mk" onclick="goBack()">← Voltar</button>
+  </nav>
+
+  <!-- MK BANNER (admin) -->
+  <div class="pub-banner-wrap" id="mk-banner-wrap">
+    <img id="mk-banner-img" src="" alt="Banner Delux Makes" class="pub-banner-img">
+    <div class="pub-banner-title mk-banner-title" id="mk-banner-title" style="display:none;"></div>
+  </div>
+
+  <section class="mk-hero">
+    <div class="mk-hero-circles">
+      <div class="mk-circle mk-circle-1"></div>
+      <div class="mk-circle mk-circle-2"></div>
+    </div>
+
+    <div class="mk-hero-left">
+      <div class="mk-badge">✨ Especialista em Make Artística</div>
+      <h1 class="mk-h1">Arte que <em>transforma</em><br>beleza que <span class="gold">brilha</span></h1>
+      <p class="mk-desc">Make artística, produtos premium e cursos para quem leva a beleza a sério. Da produção básica ao look de passarela.</p>
+      <div class="mk-actions">
+        <a href="#mk-produtos" class="btn-mk-pink">Ver produtos ✨</a>
+        <a href="#mk-sobre" class="btn-mk-ghost">Saiba mais</a>
+      </div>
+    </div>
+
+    <!-- ── HERO RIGHT: SLIDESHOW GERENCIADO PELO ADMIN ── -->
+    <div class="mk-hero-right">
+      <div class="mk-hero-blob" id="mk-hero-blob"></div>
+
+      <!-- Placeholder (visível quando sem imagens) -->
+      <div class="mk-hero-placeholder" id="mk-hero-placeholder">
+        <div class="mk-hero-placeholder-icon">🖼️</div>
+        <div class="mk-hero-placeholder-text">Imagens serão definidas<br>pelo administrador</div>
+      </div>
+
+      <!-- Slideshow wrapper com dots dentro -->
+      <div style="position:relative; width:100%; max-width:400px;">
+        <div class="mk-hero-slideshow" id="mk-hero-slideshow" style="display:none;"></div>
+        <div class="mk-slide-dots" id="mk-slide-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mk-marquee">
+    <div class="mk-marquee-track">
+      <span class="mk-mq-item">Make Artística</span>
+      <span class="mk-mq-item">Produtos Premium</span>
+      <span class="mk-mq-item">Cursos Exclusivos</span>
+      <span class="mk-mq-item">Transformação Total</span>
+      <span class="mk-mq-item">Delux Makes</span>
+      <span class="mk-mq-item">Make Artística</span>
+      <span class="mk-mq-item">Produtos Premium</span>
+      <span class="mk-mq-item">Cursos Exclusivos</span>
+      <span class="mk-mq-item">Transformação Total</span>
+      <span class="mk-mq-item">Delux Makes</span>
+    </div>
+  </div>
+
+  <!-- PRODUTOS -->
+  <div class="mk-section" id="mk-produtos">
+    <div class="mk-label">Produtos em destaque</div>
+    <h2 class="mk-title">O melhor para<br>a sua <em>beleza</em></h2>
+    <div class="mk-prod-grid">
+      <div class="mk-card-wrap" id="mk-prod-wrap-0">
+        <div class="mk-card" id="mk-prod-card-0">
+          <div class="mk-card-img" id="mk-prod-icon-0" style="background:#fff0f5;">💄</div>
+          <div class="mk-card-img" id="mk-prod-img-wrap-0" style="display:none;padding:0;">
+            <img id="mk-prod-img-0" src="" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;">
+          </div>
+          <div class="mk-card-body">
+            <div class="mk-card-name" id="mk-prod-name-0">Base HD Perfeita</div>
+            <div class="mk-card-cat" id="mk-prod-cat-0">Base & Cobertura</div>
+            <div class="mk-card-price">
+              <span class="mk-price" id="mk-prod-price-0">R$ 89,90</span>
+              <button class="mk-add">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mk-card-wrap" id="mk-prod-wrap-1">
+        <div class="mk-card" id="mk-prod-card-1">
+          <div class="mk-card-img" id="mk-prod-icon-1" style="background:#fff5e6;">🌟</div>
+          <div class="mk-card-img" id="mk-prod-img-wrap-1" style="display:none;padding:0;">
+            <img id="mk-prod-img-1" src="" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;">
+          </div>
+          <div class="mk-card-body">
+            <div class="mk-card-name" id="mk-prod-name-1">Paleta Glam Rosa</div>
+            <div class="mk-card-cat" id="mk-prod-cat-1">Sombras & Iluminadores</div>
+            <div class="mk-card-price">
+              <span class="mk-price" id="mk-prod-price-1">R$ 129,90</span>
+              <button class="mk-add">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mk-card-wrap" id="mk-prod-wrap-2">
+        <div class="mk-card" id="mk-prod-card-2">
+          <div class="mk-card-img" id="mk-prod-icon-2" style="background:#fff0fa;">💋</div>
+          <div class="mk-card-img" id="mk-prod-img-wrap-2" style="display:none;padding:0;">
+            <img id="mk-prod-img-2" src="" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;">
+          </div>
+          <div class="mk-card-body">
+            <div class="mk-card-name" id="mk-prod-name-2">Batom Matte Delux</div>
+            <div class="mk-card-cat" id="mk-prod-cat-2">Labiais</div>
+            <div class="mk-card-price">
+              <span class="mk-price" id="mk-prod-price-2">R$ 49,90</span>
+              <button class="mk-add">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mk-card-wrap" id="mk-prod-wrap-3">
+        <div class="mk-card" id="mk-prod-card-3">
+          <div class="mk-card-img" id="mk-prod-icon-3" style="background:#f0fff5;">✨</div>
+          <div class="mk-card-img" id="mk-prod-img-wrap-3" style="display:none;padding:0;">
+            <img id="mk-prod-img-3" src="" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;">
+          </div>
+          <div class="mk-card-body">
+            <div class="mk-card-name" id="mk-prod-name-3">Kit Pincel Pro</div>
+            <div class="mk-card-cat" id="mk-prod-cat-3">Acessórios</div>
+            <div class="mk-card-price">
+              <span class="mk-price" id="mk-prod-price-3">R$ 179,90</span>
+              <button class="mk-add">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mk-stats-bar">
+    <div class="mk-stat-item">
+      <span class="mk-stat-num">1.2k+</span>
+      <span class="mk-stat-label">Clientes Felizes</span>
+    </div>
+    <div class="mk-stat-item">
+      <span class="mk-stat-num">200+</span>
+      <span class="mk-stat-label">Produtos</span>
+    </div>
+    <div class="mk-stat-item">
+      <span class="mk-stat-num">50+</span>
+      <span class="mk-stat-label">Cursos</span>
+    </div>
+    <div class="mk-stat-item">
+      <span class="mk-stat-num">5★</span>
+      <span class="mk-stat-label">Avaliação</span>
+    </div>
+  </div>
+
+  <!-- GALERIA MAKES -->
+  <div class="mk-section alt" id="mk-gallery-section" style="display:none;">
+    <div class="mk-label">Galeria</div>
+    <h2 class="mk-title">Nossa <em>galeria</em></h2>
+    <div class="mk-pub-photos-grid" id="mk-photos-grid"></div>
+  </div>
+
+  <!-- POSTS MAKES (abaixo da galeria) -->
+  <div class="mk-section mk-posts-wrap" id="mk-posts-section" style="display:none; background:white;">
+    <div class="mk-label">Novidades</div>
+    <h2 class="mk-title">Nossos <em>posts</em></h2>
+    <div class="pub-posts-list" id="mk-posts-list"></div>
+  </div>
+
+  <!-- SOBRE MAKES -->
+  <div class="mk-section" id="mk-sobre">
+    <div class="mk-label">Nossa história</div>
+    <h2 class="mk-title">Sobre a<br><em>Delux Makes</em></h2>
+    <p style="font-size:14px; line-height:1.9; color:#9e6679; max-width:600px;">
+      A Delux Makes nasceu da paixão pela arte da maquiagem. Oferecemos produtos premium, cursos exclusivos e atendimento personalizado para quem quer elevar sua make ao próximo nível.
+    </p>
+  </div>
+
+  <footer class="brand-footer mk-footer-area">
+    <span class="brand-footer-name" style="color:var(--mk-pink);">Delux <em>Makes</em></span>
+    <span class="brand-footer-copy">© 2025 Delux Group. Todos os direitos reservados.</span>
+    <div class="brand-footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================================================
+     ADMIN LOGIN MODAL
+     ============================================================ -->
+<div id="adm-login-modal">
+  <div class="adm-login-box">
+    <div class="adm-login-title">Painel Admin</div>
+    <div class="adm-pwd-wrap">
+      <input type="password" id="adm-pwd-input" placeholder="Senha de acesso"
+        onkeydown="if(event.key==='Enter') admDoLogin()">
+      <button class="adm-pwd-toggle" onclick="admTogglePwd()" title="Ver senha">👁</button>
+    </div>
+    <div class="adm-login-err" id="adm-login-err">Senha incorreta. Tente novamente.</div>
+    <div class="adm-login-actions">
+      <button class="adm-btn-primary" onclick="admDoLogin()">Entrar</button>
+      <button class="adm-btn-sec" onclick="admCloseLogin()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ADMIN PANEL
+     ============================================================ -->
+<div id="adm-panel">
+  <!-- SIDEBAR -->
+  <div class="adm-sidebar">
+    <div class="adm-sidebar-logo">Delux <span>Admin</span></div>
+    <div class="adm-sidebar-sub">Painel de Gestão</div>
+
+    <div class="adm-sb-group">
+      <span class="adm-sb-group-label">Delux By</span>
+      <button class="adm-sb-btn" id="sb-by-hero" onclick="admTab('by-hero')">
+        <span class="adm-sb-icon">🌟</span><span>Imagem Hero</span>
+      </button>
+      <button class="adm-sb-btn" id="sb-by-colecoes" onclick="admTab('by-colecoes')">
+        <span class="adm-sb-icon">👗</span><span>Coleções</span>
+      </button>
+      <button class="adm-sb-btn" id="sb-by-banner" onclick="admTab('by-banner')">
+        <span class="adm-sb-icon">🖼</span><span>Banner By</span>
+      </button>
+      <button class="adm-sb-btn" id="sb-by-fotos" onclick="admTab('by-fotos')">
+        <span class="adm-sb-icon">📷</span><span>Fotos By</span>
+      </button>
+      <button class="adm-sb-btn" id="sb-by-posts" onclick="admTab('by-posts')">
+        <span class="adm-sb-icon">📝</span><span>Posts By</span>
+      </button>
+    </div>
+
+    <div class="adm-sb-group">
+      <span class="adm-sb-group-label">Delux Makes</span>
+      <button class="adm-sb-btn mk-btn" id="sb-mk-hero" onclick="admTab('mk-hero')">
+        <span class="adm-sb-icon">🌟</span><span>Imagem Hero</span>
+      </button>
+      <button class="adm-sb-btn mk-btn" id="sb-mk-produtos" onclick="admTab('mk-produtos')">
+        <span class="adm-sb-icon">💄</span><span>Produtos</span>
+      </button>
+      <button class="adm-sb-btn mk-btn" id="sb-mk-banner" onclick="admTab('mk-banner')">
+        <span class="adm-sb-icon">🖼</span><span>Banner Makes</span>
+      </button>
+      <button class="adm-sb-btn mk-btn" id="sb-mk-fotos" onclick="admTab('mk-fotos')">
+        <span class="adm-sb-icon">📷</span><span>Fotos Makes</span>
+      </button>
+      <button class="adm-sb-btn mk-btn" id="sb-mk-posts" onclick="admTab('mk-posts')">
+        <span class="adm-sb-icon">📝</span><span>Posts Makes</span>
+      </button>
+    </div>
+
+    <div class="adm-sb-group">
+      <span class="adm-sb-group-label">Sistema</span>
+      <button class="adm-sb-btn" id="sb-config" onclick="admTab('config')">
+        <span class="adm-sb-icon">⚙</span><span>Configurações</span>
+      </button>
+    </div>
+
+    <div class="adm-sb-spacer"></div>
+    <div class="adm-sidebar-logout">
+      <button class="adm-logout-btn" onclick="admLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="adm-main">
+
+    <!-- ── TAB: HERO SLIDESHOW BY ── -->
+    <div class="adm-tab" id="adm-tab-by-hero">
+      <div class="adm-main-title">Imagens Hero — Delux By</div>
+      <div class="adm-main-sub">Imagens exibidas no lado direito do hero com transição automática da direita para a esquerda</div>
+      <div class="adm-divider"></div>
+      <label class="adm-upload-zone">
+        <input type="file" accept="image/*" multiple id="adm-inp-by-hero"
+          onchange="admAddByHeroImgs(this.files)">
+        <div class="adm-upload-icon">✦</div>
+        <div class="adm-upload-label">Adicionar imagens ao slideshow</div>
+        <div class="adm-upload-hint">PNG, JPG, WEBP — Recomendado: 400×480px • Selecione uma ou várias</div>
+      </label>
+      <div id="adm-by-hero-empty" class="adm-empty-hint" style="margin-top:1rem;">
+        Nenhuma imagem adicionada. O slideshow aparecerá assim que você enviar imagens.
+      </div>
+      <div class="adm-photos-grid" id="adm-grid-by-hero" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- ── TAB: COLEÇÕES BY ── -->
+    <div class="adm-tab" id="adm-tab-by-colecoes">
+      <div class="adm-main-title">Coleções — Delux By</div>
+      <div class="adm-main-sub">Edite o nome, descrição e foto de cada coleção exibida na página By</div>
+      <div class="adm-divider"></div>
+
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+
+        <!-- COLEÇÃO 01 -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(192,200,212,0.08);padding:1.5rem;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--by-silver-bright);margin-bottom:1rem;letter-spacing:0.05em;">01 — <span id="adm-col-name-preview-0">Essentials</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Nome</label>
+              <input class="adm-cfg-inp" type="text" value="Essentials" oninput="admUpdateColName(0,this.value)" placeholder="Nome da coleção">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Ícone</label>
+              <input class="adm-cfg-inp" type="text" value="🖤" oninput="admUpdateColIcon(0,this.value)" placeholder="Emoji ou símbolo">
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Descrição</label>
+            <textarea class="adm-cfg-inp" rows="2" oninput="admUpdateColDesc(0,this.value)" placeholder="Descrição da coleção..." style="resize:none;height:56px;">Peças clássicas em preto e neutros que nunca saem de moda. O básico que não é básico.</textarea>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:8px;">Foto da coleção</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetColImg(0,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;">Selecionar foto</div>
+            </label>
+            <div id="adm-col-img-preview-0" style="display:none;position:relative;">
+              <img id="adm-col-prev-img-0" src="" alt="" style="width:100px;height:75px;object-fit:cover;border-radius:4px;border:1px solid rgba(192,200,212,0.15);">
+              <button onclick="admRemoveColImg(0)" style="position:absolute;top:-6px;right:-6px;background:#333;border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLEÇÃO 02 -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(192,200,212,0.08);padding:1.5rem;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--by-silver-bright);margin-bottom:1rem;letter-spacing:0.05em;">02 — <span id="adm-col-name-preview-1">Glam Night</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Nome</label>
+              <input class="adm-cfg-inp" type="text" value="Glam Night" oninput="admUpdateColName(1,this.value)" placeholder="Nome da coleção">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Ícone</label>
+              <input class="adm-cfg-inp" type="text" value="✦" oninput="admUpdateColIcon(1,this.value)" placeholder="Emoji ou símbolo">
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Descrição</label>
+            <textarea class="adm-cfg-inp" rows="2" oninput="admUpdateColDesc(1,this.value)" placeholder="Descrição da coleção..." style="resize:none;height:56px;">Looks sofisticados para noites especiais. Brilho, elegância e muito charme.</textarea>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:8px;">Foto da coleção</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetColImg(1,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;">Selecionar foto</div>
+            </label>
+            <div id="adm-col-img-preview-1" style="display:none;position:relative;">
+              <img id="adm-col-prev-img-1" src="" alt="" style="width:100px;height:75px;object-fit:cover;border-radius:4px;border:1px solid rgba(192,200,212,0.15);">
+              <button onclick="admRemoveColImg(1)" style="position:absolute;top:-6px;right:-6px;background:#333;border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLEÇÃO 03 -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(192,200,212,0.08);padding:1.5rem;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--by-silver-bright);margin-bottom:1rem;letter-spacing:0.05em;">03 — <span id="adm-col-name-preview-2">Day Casual</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Nome</label>
+              <input class="adm-cfg-inp" type="text" value="Day Casual" oninput="admUpdateColName(2,this.value)" placeholder="Nome da coleção">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Ícone</label>
+              <input class="adm-cfg-inp" type="text" value="🌿" oninput="admUpdateColIcon(2,this.value)" placeholder="Emoji ou símbolo">
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px;">Descrição</label>
+            <textarea class="adm-cfg-inp" rows="2" oninput="admUpdateColDesc(2,this.value)" placeholder="Descrição da coleção..." style="resize:none;height:56px;">Conforto e estilo para o dia a dia. Para a mulher que quer se sentir linda a qualquer hora.</textarea>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:8px;">Foto da coleção</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetColImg(2,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;">Selecionar foto</div>
+            </label>
+            <div id="adm-col-img-preview-2" style="display:none;position:relative;">
+              <img id="adm-col-prev-img-2" src="" alt="" style="width:100px;height:75px;object-fit:cover;border-radius:4px;border:1px solid rgba(192,200,212,0.15);">
+              <button onclick="admRemoveColImg(2)" style="position:absolute;top:-6px;right:-6px;background:#333;border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: BANNER BY ── -->
+    <div class="adm-tab" id="adm-tab-by-banner">
+      <div class="adm-main-title">Banner — Delux By</div>
+      <div class="adm-main-sub">Imagem de destaque exibida no topo da página By</div>
+      <div class="adm-divider"></div>
+      <label class="adm-upload-zone">
+        <input type="file" accept="image/*" id="adm-inp-by-banner"
+          onchange="admSetBanner('by', this.files[0])">
+        <div class="adm-upload-icon">📁</div>
+        <div class="adm-upload-label">Selecionar imagem</div>
+        <div class="adm-upload-hint">PNG, JPG, WEBP — Recomendado: 1400×400px</div>
+      </label>
+      <div id="adm-by-banner-empty" class="adm-empty-hint">Nenhum banner definido.</div>
+      <div id="adm-by-banner-preview" class="adm-banner-preview">
+        <img id="adm-by-banner-prev-img" src="" alt="Preview">
+      </div>
+      <div id="adm-by-banner-form" class="adm-banner-form">
+        <input class="adm-banner-inp" type="text" placeholder="Título do banner (opcional)"
+          oninput="admUpdateBannerTitle('by', this.value)">
+        <div class="adm-banner-actions">
+          <button class="adm-btn-danger" onclick="admRemoveBanner('by')">✕ Remover banner</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: FOTOS BY ── -->
+    <div class="adm-tab" id="adm-tab-by-fotos">
+      <div class="adm-main-title">Galeria — Delux By</div>
+      <div class="adm-main-sub">Fotos exibidas na seção de galeria da página By</div>
+      <div class="adm-divider"></div>
+      <label class="adm-upload-zone">
+        <input type="file" accept="image/*" multiple
+          onchange="admAddPhotos('by', this.files)">
+        <div class="adm-upload-icon">📷</div>
+        <div class="adm-upload-label">Adicionar fotos</div>
+        <div class="adm-upload-hint">Selecione uma ou várias imagens</div>
+      </label>
+      <div id="adm-empty-by-fotos" class="adm-empty-hint" style="margin-top:1rem;">Nenhuma foto adicionada.</div>
+      <div class="adm-photos-grid" id="adm-grid-by"></div>
+    </div>
+
+    <!-- ── TAB: POSTS BY ── -->
+    <div class="adm-tab" id="adm-tab-by-posts">
+      <div class="adm-main-title">Posts — Delux By</div>
+      <div class="adm-main-sub">Publicações exibidas na seção de posts da página By</div>
+      <div class="adm-divider"></div>
+      <div class="adm-post-compose">
+        <input class="adm-post-inp" type="text" id="adm-by-titulo" placeholder="Título do post (opcional)">
+        <textarea class="adm-post-area" id="adm-by-corpo" placeholder="Conteúdo do post..."></textarea>
+        <button class="adm-btn-primary" onclick="admAddPost('by')">+ Publicar post</button>
+      </div>
+      <div id="adm-empty-by-posts" class="adm-empty-hint">Nenhum post publicado.</div>
+      <div class="adm-posts-list" id="adm-list-by"></div>
+    </div>
+
+    <!-- ── TAB: HERO SLIDESHOW MAKES ── -->
+    <div class="adm-tab" id="adm-tab-mk-hero">
+      <div class="adm-main-title" style="color:var(--mk-pink);">Imagens Hero — Delux Makes</div>
+      <div class="adm-main-sub">Imagens exibidas no lado direito do hero com transição automática da direita para a esquerda</div>
+      <div class="adm-divider"></div>
+
+      <label class="adm-upload-zone mk-zone-style">
+        <input type="file" accept="image/*" multiple id="adm-inp-mk-hero"
+          onchange="admAddHeroImgs(this.files)">
+        <div class="adm-upload-icon">🌟</div>
+        <div class="adm-upload-label" style="color:rgba(232,49,122,0.6);">Adicionar imagens ao slideshow</div>
+        <div class="adm-upload-hint">PNG, JPG, WEBP — Recomendado: 400×480px • Selecione uma ou várias</div>
+      </label>
+
+      <div id="adm-mk-hero-empty" class="adm-empty-hint" style="margin-top:1rem;">
+        Nenhuma imagem adicionada. O slideshow aparecerá assim que você enviar imagens.
+      </div>
+
+      <div class="adm-photos-grid" id="adm-grid-mk-hero" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- ── TAB: PRODUTOS MAKES ── -->
+    <div class="adm-tab" id="adm-tab-mk-produtos">
+      <div class="adm-main-title" style="color:var(--mk-pink);">Produtos — Delux Makes</div>
+      <div class="adm-main-sub">Edite o nome, categoria, preço e foto de cada produto em destaque</div>
+      <div class="adm-divider"></div>
+
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+
+        <!-- PRODUTO 01 -->
+        <div style="background:rgba(232,49,122,0.02);border:1px solid rgba(232,49,122,0.1);padding:1.5rem;border-radius:8px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#ffffff;margin-bottom:1rem;letter-spacing:0.05em;">01 — <span id="adm-mk-prod-name-preview-0">Base HD Perfeita</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Nome</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Base HD Perfeita" oninput="admUpdateMkProdName(0,this.value)" placeholder="Nome do produto">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Categoria</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Base & Cobertura" oninput="admUpdateMkProdCat(0,this.value)" placeholder="Categoria">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Preço</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:var(--mk-pink);padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="R$ 89,90" oninput="admUpdateMkProdPrice(0,this.value)" placeholder="R$ 0,00">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Ícone (sem foto)</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="💄" oninput="admUpdateMkProdIcon(0,this.value)" placeholder="Emoji">
+            </div>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:8px;">Foto do produto</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone mk-zone-style" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetMkProdImg(0,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;color:rgba(232,49,122,0.6);">Selecionar foto</div>
+            </label>
+            <div id="adm-mk-prod-preview-0" style="display:none;position:relative;">
+              <img id="adm-mk-prod-prev-img-0" src="" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(232,49,122,0.2);">
+              <button onclick="admRemoveMkProdImg(0)" style="position:absolute;top:-6px;right:-6px;background:var(--mk-pink);border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUTO 02 -->
+        <div style="background:rgba(232,49,122,0.02);border:1px solid rgba(232,49,122,0.1);padding:1.5rem;border-radius:8px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#ffffff;margin-bottom:1rem;letter-spacing:0.05em;">02 — <span id="adm-mk-prod-name-preview-1">Paleta Glam Rosa</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Nome</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Paleta Glam Rosa" oninput="admUpdateMkProdName(1,this.value)" placeholder="Nome do produto">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Categoria</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Sombras & Iluminadores" oninput="admUpdateMkProdCat(1,this.value)" placeholder="Categoria">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Preço</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:var(--mk-pink);padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="R$ 129,90" oninput="admUpdateMkProdPrice(1,this.value)" placeholder="R$ 0,00">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Ícone (sem foto)</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="🌟" oninput="admUpdateMkProdIcon(1,this.value)" placeholder="Emoji">
+            </div>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:8px;">Foto do produto</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone mk-zone-style" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetMkProdImg(1,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;color:rgba(232,49,122,0.6);">Selecionar foto</div>
+            </label>
+            <div id="adm-mk-prod-preview-1" style="display:none;position:relative;">
+              <img id="adm-mk-prod-prev-img-1" src="" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(232,49,122,0.2);">
+              <button onclick="admRemoveMkProdImg(1)" style="position:absolute;top:-6px;right:-6px;background:var(--mk-pink);border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUTO 03 -->
+        <div style="background:rgba(232,49,122,0.02);border:1px solid rgba(232,49,122,0.1);padding:1.5rem;border-radius:8px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#ffffff;margin-bottom:1rem;letter-spacing:0.05em;">03 — <span id="adm-mk-prod-name-preview-2">Batom Matte Delux</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Nome</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Batom Matte Delux" oninput="admUpdateMkProdName(2,this.value)" placeholder="Nome do produto">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Categoria</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Labiais" oninput="admUpdateMkProdCat(2,this.value)" placeholder="Categoria">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Preço</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:var(--mk-pink);padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="R$ 49,90" oninput="admUpdateMkProdPrice(2,this.value)" placeholder="R$ 0,00">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Ícone (sem foto)</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="💋" oninput="admUpdateMkProdIcon(2,this.value)" placeholder="Emoji">
+            </div>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:8px;">Foto do produto</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone mk-zone-style" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetMkProdImg(2,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;color:rgba(232,49,122,0.6);">Selecionar foto</div>
+            </label>
+            <div id="adm-mk-prod-preview-2" style="display:none;position:relative;">
+              <img id="adm-mk-prod-prev-img-2" src="" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(232,49,122,0.2);">
+              <button onclick="admRemoveMkProdImg(2)" style="position:absolute;top:-6px;right:-6px;background:var(--mk-pink);border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUTO 04 -->
+        <div style="background:rgba(232,49,122,0.02);border:1px solid rgba(232,49,122,0.1);padding:1.5rem;border-radius:8px;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#ffffff;margin-bottom:1rem;letter-spacing:0.05em;">04 — <span id="adm-mk-prod-name-preview-3">Kit Pincel Pro</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Nome</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Kit Pincel Pro" oninput="admUpdateMkProdName(3,this.value)" placeholder="Nome do produto">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Categoria</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="Acessórios" oninput="admUpdateMkProdCat(3,this.value)" placeholder="Categoria">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Preço</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:var(--mk-pink);padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="R$ 179,90" oninput="admUpdateMkProdPrice(3,this.value)" placeholder="R$ 0,00">
+            </div>
+            <div>
+              <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:6px;">Ícone (sem foto)</label>
+              <input style="width:100%;background:rgba(232,49,122,0.03);border:none;border-bottom:1px solid rgba(232,49,122,0.2);color:#ffffff;padding:0.6rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none;" type="text" value="✨" oninput="admUpdateMkProdIcon(3,this.value)" placeholder="Emoji">
+            </div>
+          </div>
+          <label style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--mk-rose);display:block;margin-bottom:8px;">Foto do produto</label>
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <label class="adm-upload-zone mk-zone-style" style="padding:1rem 1.5rem;flex:1;min-width:160px;">
+              <input type="file" accept="image/*" onchange="admSetMkProdImg(3,this.files[0])">
+              <div class="adm-upload-icon" style="font-size:1.4rem;">📁</div>
+              <div class="adm-upload-label" style="font-size:9px;color:rgba(232,49,122,0.6);">Selecionar foto</div>
+            </label>
+            <div id="adm-mk-prod-preview-3" style="display:none;position:relative;">
+              <img id="adm-mk-prod-prev-img-3" src="" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(232,49,122,0.2);">
+              <button onclick="admRemoveMkProdImg(3)" style="position:absolute;top:-6px;right:-6px;background:var(--mk-pink);border:none;color:white;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: BANNER MAKES ── -->
+    <div class="adm-tab" id="adm-tab-mk-banner">
+      <div class="adm-main-title" style="color:var(--mk-pink);">Banner — Delux Makes</div>
+      <div class="adm-main-sub">Imagem de destaque exibida no topo da página Makes</div>
+      <div class="adm-divider"></div>
+      <label class="adm-upload-zone mk-zone-style">
+        <input type="file" accept="image/*" id="adm-inp-mk-banner"
+          onchange="admSetBanner('mk', this.files[0])">
+        <div class="adm-upload-icon">📁</div>
+        <div class="adm-upload-label" style="color:rgba(232,49,122,0.6);">Selecionar imagem</div>
+        <div class="adm-upload-hint">PNG, JPG, WEBP — Recomendado: 1400×400px</div>
+      </label>
+      <div id="adm-mk-banner-empty" class="adm-empty-hint">Nenhum banner definido.</div>
+      <div id="adm-mk-banner-preview" class="adm-banner-preview">
+        <img id="adm-mk-banner-prev-img" src="" alt="Preview">
+      </div>
+      <div id="adm-mk-banner-form" class="adm-banner-form">
+        <input class="adm-banner-inp" type="text" placeholder="Título do banner (opcional)"
+          oninput="admUpdateBannerTitle('mk', this.value)">
+        <div class="adm-banner-actions">
+          <button class="adm-btn-danger" onclick="admRemoveBanner('mk')">✕ Remover banner</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: FOTOS MAKES ── -->
+    <div class="adm-tab" id="adm-tab-mk-fotos">
+      <div class="adm-main-title" style="color:var(--mk-pink);">Galeria — Delux Makes</div>
+      <div class="adm-main-sub">Fotos exibidas na seção de galeria da página Makes</div>
+      <div class="adm-divider"></div>
+      <label class="adm-upload-zone mk-zone-style">
+        <input type="file" accept="image/*" multiple
+          onchange="admAddPhotos('mk', this.files)">
+        <div class="adm-upload-icon">📷</div>
+        <div class="adm-upload-label" style="color:rgba(232,49,122,0.6);">Adicionar fotos</div>
+        <div class="adm-upload-hint">Selecione uma ou várias imagens</div>
+      </label>
+      <div id="adm-empty-mk-fotos" class="adm-empty-hint" style="margin-top:1rem;">Nenhuma foto adicionada.</div>
+      <div class="adm-photos-grid" id="adm-grid-mk"></div>
+    </div>
+
+    <!-- ── TAB: POSTS MAKES ── -->
+    <div class="adm-tab" id="adm-tab-mk-posts">
+      <div class="adm-main-title" style="color:var(--mk-pink);">Posts — Delux Makes</div>
+      <div class="adm-main-sub">Publicações exibidas na seção de posts da página Makes</div>
+      <div class="adm-divider"></div>
+      <div class="adm-post-compose mk">
+        <input class="adm-post-inp mk" type="text" id="adm-mk-titulo" placeholder="Título do post (opcional)">
+        <textarea class="adm-post-area mk" id="adm-mk-corpo" placeholder="Conteúdo do post..."></textarea>
+        <button class="adm-btn-primary mk" onclick="admAddPost('mk')">+ Publicar post</button>
+      </div>
+      <div id="adm-empty-mk-posts" class="adm-empty-hint">Nenhum post publicado.</div>
+      <div class="adm-posts-list" id="adm-list-mk"></div>
+    </div>
+
+    <!-- ── TAB: CONFIG ── -->
+    <div class="adm-tab" id="adm-tab-config">
+      <div class="adm-main-title">Configurações</div>
+      <div class="adm-main-sub">Estatísticas e configurações do painel</div>
+      <div class="adm-divider"></div>
+      <div class="adm-cfg-section">
+        <div class="adm-cfg-title">Estatísticas gerais</div>
+        <div class="adm-stats-grid">
+          <div class="adm-stat-box">
+            <span class="adm-stat-num" id="st-by-f">0</span>
+            <span class="adm-stat-label">Fotos By</span>
+          </div>
+          <div class="adm-stat-box">
+            <span class="adm-stat-num" id="st-by-p">0</span>
+            <span class="adm-stat-label">Posts By</span>
+          </div>
+          <div class="adm-stat-box">
+            <span class="adm-stat-num" id="st-mk-f">0</span>
+            <span class="adm-stat-label">Fotos Makes</span>
+          </div>
+          <div class="adm-stat-box">
+            <span class="adm-stat-num" id="st-mk-p">0</span>
+            <span class="adm-stat-label">Posts Makes</span>
+          </div>
+        </div>
+      </div>
+      <div class="adm-cfg-section">
+        <div class="adm-cfg-title">Alterar senha</div>
+        <div class="adm-cfg-pwd-row">
+          <input class="adm-cfg-inp" type="password" id="cfg-old" placeholder="Senha atual">
+          <input class="adm-cfg-inp" type="password" id="cfg-new" placeholder="Nova senha (mín. 6 caracteres)">
+          <input class="adm-cfg-inp" type="password" id="cfg-rep" placeholder="Repetir nova senha">
+          <button class="adm-btn-primary" style="align-self:flex-start; padding:0.75rem 2rem;"
+            onclick="admChangePwd()">Alterar senha</button>
+          <div class="adm-cfg-msg" id="cfg-msg"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /adm-main -->
+</div><!-- /adm-panel -->
+
+<!-- ADMIN ACCESS BUTTON -->
+<button id="adm-trigger" onclick="admOpenLogin()" title="Acesso Administrativo"
+  style="
+    position:fixed; bottom:1.5rem; right:1.5rem;
+    z-index:800;
+    width:44px; height:44px;
+    border-radius:50%;
+    background:rgba(13,13,13,0.75);
+    border:1px solid rgba(192,200,212,0.18);
+    color:rgba(192,200,212,0.5);
+    font-size:1.1rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(12px);
+    transition:all 0.3s;
+    box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  "
+  onmouseover="this.style.borderColor='rgba(192,200,212,0.5)';this.style.color='rgba(192,200,212,0.9)';this.style.background='rgba(26,26,26,0.9)'"
+  onmouseout="this.style.borderColor='rgba(192,200,212,0.18)';this.style.color='rgba(192,200,212,0.5)';this.style.background='rgba(13,13,13,0.75)'"
+>⚙</button>
+
+<script>
+// ── STATE ──
+var _admPwdB64   = 'YWRtaW4xMjM='; // admin123
+var _admCurTab   = 'by-banner';
+var _admPhotos   = { by: [], mk: [] };
+var _admPosts    = { by: [], mk: [] };
+
+// ── NAVEGAÇÃO ──
+function enterSite(brand) {
+  var landing = document.getElementById('landing');
+  landing.classList.add('exiting');
+  setTimeout(function() {
+    landing.style.display = 'none';
+    var page = document.getElementById(brand === 'by' ? 'page-by' : 'page-makes');
+    page.classList.add('active', 'page-enter');
+    window.scrollTo(0,0);
+  }, 800);
+}
+
+function goBack() {
+  var pages = document.querySelectorAll('#page-by, #page-makes');
+  pages.forEach(function(p) { p.classList.remove('active','page-enter'); });
+  var landing = document.getElementById('landing');
+  landing.style.display = 'flex';
+  landing.classList.remove('exiting');
+  landing.style.opacity = '1';
+  landing.style.transform = '';
+  window.scrollTo(0,0);
+}
+
+// ── ADMIN TRIGGER ──
+
+function _admEncode(s) {
+  try { return btoa(unescape(encodeURIComponent(s))); }
+  catch(e) { return btoa(s); }
+}
+
+function admOpenLogin() {
+  var m = document.getElementById('adm-login-modal');
+  m.style.display = 'flex';
+  var i = document.getElementById('adm-pwd-input');
+  i.value = '';
+  document.getElementById('adm-login-err').style.display = 'none';
+  setTimeout(function(){ i.focus(); }, 80);
+}
+function admCloseLogin() {
+  document.getElementById('adm-login-modal').style.display = 'none';
+}
+function admTogglePwd() {
+  var i = document.getElementById('adm-pwd-input');
+  i.type = i.type === 'password' ? 'text' : 'password';
+}
+function admDoLogin() {
+  var pwd  = document.getElementById('adm-pwd-input').value;
+  var hash = _admEncode(pwd);
+  if (hash === _admPwdB64) {
+    admCloseLogin();
+    var p = document.getElementById('adm-panel');
+    p.style.display = 'flex';
+    admTab(_admCurTab);
+    _admUpdateStats();
+  } else {
+    document.getElementById('adm-login-err').style.display = 'block';
+    document.getElementById('adm-pwd-input').value = '';
+    document.getElementById('adm-pwd-input').focus();
+  }
+}
+function admLogout() {
+  document.getElementById('adm-panel').style.display = 'none';
+}
+
+function admTab(name) {
+  _admCurTab = name;
+  document.querySelectorAll('.adm-tab').forEach(function(t){ t.style.display='none'; });
+  document.querySelectorAll('.adm-sb-btn').forEach(function(b){ b.classList.remove('active'); });
+  var tab = document.getElementById('adm-tab-' + name);
+  var btn = document.getElementById('sb-' + name);
+  if (tab) tab.style.display = 'block';
+  if (btn) btn.classList.add('active');
+  if (name === 'config') _admUpdateStats();
+}
+
+// ── COLEÇÕES BY ──
+function admUpdateColName(idx, val) {
+  var el = document.getElementById('by-col-name-' + idx);
+  var pr = document.getElementById('adm-col-name-preview-' + idx);
+  if (el) el.textContent = val;
+  if (pr) pr.textContent = val;
+}
+function admUpdateColIcon(idx, val) {
+  var el = document.getElementById('by-col-icon-' + idx);
+  if (el) el.textContent = val;
+}
+function admUpdateColDesc(idx, val) {
+  var el = document.getElementById('by-col-desc-' + idx);
+  if (el) el.textContent = val;
+}
+function admSetColImg(idx, file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var src = e.target.result;
+    // Mostrar no card público
+    var imgWrap = document.getElementById('by-col-img-wrap-' + idx);
+    var img     = document.getElementById('by-col-img-' + idx);
+    var icon    = document.getElementById('by-col-icon-' + idx);
+    if (imgWrap && img) {
+      img.src = src;
+      imgWrap.style.display = 'block';
+    }
+    if (icon) icon.style.display = 'none';
+    // Preview no admin
+    var prev    = document.getElementById('adm-col-img-preview-' + idx);
+    var prevImg = document.getElementById('adm-col-prev-img-' + idx);
+    if (prev && prevImg) {
+      prevImg.src = src;
+      prev.style.display = 'block';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+function admRemoveColImg(idx) {
+  var imgWrap = document.getElementById('by-col-img-wrap-' + idx);
+  var img     = document.getElementById('by-col-img-' + idx);
+  var icon    = document.getElementById('by-col-icon-' + idx);
+  var prev    = document.getElementById('adm-col-img-preview-' + idx);
+  var prevImg = document.getElementById('adm-col-prev-img-' + idx);
+  if (imgWrap) imgWrap.style.display = 'none';
+  if (img)     img.src = '';
+  if (icon)    icon.style.display = '';
+  if (prev)    prev.style.display = 'none';
+  if (prevImg) prevImg.src = '';
+}
+
+// ── PRODUTOS MAKES ──
+function admUpdateMkProdName(idx, val) {
+  var el = document.getElementById('mk-prod-name-' + idx);
+  var pr = document.getElementById('adm-mk-prod-name-preview-' + idx);
+  if (el) el.textContent = val;
+  if (pr) pr.textContent = val;
+}
+function admUpdateMkProdCat(idx, val) {
+  var el = document.getElementById('mk-prod-cat-' + idx);
+  if (el) el.textContent = val;
+}
+function admUpdateMkProdPrice(idx, val) {
+  var el = document.getElementById('mk-prod-price-' + idx);
+  if (el) el.textContent = val;
+}
+function admUpdateMkProdIcon(idx, val) {
+  var el = document.getElementById('mk-prod-icon-' + idx);
+  if (el) el.textContent = val;
+}
+function admSetMkProdImg(idx, file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var src = e.target.result;
+    var iconEl    = document.getElementById('mk-prod-icon-' + idx);
+    var imgWrap   = document.getElementById('mk-prod-img-wrap-' + idx);
+    var img       = document.getElementById('mk-prod-img-' + idx);
+    var prev      = document.getElementById('adm-mk-prod-preview-' + idx);
+    var prevImg   = document.getElementById('adm-mk-prod-prev-img-' + idx);
+    if (iconEl)  iconEl.style.display  = 'none';
+    if (imgWrap) { imgWrap.style.display = 'flex'; imgWrap.style.alignItems = 'center'; imgWrap.style.justifyContent = 'center'; }
+    if (img)     img.src = src;
+    if (prev)    prev.style.display = 'block';
+    if (prevImg) prevImg.src = src;
+  };
+  reader.readAsDataURL(file);
+}
+function admRemoveMkProdImg(idx) {
+  var iconEl  = document.getElementById('mk-prod-icon-' + idx);
+  var imgWrap = document.getElementById('mk-prod-img-wrap-' + idx);
+  var img     = document.getElementById('mk-prod-img-' + idx);
+  var prev    = document.getElementById('adm-mk-prod-preview-' + idx);
+  var prevImg = document.getElementById('adm-mk-prod-prev-img-' + idx);
+  if (iconEl)  iconEl.style.display  = '';
+  if (imgWrap) imgWrap.style.display = 'none';
+  if (img)     img.src = '';
+  if (prev)    prev.style.display = 'none';
+  if (prevImg) prevImg.src = '';
+}
+
+// ── BANNER ──
+function admSetBanner(brand, file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var src = e.target.result;
+    var prev = document.getElementById('adm-' + brand + '-banner-preview');
+    var prevImg = document.getElementById('adm-' + brand + '-banner-prev-img');
+    var form = document.getElementById('adm-' + brand + '-banner-form');
+    var empty = document.getElementById('adm-' + brand + '-banner-empty');
+    prevImg.src = src;
+    prev.style.display = 'block';
+    form.style.display = 'flex';
+    if (empty) empty.style.display = 'none';
+    var wrap = document.getElementById(brand + '-banner-wrap');
+    var img  = document.getElementById(brand + '-banner-img');
+    if (wrap && img) {
+      img.src = src;
+      wrap.style.display = 'block';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+function admUpdateBannerTitle(brand, title) {
+  var titleEl = document.getElementById(brand + '-banner-title');
+  if (titleEl) {
+    titleEl.textContent = title;
+    titleEl.style.display = title ? 'block' : 'none';
+  }
+}
+function admRemoveBanner(brand) {
+  var wrap  = document.getElementById(brand + '-banner-wrap');
+  var prev  = document.getElementById('adm-' + brand + '-banner-preview');
+  var form  = document.getElementById('adm-' + brand + '-banner-form');
+  var empty = document.getElementById('adm-' + brand + '-banner-empty');
+  var inp   = document.getElementById('adm-inp-' + brand + '-banner');
+  if (wrap) wrap.style.display = 'none';
+  if (prev) prev.style.display = 'none';
+  if (form) form.style.display = 'none';
+  if (empty) empty.style.display = 'block';
+  if (inp)  inp.value = '';
+}
+
+// ── HERO SLIDESHOW BY ──
+var _byHeroImgs  = [];
+var _byHeroIdx   = 0;
+var _byHeroTimer = null;
+
+function admAddByHeroImgs(files) {
+  Array.from(files).forEach(function(file) {
+    if (!file.type.startsWith('image/')) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var src = e.target.result;
+      var id  = 'byhero' + Date.now() + Math.random().toString(36).slice(2,5);
+      _byHeroImgs.push({ id: id, src: src });
+
+      var grid    = document.getElementById('adm-grid-by-hero');
+      var emptyEl = document.getElementById('adm-by-hero-empty');
+      if (emptyEl) emptyEl.style.display = 'none';
+      var card = document.createElement('div');
+      card.className = 'adm-photo'; card.id = 'adm-bh-' + id;
+      card.innerHTML =
+        '<div class="adm-photo-img">'
+        + '<img src="' + src + '" alt="hero by">'
+        + '<button class="adm-photo-x" onclick="admDelByHeroImg(\'' + id + '\')" title="Remover">✕</button>'
+        + '</div>';
+      grid.appendChild(card);
+      _byHeroRebuild();
+    };
+    reader.readAsDataURL(file);
+  });
+  var inp = document.getElementById('adm-inp-by-hero');
+  if (inp) inp.value = '';
+}
+
+function admDelByHeroImg(id) {
+  _byHeroImgs = _byHeroImgs.filter(function(i){ return i.id !== id; });
+  var el = document.getElementById('adm-bh-' + id);
+  if (el) { el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(function(){ el.remove(); }, 200); }
+  if (_byHeroImgs.length === 0) {
+    document.getElementById('adm-by-hero-empty').style.display = 'block';
+  }
+  _byHeroRebuild();
+}
+
+function _byHeroRebuild() {
+  var placeholder = document.getElementById('by-hero-placeholder');
+  var slideshow   = document.getElementById('by-hero-slideshow');
+  var dots        = document.getElementById('by-slide-dots');
+  var blob        = document.getElementById('by-hero-blob');
+
+  if (_byHeroTimer) { clearInterval(_byHeroTimer); _byHeroTimer = null; }
+
+  if (_byHeroImgs.length === 0) {
+    placeholder.style.display = 'flex';
+    slideshow.style.display   = 'none';
+    dots.classList.remove('visible');
+    blob.classList.remove('visible');
+    return;
+  }
+
+  placeholder.style.display = 'none';
+  slideshow.style.display   = 'block';
+  blob.classList.add('visible');
+
+  slideshow.innerHTML = '';
+  dots.innerHTML = '';
+
+  _byHeroImgs.forEach(function(img, i) {
+    var el = document.createElement('img');
+    el.className = 'by-slide' + (i === 0 ? ' active' : '');
+    el.src = img.src;
+    el.alt = 'Delux By';
+    el.id  = 'byslide-' + img.id;
+    slideshow.appendChild(el);
+
+    var dot = document.createElement('div');
+    dot.className = 'by-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = (function(idx){ return function(){ _byHeroGoTo(idx); }; })(i);
+    dots.appendChild(dot);
+  });
+
+  if (_byHeroImgs.length > 1) {
+    dots.classList.add('visible');
+  } else {
+    dots.classList.remove('visible');
+  }
+
+  _byHeroIdx = 0;
+
+  if (_byHeroImgs.length > 1) {
+    _byHeroTimer = setInterval(function() {
+      var next = (_byHeroIdx + 1) % _byHeroImgs.length;
+      _byHeroGoTo(next);
+    }, 2500);
+  }
+}
+
+function _byHeroGoTo(next) {
+  if (_byHeroImgs.length === 0) return;
+  var slides  = document.querySelectorAll('.by-slide');
+  var allDots = document.querySelectorAll('.by-dot');
+  var current = _byHeroIdx;
+  if (next === current) return;
+
+  if (slides[current]) {
+    slides[current].classList.remove('active');
+    slides[current].classList.add('leaving');
+    setTimeout(function() {
+      if (slides[current]) slides[current].classList.remove('leaving');
+    }, 780);
+  }
+  if (slides[next]) slides[next].classList.add('active');
+
+  allDots.forEach(function(d){ d.classList.remove('active'); });
+  if (allDots[next]) allDots[next].classList.add('active');
+
+  _byHeroIdx = next;
+}
+
+// ── HERO SLIDESHOW MAKES ──
+var _heroImgs   = [];   // [{id, src}]
+var _heroIdx    = 0;    // slide atual
+var _heroTimer  = null; // auto-play interval
+
+function admAddHeroImgs(files) {
+  Array.from(files).forEach(function(file) {
+    if (!file.type.startsWith('image/')) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var src = e.target.result;
+      var id  = 'hero' + Date.now() + Math.random().toString(36).slice(2,5);
+      _heroImgs.push({ id: id, src: src });
+
+      // Admin grid
+      var grid    = document.getElementById('adm-grid-mk-hero');
+      var emptyEl = document.getElementById('adm-mk-hero-empty');
+      if (emptyEl) emptyEl.style.display = 'none';
+      var card = document.createElement('div');
+      card.className = 'adm-photo'; card.id = 'adm-h-' + id;
+      card.innerHTML =
+        '<div class="adm-photo-img">'
+        + '<img src="' + src + '" alt="hero">'
+        + '<button class="adm-photo-x" onclick="admDelHeroImg(\'' + id + '\')" title="Remover">✕</button>'
+        + '</div>';
+      grid.appendChild(card);
+
+      // Montar/atualizar slideshow público
+      _heroRebuild();
+    };
+    reader.readAsDataURL(file);
+  });
+  // reset file input so same files can be re-added
+  var inp = document.getElementById('adm-inp-mk-hero');
+  if (inp) inp.value = '';
+}
+
+function admDelHeroImg(id) {
+  _heroImgs = _heroImgs.filter(function(i){ return i.id !== id; });
+  var el = document.getElementById('adm-h-' + id);
+  if (el) { el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(function(){ el.remove(); }, 200); }
+  if (_heroImgs.length === 0) {
+    document.getElementById('adm-mk-hero-empty').style.display = 'block';
+  }
+  _heroRebuild();
+}
+
+function _heroRebuild() {
+  var placeholder = document.getElementById('mk-hero-placeholder');
+  var slideshow   = document.getElementById('mk-hero-slideshow');
+  var dots        = document.getElementById('mk-slide-dots');
+  var blob        = document.getElementById('mk-hero-blob');
+
+  // Parar auto-play anterior
+  if (_heroTimer) { clearInterval(_heroTimer); _heroTimer = null; }
+
+  if (_heroImgs.length === 0) {
+    placeholder.style.display = 'flex';
+    slideshow.style.display   = 'none';
+    dots.classList.remove('visible');
+    blob.classList.remove('visible');
+    return;
+  }
+
+  // Mostrar slideshow
+  placeholder.style.display = 'none';
+  slideshow.style.display   = 'block';
+  blob.classList.add('visible');
+
+  // Limpar slides e dots anteriores
+  slideshow.innerHTML = '';
+  dots.innerHTML = '';
+
+  // Criar slides
+  _heroImgs.forEach(function(img, i) {
+    var el = document.createElement('img');
+    el.className = 'mk-slide' + (i === 0 ? ' active' : '');
+    el.src = img.src;
+    el.alt = 'Delux Makes';
+    el.id  = 'slide-' + img.id;
+    slideshow.appendChild(el);
+
+    var dot = document.createElement('div');
+    dot.className = 'mk-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = (function(idx){ return function(){ _heroGoTo(idx); }; })(i);
+    dots.appendChild(dot);
+  });
+
+  if (_heroImgs.length > 1) {
+    dots.classList.add('visible');
+  } else {
+    dots.classList.remove('visible');
+  }
+
+  _heroIdx = 0;
+
+  // Auto-play se mais de 1 imagem
+  if (_heroImgs.length > 1) {
+    _heroTimer = setInterval(function() {
+      var next = (_heroIdx + 1) % _heroImgs.length;
+      _heroGoTo(next);
+    }, 2500);
+  }
+}
+
+function _heroGoTo(next) {
+  if (_heroImgs.length === 0) return;
+  var slides = document.querySelectorAll('.mk-slide');
+  var allDots = document.querySelectorAll('.mk-dot');
+  var current = _heroIdx;
+
+  if (next === current) return;
+
+  // Marcar atual como "saindo"
+  if (slides[current]) {
+    slides[current].classList.remove('active');
+    slides[current].classList.add('leaving');
+    setTimeout(function() {
+      if (slides[current]) slides[current].classList.remove('leaving');
+    }, 780);
+  }
+
+  // Marcar próximo como "ativo" (entra da direita)
+  if (slides[next]) {
+    slides[next].classList.add('active');
+  }
+
+  // Dots
+  allDots.forEach(function(d){ d.classList.remove('active'); });
+  if (allDots[next]) allDots[next].classList.add('active');
+
+  _heroIdx = next;
+}
+
+// ── FOTOS ──
+function admAddPhotos(brand, files) {
+  Array.from(files).forEach(function(file) {
+    if (!file.type.startsWith('image/')) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var id  = brand + Date.now() + Math.random().toString(36).slice(2,6);
+      var src = e.target.result;
+      _admPhotos[brand].unshift({ id: id, src: src, titulo: '' });
+      var grid = document.getElementById('adm-grid-' + brand);
+      var emEl = document.getElementById('adm-empty-' + brand + '-fotos');
+      if (emEl) emEl.style.display = 'none';
+      var card = document.createElement('div');
+      card.className = 'adm-photo'; card.id = 'adm-' + id;
+      card.innerHTML =
+        '<div class="adm-photo-img">'
+        + '<img src="' + src + '" alt="foto">'
+        + '<button class="adm-photo-x" onclick="admDelPhoto(\'' + brand + '\',\'' + id + '\')" title="Remover">✕</button>'
+        + '</div>'
+        + '<input class="adm-photo-title-inp" type="text" placeholder="Título da foto..."'
+        + ' oninput="admUpdatePhotoTitle(\'' + brand + '\',\'' + id + '\',this.value)">';
+      grid.insertBefore(card, grid.firstChild);
+      _pubAddPhoto(brand, id, src, '');
+      _admUpdateStats();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function admUpdatePhotoTitle(brand, id, titulo) {
+  var photo = _admPhotos[brand].find(function(p){ return p.id === id; });
+  if (photo) photo.titulo = titulo;
+  var pubTitle = document.getElementById('pub-title-' + id);
+  if (pubTitle) pubTitle.textContent = titulo;
+}
+function admDelPhoto(brand, id) {
+  _admPhotos[brand] = _admPhotos[brand].filter(function(p){ return p.id !== id; });
+  ['adm-','pub-'].forEach(function(pfx) {
+    var el = document.getElementById(pfx + id);
+    if (el) { el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(function(){ el.remove(); }, 200); }
+  });
+  setTimeout(function() {
+    var g = document.getElementById('adm-grid-' + brand);
+    var e = document.getElementById('adm-empty-' + brand + '-fotos');
+    if (e && g && g.children.length === 0) e.style.display = 'block';
+  }, 250);
+  _admUpdateStats();
+}
+
+// ── POSTS ──
+function admAddPost(brand) {
+  var tituloEl = document.getElementById('adm-' + brand + '-titulo');
+  var corpoEl  = document.getElementById('adm-' + brand + '-corpo');
+  var corpo = corpoEl.value.trim();
+  if (!corpo) return;
+  var titulo = tituloEl.value.trim();
+  var id  = brand + 'p' + Date.now();
+  var now = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+  var post = { id: id, titulo: titulo, corpo: corpo, date: now };
+  _admPosts[brand].unshift(post);
+  var list = document.getElementById('adm-list-' + brand);
+  var emEl = document.getElementById('adm-empty-' + brand + '-posts');
+  if (emEl) emEl.style.display = 'none';
+  var item = document.createElement('div');
+  item.className = 'adm-post-item' + (brand==='mk'?' mk':''); item.id = 'adm-' + id;
+  item.innerHTML = '<div style="flex:1"><div class="adm-post-dt">' + now + '</div>'
+    + (titulo ? '<div class="adm-post-ttl">' + titulo + '</div>' : '')
+    + '<div class="adm-post-body">' + corpo.replace(/\n/g,'<br>') + '</div></div>'
+    + '<button class="adm-post-del" onclick="admDelPost(\'' + brand + '\',\'' + id + '\')">✕ Remover</button>';
+  list.insertBefore(item, list.firstChild);
+  _pubAddPost(brand, post);
+  tituloEl.value = ''; corpoEl.value = '';
+  _admUpdateStats();
+
+  // Mostrar seção de posts no site
+  var postsSec = document.getElementById(brand === 'by' ? 'by-posts-section' : 'mk-posts-section');
+  if (postsSec) postsSec.style.display = 'block';
+}
+function admDelPost(brand, id) {
+  _admPosts[brand] = _admPosts[brand].filter(function(p){ return p.id !== id; });
+  ['adm-','pub-'].forEach(function(pfx) {
+    var el = document.getElementById(pfx + id);
+    if (el) { el.style.opacity='0'; el.style.transform='translateX(14px)'; el.style.transition='all .2s'; setTimeout(function(){ el.remove(); }, 200); }
+  });
+  setTimeout(function() {
+    var l = document.getElementById('adm-list-' + brand);
+    var e = document.getElementById('adm-empty-' + brand + '-posts');
+    if (e && l && l.children.length === 0) {
+      e.style.display = 'block';
+      var postsSec = document.getElementById(brand === 'by' ? 'by-posts-section' : 'mk-posts-section');
+      if (postsSec) postsSec.style.display = 'none';
+    }
+  }, 250);
+  _admUpdateStats();
+}
+
+// ── GALERIAS PÚBLICAS ──
+function _pubAddPhoto(brand, id, src, titulo) {
+  var gridId = brand === 'by' ? 'by-photos-grid' : 'mk-photos-grid';
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+
+  // Mostrar seção de galeria
+  var galSec = document.getElementById(brand === 'by' ? 'by-gallery-section' : 'mk-gallery-section');
+  if (galSec) galSec.style.display = 'block';
+
+  var card = document.createElement('div');
+  if (brand === 'by') {
+    card.className = 'pub-photo'; card.id = 'pub-' + id;
+    card.innerHTML = '<div class="pub-photo-img"><img src="' + src + '" alt="Foto Delux By"></div>'
+      + '<div class="pub-photo-title" id="pub-title-' + id + '">' + (titulo||'') + '</div>';
+  } else {
+    card.className = 'mk-pub-photo'; card.id = 'pub-' + id;
+    card.innerHTML = '<img src="' + src + '" alt="Foto Delux Makes">'
+      + '<div class="mk-pub-photo-title" id="pub-title-' + id + '">' + (titulo||'') + '</div>';
+  }
+  grid.insertBefore(card, grid.firstChild);
+}
+function _pubAddPost(brand, post) {
+  var listId = brand === 'by' ? 'by-posts-list' : 'mk-posts-list';
+  var list = document.getElementById(listId);
+  if (!list) return;
+  var card = document.createElement('div');
+  card.className = 'pub-post'; card.id = 'pub-' + post.id;
+  card.innerHTML = '<div class="pub-post-dt">' + post.date + '</div>'
+    + (post.titulo ? '<div class="pub-post-ttl">' + post.titulo + '</div>' : '')
+    + '<div class="pub-post-body">' + post.corpo.replace(/\n/g,'<br>') + '</div>';
+  list.insertBefore(card, list.firstChild);
+}
+
+// ── ALTERAR SENHA ──
+function admChangePwd() {
+  var oldV = document.getElementById('cfg-old').value;
+  var newV = document.getElementById('cfg-new').value;
+  var repV = document.getElementById('cfg-rep').value;
+  var msg  = document.getElementById('cfg-msg');
+  function showMsg(txt, ok) {
+    msg.style.display='block'; msg.textContent=txt;
+    msg.style.color=ok?'#4caf50':'#ff7070';
+    msg.style.background=ok?'rgba(76,175,80,.1)':'rgba(255,80,80,.1)';
+    msg.style.border='1px solid '+(ok?'rgba(76,175,80,.3)':'rgba(255,80,80,.25)');
+    setTimeout(function(){ msg.style.display='none'; }, 4000);
+  }
+  if (_admEncode(oldV) !== _admPwdB64) { showMsg('Senha atual incorreta.', false); return; }
+  if (!newV || newV.length < 6)        { showMsg('Nova senha: mínimo 6 caracteres.', false); return; }
+  if (newV !== repV)                   { showMsg('As senhas não coincidem.', false); return; }
+  _admPwdB64 = _admEncode(newV);
+  document.getElementById('cfg-old').value = '';
+  document.getElementById('cfg-new').value = '';
+  document.getElementById('cfg-rep').value = '';
+  showMsg('✓ Senha alterada com sucesso!', true);
+}
+
+function _admUpdateStats() {
+  var s=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  s('st-by-f',_admPhotos.by.length); s('st-by-p',_admPosts.by.length);
+  s('st-mk-f',_admPhotos.mk.length); s('st-mk-p',_admPosts.mk.length);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  admTab('by-banner');
+});
+</script>
+</body>
+</html>
