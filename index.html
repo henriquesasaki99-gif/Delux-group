@@ -3315,7 +3315,7 @@ function admTab(name) {
 var CLOUDINARY_CLOUD_NAME = 'dmwla4uia';
 var CLOUDINARY_UPLOAD_PRESET = 'bgxns4k4';
 
-function admUploadToCloudinary(file) {
+function admUploadToCloudinary(file, tag) {
   if (!file) return Promise.reject(new Error('Nenhum arquivo selecionado.'));
   if (!file.type || !file.type.startsWith('image/')) {
     return Promise.reject(new Error('Selecione apenas arquivos de imagem.'));
@@ -3324,6 +3324,7 @@ function admUploadToCloudinary(file) {
   var formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  if (tag) formData.append('tags', tag);
 
   return fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', {
     method: 'POST',
@@ -3361,7 +3362,7 @@ function admUpdateColDesc(idx, val) {
 }
 function admSetColImg(idx, file) {
   if (!file) return;
-  admUploadToCloudinary(file).then(function(src) {
+  admUploadToCloudinary(file, 'delux_by_collection').then(function(src) {
     // Mostrar no card público
     var imgWrap = document.getElementById('by-col-img-wrap-' + idx);
     var img     = document.getElementById('by-col-img-' + idx);
@@ -3415,7 +3416,7 @@ function admUpdateMkProdIcon(idx, val) {
 }
 function admSetMkProdImg(idx, file) {
   if (!file) return;
-  admUploadToCloudinary(file).then(function(src) {
+  admUploadToCloudinary(file, 'delux_mk_products').then(function(src) {
     var iconEl    = document.getElementById('mk-prod-icon-' + idx);
     var imgWrap   = document.getElementById('mk-prod-img-wrap-' + idx);
     var img       = document.getElementById('mk-prod-img-' + idx);
@@ -3445,7 +3446,7 @@ function admRemoveMkProdImg(idx) {
 // ── BANNER ──
 function admSetBanner(brand, file) {
   if (!file) return;
-  admUploadToCloudinary(file).then(function(src) {
+  admUploadToCloudinary(file, 'delux_' + brand + '_banner').then(function(src) {
     var prev = document.getElementById('adm-' + brand + '-banner-preview');
     var prevImg = document.getElementById('adm-' + brand + '-banner-prev-img');
     var form = document.getElementById('adm-' + brand + '-banner-form');
@@ -3491,7 +3492,7 @@ var _byHeroTimer = null;
 function admAddByHeroImgs(files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    admUploadToCloudinary(file).then(function(src) {
+    admUploadToCloudinary(file, 'delux_by_hero').then(function(src) {
       var id  = 'byhero' + Date.now() + Math.random().toString(36).slice(2,5);
       _byHeroImgs.push({ id: id, src: src });
 
@@ -3607,7 +3608,7 @@ var _heroTimer  = null; // auto-play interval
 function admAddHeroImgs(files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    admUploadToCloudinary(file).then(function(src) {
+    admUploadToCloudinary(file, 'delux_mk_hero').then(function(src) {
       var id  = 'hero' + Date.now() + Math.random().toString(36).slice(2,5);
       _heroImgs.push({ id: id, src: src });
 
@@ -3735,7 +3736,7 @@ function _heroGoTo(next) {
 function admAddPhotos(brand, files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    admUploadToCloudinary(file).then(function(src) {
+    admUploadToCloudinary(file, 'delux_' + brand + '_photos').then(function(src) {
       var id  = brand + Date.now() + Math.random().toString(36).slice(2,6);
       _admPhotos[brand].unshift({ id: id, src: src, titulo: '' });
       var grid = document.getElementById('adm-grid-' + brand);
@@ -3856,6 +3857,90 @@ function _pubAddPost(brand, post) {
     + (post.titulo ? '<div class="pub-post-ttl">' + post.titulo + '</div>' : '')
     + '<div class="pub-post-body">' + post.corpo.replace(/\n/g,'<br>') + '</div>';
   list.insertBefore(card, list.firstChild);
+}
+
+
+
+// ── CARREGAMENTO GLOBAL PELO CLOUDINARY ──
+// GitHub Pages não possui banco de dados. Para todos os dispositivos enxergarem as imagens,
+// cada upload recebe uma tag no Cloudinary e o site busca a lista pública dessa tag.
+function _cloudinaryUrlFromResource(r) {
+  if (r.secure_url) return r.secure_url;
+  if (!r.public_id || !r.format) return '';
+  var v = r.version ? ('v' + r.version + '/') : '';
+  return 'https://res.cloudinary.com/' + CLOUDINARY_CLOUD_NAME + '/image/upload/' + v + r.public_id + '.' + r.format;
+}
+function _loadCloudinaryTag(tag) {
+  return fetch('https://res.cloudinary.com/' + CLOUDINARY_CLOUD_NAME + '/image/list/' + tag + '.json?cb=' + Date.now())
+    .then(function(r) {
+      if (!r.ok) throw new Error('Lista Cloudinary não liberada para a tag: ' + tag);
+      return r.json();
+    })
+    .then(function(data) {
+      var resources = data.resources || [];
+      resources.sort(function(a,b) {
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+      return resources.map(function(r) {
+        return {
+          id: (r.public_id || '').replace(/[^a-zA-Z0-9_-]/g, ''),
+          src: _cloudinaryUrlFromResource(r)
+        };
+      }).filter(function(x){ return !!x.src; });
+    });
+}
+function _cloudAddByHero(item) {
+  if (_byHeroImgs.some(function(i){ return i.src === item.src; })) return;
+  var id = item.id || ('byhero' + Date.now());
+  _byHeroImgs.push({ id: id, src: item.src });
+  var grid = document.getElementById('adm-grid-by-hero');
+  var emptyEl = document.getElementById('adm-by-hero-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (grid && !document.getElementById('adm-bh-' + id)) {
+    var card = document.createElement('div');
+    card.className = 'adm-photo'; card.id = 'adm-bh-' + id;
+    card.innerHTML = '<div class="adm-photo-img"><img src="' + item.src + '" alt="hero by"></div>';
+    grid.appendChild(card);
+  }
+}
+function _cloudAddMkHero(item) {
+  if (_heroImgs.some(function(i){ return i.src === item.src; })) return;
+  var id = item.id || ('hero' + Date.now());
+  _heroImgs.push({ id: id, src: item.src });
+  var grid = document.getElementById('adm-grid-mk-hero');
+  var emptyEl = document.getElementById('adm-mk-hero-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (grid && !document.getElementById('adm-h-' + id)) {
+    var card = document.createElement('div');
+    card.className = 'adm-photo'; card.id = 'adm-h-' + id;
+    card.innerHTML = '<div class="adm-photo-img"><img src="' + item.src + '" alt="hero makes"></div>';
+    grid.appendChild(card);
+  }
+}
+function _cloudAddPhoto(brand, item) {
+  if (_admPhotos[brand].some(function(p){ return p.src === item.src; })) return;
+  var id = item.id || (brand + Date.now());
+  var p = { id: id, src: item.src, titulo: '' };
+  _admPhotos[brand].unshift(p);
+  var grid = document.getElementById('adm-grid-' + brand);
+  var em = document.getElementById('adm-empty-' + brand + '-fotos');
+  if (em) em.style.display = 'none';
+  if (grid && !document.getElementById('adm-' + id)) {
+    var card = document.createElement('div');
+    card.className = 'adm-photo'; card.id = 'adm-' + id;
+    card.innerHTML = '<div class="adm-photo-img"><img src="' + item.src + '" alt="foto"></div>';
+    grid.insertBefore(card, grid.firstChild);
+  }
+  _pubAddPhoto(brand, id, item.src, '');
+}
+function _loadCloudinaryPublicImages() {
+  Promise.allSettled([
+    _loadCloudinaryTag('delux_by_hero').then(function(items){ items.reverse().forEach(_cloudAddByHero); _byHeroRebuild(); }),
+    _loadCloudinaryTag('delux_mk_hero').then(function(items){ items.reverse().forEach(_cloudAddMkHero); _heroRebuild(); }),
+    _loadCloudinaryTag('delux_by_photos').then(function(items){ items.forEach(function(i){ _cloudAddPhoto('by', i); }); }),
+    _loadCloudinaryTag('delux_mk_photos').then(function(items){ items.forEach(function(i){ _cloudAddPhoto('mk', i); }); })
+  ]).then(function(){ _admUpdateStats(); })
+    .catch(function(e){ console.warn('Cloudinary public load:', e); });
 }
 
 // ── ALTERAR SENHA ──
@@ -4183,6 +4268,7 @@ function admClearAll() {
 
 document.addEventListener('DOMContentLoaded', function() {
   _load();
+  _loadCloudinaryPublicImages();
   admTab('by-banner');
 
   // Adicionar botão "Limpar tudo" na aba config
@@ -4191,7 +4277,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var div = document.createElement('div');
     div.style.cssText = 'margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(192,200,212,0.07);';
     div.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--by-silver-bright);margin-bottom:0.8rem;">Dados salvos</div>'
-      + '<p style="font-size:11px;color:var(--by-silver-dim);margin-bottom:1rem;letter-spacing:0.03em;">Todas as configurações são salvas automaticamente no navegador (localStorage). Para limpar tudo e começar do zero:</p>'
+      + '<p style="font-size:11px;color:var(--by-silver-dim);margin-bottom:1rem;letter-spacing:0.03em;">As imagens são carregadas pelo Cloudinary para aparecerem em computador e celular. Algumas configurações continuam salvas neste navegador. Para limpar tudo e começar do zero:</p>'
       + '<button class="adm-btn-danger" style="padding:0.6rem 1.4rem;" onclick="admClearAll()">🗑 Apagar todos os dados</button>';
     cfgSection.appendChild(div);
   }
