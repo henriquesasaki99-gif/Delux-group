@@ -4283,5 +4283,115 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg",
+  authDomain: "delux-group.firebaseapp.com",
+  projectId: "delux-group",
+  storageBucket: "delux-group.firebasestorage.app",
+  messagingSenderId: "971726312316",
+  appId: "1:971726312316:web:ed515078f8aa4932018af9",
+  measurementId: "G-ED9Q04M7NC"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.uploadImagemFirebase = async function(file, tipo = 'mk') {
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    formData.append('upload_preset', 'bgxns4k4');
+
+    const response = await fetch(
+      'https://api.cloudinary.com/v1_1/dmwla4uia/image/upload',
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
+
+    const data = await response.json();
+
+    const imageUrl = data.secure_url;
+
+    await addDoc(collection(db, 'fotos'), {
+      url: imageUrl,
+      tipo: tipo,
+      createdAt: Date.now()
+    });
+
+    carregarFotosFirebase();
+
+    alert('Imagem salva com sucesso!');
+
+  } catch (e) {
+
+    console.error(e);
+
+    alert('Erro ao salvar imagem');
+
+  }
+
+}
+
+async function carregarFotosFirebase() {
+
+  const mkContainer = document.querySelector('.mk-pub-photos-grid');
+  const byContainer = document.querySelector('.pub-photos-grid');
+
+  if (mkContainer) mkContainer.innerHTML = '';
+  if (byContainer) byContainer.innerHTML = '';
+
+  const q = query(
+    collection(db, 'fotos'),
+    orderBy('createdAt', 'desc')
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach((doc) => {
+
+    const foto = doc.data();
+
+    const card = `
+      <div class="${foto.tipo === 'mk' ? 'mk-pub-photo' : 'pub-photo'}">
+        <img src="${foto.url}" alt="foto">
+      </div>
+    `;
+
+    if (foto.tipo === 'mk' && mkContainer) {
+      mkContainer.innerHTML += card;
+    }
+
+    if (foto.tipo === 'by' && byContainer) {
+      byContainer.innerHTML += card;
+    }
+
+  });
+
+}
+
+carregarFotosFirebase();
+
+</script>
+
 </body>
 </html>
