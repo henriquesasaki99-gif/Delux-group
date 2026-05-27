@@ -3156,6 +3156,42 @@ function admTab(name) {
   if (name === 'config') _admUpdateStats();
 }
 
+
+// ── CLOUDINARY UPLOAD ──
+// As imagens agora são enviadas para o Cloudinary e o site salva apenas a URL.
+// Isso evita perder as imagens no GitHub Pages e evita estourar o limite do localStorage.
+var CLOUDINARY_CLOUD_NAME = 'dmwla4uia';
+var CLOUDINARY_UPLOAD_PRESET = 'bgxns4k4';
+
+function admUploadToCloudinary(file) {
+  if (!file) return Promise.reject(new Error('Nenhum arquivo selecionado.'));
+  if (!file.type || !file.type.startsWith('image/')) {
+    return Promise.reject(new Error('Selecione apenas arquivos de imagem.'));
+  }
+
+  var formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+  return fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', {
+    method: 'POST',
+    body: formData
+  })
+  .then(function(resposta) { return resposta.json(); })
+  .then(function(dados) {
+    if (!dados || !dados.secure_url) {
+      console.error('Erro Cloudinary:', dados);
+      throw new Error('Não foi possível salvar a imagem no Cloudinary. Verifique o Upload Preset.');
+    }
+    return dados.secure_url;
+  });
+}
+
+function admUploadErro(err) {
+  console.error(err);
+  alert('Não foi possível salvar a imagem. Verifique sua internet, Cloud Name e Upload Preset do Cloudinary.');
+}
+
 // ── COLEÇÕES BY ──
 function admUpdateColName(idx, val) {
   var el = document.getElementById('by-col-name-' + idx);
@@ -3173,9 +3209,7 @@ function admUpdateColDesc(idx, val) {
 }
 function admSetColImg(idx, file) {
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var src = e.target.result;
+  admUploadToCloudinary(file).then(function(src) {
     // Mostrar no card público
     var imgWrap = document.getElementById('by-col-img-wrap-' + idx);
     var img     = document.getElementById('by-col-img-' + idx);
@@ -3192,8 +3226,8 @@ function admSetColImg(idx, file) {
       prevImg.src = src;
       prev.style.display = 'block';
     }
-  };
-  reader.readAsDataURL(file);
+    setTimeout(_save, 100);
+  }).catch(admUploadErro);
 }
 function admRemoveColImg(idx) {
   var imgWrap = document.getElementById('by-col-img-wrap-' + idx);
@@ -3229,9 +3263,7 @@ function admUpdateMkProdIcon(idx, val) {
 }
 function admSetMkProdImg(idx, file) {
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var src = e.target.result;
+  admUploadToCloudinary(file).then(function(src) {
     var iconEl    = document.getElementById('mk-prod-icon-' + idx);
     var imgWrap   = document.getElementById('mk-prod-img-wrap-' + idx);
     var img       = document.getElementById('mk-prod-img-' + idx);
@@ -3242,8 +3274,8 @@ function admSetMkProdImg(idx, file) {
     if (img)     img.src = src;
     if (prev)    prev.style.display = 'block';
     if (prevImg) prevImg.src = src;
-  };
-  reader.readAsDataURL(file);
+    setTimeout(_save, 100);
+  }).catch(admUploadErro);
 }
 function admRemoveMkProdImg(idx) {
   var iconEl  = document.getElementById('mk-prod-icon-' + idx);
@@ -3261,9 +3293,7 @@ function admRemoveMkProdImg(idx) {
 // ── BANNER ──
 function admSetBanner(brand, file) {
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var src = e.target.result;
+  admUploadToCloudinary(file).then(function(src) {
     var prev = document.getElementById('adm-' + brand + '-banner-preview');
     var prevImg = document.getElementById('adm-' + brand + '-banner-prev-img');
     var form = document.getElementById('adm-' + brand + '-banner-form');
@@ -3278,8 +3308,8 @@ function admSetBanner(brand, file) {
       img.src = src;
       wrap.style.display = 'block';
     }
-  };
-  reader.readAsDataURL(file);
+    setTimeout(_save, 100);
+  }).catch(admUploadErro);
 }
 function admUpdateBannerTitle(brand, title) {
   var titleEl = document.getElementById(brand + '-banner-title');
@@ -3309,9 +3339,7 @@ var _byHeroTimer = null;
 function admAddByHeroImgs(files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var src = e.target.result;
+    admUploadToCloudinary(file).then(function(src) {
       var id  = 'byhero' + Date.now() + Math.random().toString(36).slice(2,5);
       _byHeroImgs.push({ id: id, src: src });
 
@@ -3327,8 +3355,8 @@ function admAddByHeroImgs(files) {
         + '</div>';
       grid.appendChild(card);
       _byHeroRebuild();
-    };
-    reader.readAsDataURL(file);
+      setTimeout(_save, 100);
+    }).catch(admUploadErro);
   });
   var inp = document.getElementById('adm-inp-by-hero');
   if (inp) inp.value = '';
@@ -3427,9 +3455,7 @@ var _heroTimer  = null; // auto-play interval
 function admAddHeroImgs(files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var src = e.target.result;
+    admUploadToCloudinary(file).then(function(src) {
       var id  = 'hero' + Date.now() + Math.random().toString(36).slice(2,5);
       _heroImgs.push({ id: id, src: src });
 
@@ -3448,8 +3474,8 @@ function admAddHeroImgs(files) {
 
       // Montar/atualizar slideshow público
       _heroRebuild();
-    };
-    reader.readAsDataURL(file);
+      setTimeout(_save, 100);
+    }).catch(admUploadErro);
   });
   // reset file input so same files can be re-added
   var inp = document.getElementById('adm-inp-mk-hero');
@@ -3557,10 +3583,8 @@ function _heroGoTo(next) {
 function admAddPhotos(brand, files) {
   Array.from(files).forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
+    admUploadToCloudinary(file).then(function(src) {
       var id  = brand + Date.now() + Math.random().toString(36).slice(2,6);
-      var src = e.target.result;
       _admPhotos[brand].unshift({ id: id, src: src, titulo: '' });
       var grid = document.getElementById('adm-grid-' + brand);
       var emEl = document.getElementById('adm-empty-' + brand + '-fotos');
@@ -3577,8 +3601,8 @@ function admAddPhotos(brand, files) {
       grid.insertBefore(card, grid.firstChild);
       _pubAddPhoto(brand, id, src, '');
       _admUpdateStats();
-    };
-    reader.readAsDataURL(file);
+      setTimeout(_save, 100);
+    }).catch(admUploadErro);
   });
 }
 function admUpdatePhotoTitle(brand, id, titulo) {
