@@ -2776,35 +2776,26 @@ body {
 }
 
 
-/* ADMIN — EDITOR DE CONTATOS */
+/* ADMIN — EDITOR DE CONTATOS FIREBASE */
 .adm-contact-box {
   border: 1px solid rgba(192,200,212,0.12);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   background: rgba(255,255,255,0.02);
 }
-
-.adm-contact-box.mk {
-  border-color: rgba(232,49,122,0.18);
-}
-
+.adm-contact-box.mk { border-color: rgba(232,49,122,0.18); }
 .adm-contact-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.35rem;
   color: var(--by-silver-bright);
   margin-bottom: 1rem;
 }
-
-.adm-contact-box.mk .adm-contact-title {
-  color: var(--mk-pink);
-}
-
+.adm-contact-box.mk .adm-contact-title { color: var(--mk-pink); }
 .adm-contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-
 .adm-contact-grid input {
   background: rgba(255,255,255,0.04);
   border: none;
@@ -2814,12 +2805,11 @@ body {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 12px;
   outline: none;
+  letter-spacing: 0.04em;
 }
-
+.adm-contact-grid input::placeholder { color: rgba(192,200,212,0.28); }
 @media (max-width: 768px) {
-  .adm-contact-grid {
-    grid-template-columns: 1fr;
-  }
+  .adm-contact-grid { grid-template-columns: 1fr; }
 }
 
 </style>
@@ -3928,37 +3918,37 @@ body {
           </div>
         </div>
       </div>
+
       <div class="adm-cfg-section">
-        <div class="adm-cfg-title">
-<div class="adm-divider"></div>
+        <div class="adm-contact-box">
+          <div class="adm-contact-title">Contato — Delux BY</div>
+          <div class="adm-contact-grid">
+            <input id="adm-by-address" placeholder="Endereço Delux BY">
+            <input id="adm-by-instagram" placeholder="Instagram Delux BY">
+            <input id="adm-by-whatsapp" placeholder="WhatsApp Delux BY">
+            <input id="adm-by-hours" placeholder="Horário Delux BY">
+            <input id="adm-by-instagram-link" placeholder="Link Instagram Delux BY">
+            <input id="adm-by-whatsapp-link" placeholder="Link WhatsApp Delux BY">
+          </div>
+        </div>
 
-<div class="adm-contact-box">
-  <div class="adm-contact-title">Contato — Delux BY</div>
-  <div class="adm-contact-grid">
-    <input id="adm-by-address" placeholder="Endereço Delux BY">
-    <input id="adm-by-instagram" placeholder="Instagram Delux BY">
-    <input id="adm-by-whatsapp" placeholder="WhatsApp Delux BY">
-    <input id="adm-by-hours" placeholder="Horário Delux BY">
-    <input id="adm-by-instagram-link" placeholder="Link Instagram Delux BY">
-    <input id="adm-by-whatsapp-link" placeholder="Link WhatsApp Delux BY">
-  </div>
-</div>
+        <div class="adm-contact-box mk">
+          <div class="adm-contact-title">Contato — Delux Makes</div>
+          <div class="adm-contact-grid">
+            <input id="adm-mk-address" placeholder="Endereço Delux Makes">
+            <input id="adm-mk-instagram" placeholder="Instagram Delux Makes">
+            <input id="adm-mk-whatsapp" placeholder="WhatsApp Delux Makes">
+            <input id="adm-mk-hours" placeholder="Horário Delux Makes">
+            <input id="adm-mk-instagram-link" placeholder="Link Instagram Delux Makes">
+            <input id="adm-mk-whatsapp-link" placeholder="Link WhatsApp Delux Makes">
+          </div>
+        </div>
 
-<div class="adm-contact-box mk">
-  <div class="adm-contact-title">Contato — Delux Makes</div>
-  <div class="adm-contact-grid">
-    <input id="adm-mk-address" placeholder="Endereço Delux Makes">
-    <input id="adm-mk-instagram" placeholder="Instagram Delux Makes">
-    <input id="adm-mk-whatsapp" placeholder="WhatsApp Delux Makes">
-    <input id="adm-mk-hours" placeholder="Horário Delux Makes">
-    <input id="adm-mk-instagram-link" placeholder="Link Instagram Delux Makes">
-    <input id="adm-mk-whatsapp-link" placeholder="Link WhatsApp Delux Makes">
-  </div>
-</div>
+        <button class="adm-btn-primary" type="button" onclick="admSaveContacts()" style="align-self:flex-start; padding:0.75rem 2rem;">Salvar contatos</button>
+      </div>
 
-<button class="adm-btn-primary" type="button" id="btn-save-contacts">Salvar contatos</button>
-
-Alterar senha</div>
+      <div class="adm-cfg-section">
+        <div class="adm-cfg-title">Alterar senha</div>
         <div class="adm-cfg-pwd-row">
           <input class="adm-cfg-inp" type="password" id="cfg-old" placeholder="Senha atual">
           <input class="adm-cfg-inp" type="password" id="cfg-new" placeholder="Nova senha (mín. 6 caracteres)">
@@ -4000,6 +3990,109 @@ var _admPwdB64   = 'YWRtaW4xMjM='; // admin123
 var _admCurTab   = 'by-banner';
 var _admPhotos   = { by: [], mk: [] };
 var _admPosts    = { by: [], mk: [] };
+
+var _contactConfig = {
+  by: {
+    address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
+    instagram: '@DELUX_BY',
+    whatsapp: '(11) 99999-9999',
+    hours: 'Consulte nosso horário de atendimento',
+    instagramLink: 'https://www.instagram.com/DELUX_BY',
+    whatsappLink: 'https://wa.me/5511999999999'
+  },
+  mk: {
+    address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
+    instagram: '@DELUX_MAKES',
+    whatsapp: '(11) 99999-9999',
+    hours: 'Consulte nosso horário de atendimento',
+    instagramLink: 'https://www.instagram.com/DELUX_MAKES',
+    whatsappLink: 'https://wa.me/5511999999999'
+  }
+};
+
+function _mergeContacts(data) {
+  if (!data) return;
+  if (data.by) _contactConfig.by = Object.assign({}, _contactConfig.by, data.by);
+  if (data.mk) _contactConfig.mk = Object.assign({}, _contactConfig.mk, data.mk);
+}
+
+function _setText(id, value) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = value || '';
+}
+
+function _setHref(selector, value) {
+  var el = document.querySelector(selector);
+  if (el && value) el.href = value;
+}
+
+function _applyContacts() {
+  _setText('by-contact-address', _contactConfig.by.address);
+  _setText('by-contact-instagram', _contactConfig.by.instagram);
+  _setText('by-contact-whatsapp', _contactConfig.by.whatsapp);
+  _setText('by-contact-hours', _contactConfig.by.hours);
+
+  _setText('mk-contact-address', _contactConfig.mk.address);
+  _setText('mk-contact-instagram', _contactConfig.mk.instagram);
+  _setText('mk-contact-whatsapp', _contactConfig.mk.whatsapp);
+  _setText('mk-contact-hours', _contactConfig.mk.hours);
+
+  _setHref('.btn-by-instagram-new', _contactConfig.by.instagramLink);
+  _setHref('.btn-by-whatsapp-new', _contactConfig.by.whatsappLink);
+  _setHref('.mk-contact-card .btn-mk-pink', _contactConfig.mk.instagramLink);
+  _setHref('.mk-contact-card .btn-mk-whatsapp', _contactConfig.mk.whatsappLink);
+}
+
+function _fillContactAdmin() {
+  var fill = function(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.value = value || '';
+  };
+
+  fill('adm-by-address', _contactConfig.by.address);
+  fill('adm-by-instagram', _contactConfig.by.instagram);
+  fill('adm-by-whatsapp', _contactConfig.by.whatsapp);
+  fill('adm-by-hours', _contactConfig.by.hours);
+  fill('adm-by-instagram-link', _contactConfig.by.instagramLink);
+  fill('adm-by-whatsapp-link', _contactConfig.by.whatsappLink);
+
+  fill('adm-mk-address', _contactConfig.mk.address);
+  fill('adm-mk-instagram', _contactConfig.mk.instagram);
+  fill('adm-mk-whatsapp', _contactConfig.mk.whatsapp);
+  fill('adm-mk-hours', _contactConfig.mk.hours);
+  fill('adm-mk-instagram-link', _contactConfig.mk.instagramLink);
+  fill('adm-mk-whatsapp-link', _contactConfig.mk.whatsappLink);
+}
+
+async function admSaveContacts() {
+  var val = function(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+
+  _contactConfig.by = {
+    address: val('adm-by-address'),
+    instagram: val('adm-by-instagram'),
+    whatsapp: val('adm-by-whatsapp'),
+    hours: val('adm-by-hours'),
+    instagramLink: val('adm-by-instagram-link'),
+    whatsappLink: val('adm-by-whatsapp-link')
+  };
+
+  _contactConfig.mk = {
+    address: val('adm-mk-address'),
+    instagram: val('adm-mk-instagram'),
+    whatsapp: val('adm-mk-whatsapp'),
+    hours: val('adm-mk-hours'),
+    instagramLink: val('adm-mk-instagram-link'),
+    whatsappLink: val('adm-mk-whatsapp-link')
+  };
+
+  _applyContacts();
+  await _save();
+  alert('Contatos salvos com sucesso!');
+}
+
 
 // ── NAVEGAÇÃO ──
 function enterSite(brand) {
@@ -4073,7 +4166,7 @@ function admTab(name) {
   var btn = document.getElementById('sb-' + name);
   if (tab) tab.style.display = 'block';
   if (btn) btn.classList.add('active');
-  if (name === 'config') _admUpdateStats();
+  if (name === 'config') { _admUpdateStats(); _fillContactAdmin(); }
 }
 
 
@@ -4815,7 +4908,8 @@ async function _save() {
       cols:     cols,
       prods:    prods,
       byBanner: { img: byBannerImg, title: byBannerTit },
-      mkBanner: { img: mkBannerImg, title: mkBannerTit }
+      mkBanner: { img: mkBannerImg, title: mkBannerTit },
+      contacts: _contactConfig
     };
     var firebase = await _waitDeluxFirestore();
     await firebase.save(data);
@@ -4830,6 +4924,13 @@ async function _load() {
 
     // Senha
     if (data.pwd) _admPwdB64 = data.pwd;
+
+    // Contatos
+    if (data.contacts) {
+      _mergeContacts(data.contacts);
+      _applyContacts();
+      _fillContactAdmin();
+    }
 
     // ── BY HERO SLIDESHOW ──
     if (data.byHero && data.byHero.length) {
@@ -5073,6 +5174,7 @@ async function admClearAll() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  _applyContacts();
   _load();
   // Não carregamos imagens diretamente por tag do Cloudinary.
   // A fonte oficial agora é somente o Firestore; isso garante exclusão sincronizada em todos os dispositivos.
@@ -5220,141 +5322,6 @@ async function carregarFotosFirebase() {
 
 carregarFotosFirebase();
 
-</script>
-
-
-<script>
-(function(){
-  const defaults = {
-    by: {
-      address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
-      instagram: '@DELUX_BY',
-      whatsapp: '(11) 99999-9999',
-      hours: 'Consulte nosso horário de atendimento',
-      instagramLink: 'https://www.instagram.com/DELUX_BY',
-      whatsappLink: 'https://wa.me/5511999999999'
-    },
-    mk: {
-      address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
-      instagram: '@DELUX_MAKES',
-      whatsapp: '(11) 99999-9999',
-      hours: 'Consulte nosso horário de atendimento',
-      instagramLink: 'https://www.instagram.com/DELUX_MAKES',
-      whatsappLink: 'https://wa.me/5511999999999'
-    }
-  };
-
-  function getContacts(){
-    try {
-      const saved = JSON.parse(localStorage.getItem('delux_contacts_config') || '{}');
-      return {
-        by: Object.assign({}, defaults.by, saved.by || {}),
-        mk: Object.assign({}, defaults.mk, saved.mk || {})
-      };
-    } catch(e) {
-      return JSON.parse(JSON.stringify(defaults));
-    }
-  }
-
-  function setText(id, value){
-    const el = document.getElementById(id);
-    if (el) el.textContent = value || '';
-  }
-
-  function setHref(selector, value){
-    const el = document.querySelector(selector);
-    if (el && value) el.href = value;
-  }
-
-  function applyContacts(){
-    const c = getContacts();
-
-    setText('by-contact-address', c.by.address);
-    setText('by-contact-instagram', c.by.instagram);
-    setText('by-contact-whatsapp', c.by.whatsapp);
-    setText('by-contact-hours', c.by.hours);
-
-    setText('mk-contact-address', c.mk.address);
-    setText('mk-contact-instagram', c.mk.instagram);
-    setText('mk-contact-whatsapp', c.mk.whatsapp);
-    setText('mk-contact-hours', c.mk.hours);
-
-    setHref('.btn-by-instagram-new', c.by.instagramLink);
-    setHref('.btn-by-whatsapp-new', c.by.whatsappLink);
-    setHref('.mk-contact-card .btn-mk-pink', c.mk.instagramLink);
-    setHref('.mk-contact-card .btn-mk-whatsapp', c.mk.whatsappLink);
-  }
-
-  function fillAdmin(){
-    const c = getContacts();
-    const fill = (id, value) => {
-      const el = document.getElementById(id);
-      if (el) el.value = value || '';
-    };
-
-    fill('adm-by-address', c.by.address);
-    fill('adm-by-instagram', c.by.instagram);
-    fill('adm-by-whatsapp', c.by.whatsapp);
-    fill('adm-by-hours', c.by.hours);
-    fill('adm-by-instagram-link', c.by.instagramLink);
-    fill('adm-by-whatsapp-link', c.by.whatsappLink);
-
-    fill('adm-mk-address', c.mk.address);
-    fill('adm-mk-instagram', c.mk.instagram);
-    fill('adm-mk-whatsapp', c.mk.whatsapp);
-    fill('adm-mk-hours', c.mk.hours);
-    fill('adm-mk-instagram-link', c.mk.instagramLink);
-    fill('adm-mk-whatsapp-link', c.mk.whatsappLink);
-  }
-
-  function saveContacts(){
-    const val = id => {
-      const el = document.getElementById(id);
-      return el ? el.value.trim() : '';
-    };
-
-    const contacts = {
-      by: {
-        address: val('adm-by-address'),
-        instagram: val('adm-by-instagram'),
-        whatsapp: val('adm-by-whatsapp'),
-        hours: val('adm-by-hours'),
-        instagramLink: val('adm-by-instagram-link'),
-        whatsappLink: val('adm-by-whatsapp-link')
-      },
-      mk: {
-        address: val('adm-mk-address'),
-        instagram: val('adm-mk-instagram'),
-        whatsapp: val('adm-mk-whatsapp'),
-        hours: val('adm-mk-hours'),
-        instagramLink: val('adm-mk-instagram-link'),
-        whatsappLink: val('adm-mk-whatsapp-link')
-      }
-    };
-
-    localStorage.setItem('delux_contacts_config', JSON.stringify(contacts));
-    applyContacts();
-    alert('Contatos salvos com sucesso!');
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    applyContacts();
-    fillAdmin();
-
-    const btn = document.getElementById('btn-save-contacts');
-    if (btn) btn.addEventListener('click', saveContacts);
-
-    setTimeout(function(){
-      applyContacts();
-      fillAdmin();
-      const btn2 = document.getElementById('btn-save-contacts');
-      if (btn2 && !btn2.dataset.ready) {
-        btn2.dataset.ready = '1';
-        btn2.addEventListener('click', saveContacts);
-      }
-    }, 1000);
-  });
-})();
 </script>
 
 </body>
