@@ -2428,6 +2428,48 @@ body {
   }
 }
 
+
+/* FIX VISIBILIDADE TEXTO/EMOJI MENU ADMIN MOBILE */
+@media (max-width: 768px) {
+  .adm-sidebar .adm-sb-btn,
+  .adm-sidebar .adm-sb-btn *,
+  .adm-sidebar .adm-sb-icon {
+    color: var(--by-silver-bright) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: var(--by-silver-bright) !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .adm-sidebar .adm-sb-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 18px !important;
+    font-size: 14px !important;
+  }
+
+  .adm-sidebar .adm-sb-btn.active,
+  .adm-sidebar .adm-sb-btn.active *,
+  .adm-sidebar .adm-sb-btn.active .adm-sb-icon {
+    color: var(--mk-pink) !important;
+    -webkit-text-fill-color: var(--mk-pink) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .adm-sidebar .adm-sb-btn,
+  .adm-sidebar .adm-sb-btn * {
+    font-size: 9px !important;
+  }
+
+  .adm-sidebar .adm-sb-icon {
+    font-size: 13px !important;
+  }
+}
+
 </style>
 </head>
 <body>
