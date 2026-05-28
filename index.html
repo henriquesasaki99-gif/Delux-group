@@ -3950,7 +3950,7 @@ body {
   </div>
 </div>
 
-<button class="adm-btn-primary" type="button" onclick="deluxSaveContactsSafe()">Salvar contatos</button>
+<button class="adm-btn-primary" type="button" onclick="admSaveContacts()">Salvar contatos</button>
 
 Alterar senha</div>
         <div class="adm-cfg-pwd-row">
@@ -4069,32 +4069,41 @@ function _fillContactAdmin() {
 }
 
 async function admSaveContacts() {
-  var val = function(id) {
-    var el = document.getElementById(id);
-    return el ? el.value.trim() : '';
-  };
+  try {
+    var val = function(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    };
 
-  _contactConfig.by = {
-    address: val('adm-contact-by-address'),
-    instagram: val('adm-contact-by-instagram'),
-    whatsapp: val('adm-contact-by-whatsapp'),
-    hours: val('adm-contact-by-hours'),
-    instagramLink: val('adm-contact-by-instagram-link'),
-    whatsappLink: val('adm-contact-by-whatsapp-link')
-  };
+    _contactConfig.by = {
+      address: val('adm-contact-by-address'),
+      instagram: val('adm-contact-by-instagram'),
+      whatsapp: val('adm-contact-by-whatsapp'),
+      hours: val('adm-contact-by-hours'),
+      instagramLink: val('adm-contact-by-instagram-link'),
+      whatsappLink: val('adm-contact-by-whatsapp-link')
+    };
 
-  _contactConfig.mk = {
-    address: val('adm-contact-mk-address'),
-    instagram: val('adm-contact-mk-instagram'),
-    whatsapp: val('adm-contact-mk-whatsapp'),
-    hours: val('adm-contact-mk-hours'),
-    instagramLink: val('adm-contact-mk-instagram-link'),
-    whatsappLink: val('adm-contact-mk-whatsapp-link')
-  };
+    _contactConfig.mk = {
+      address: val('adm-contact-mk-address'),
+      instagram: val('adm-contact-mk-instagram'),
+      whatsapp: val('adm-contact-mk-whatsapp'),
+      hours: val('adm-contact-mk-hours'),
+      instagramLink: val('adm-contact-mk-instagram-link'),
+      whatsappLink: val('adm-contact-mk-whatsapp-link')
+    };
 
-  _applyContacts();
-  await _save();
-  alert('Contatos salvos com sucesso!');
+    _applyContacts();
+    _fillContactAdmin();
+
+    var firebase = await _waitDeluxFirestore();
+    await _save();
+
+    alert('Contatos salvos com sucesso!');
+  } catch (e) {
+    console.error('Erro ao salvar contatos:', e);
+    alert('Erro ao salvar contatos. Abra o console para verificar.');
+  }
 }
 
 
