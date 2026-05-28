@@ -2224,142 +2224,149 @@ body {
 
 
 
+
+
 /* ============================
-   ADMIN MOBILE RESPONSIVO - AJUSTADO
+   ADMIN MOBILE FINAL
    ============================ */
 @media (max-width: 768px) {
   #adm-panel {
-    flex-direction: column;
-    overflow: hidden;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
 
   .adm-sidebar {
-    width: 100%;
-    height: auto;
-    max-height: 42vh;
-    overflow-y: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(192,200,212,0.12);
-    padding: 1rem 0 0.8rem;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    display: block !important;
+    overflow: hidden !important;
+    padding: 0.9rem 0 0.7rem !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(192,200,212,0.12) !important;
+    background: #111 !important;
   }
 
   .adm-sidebar-logo {
-    font-size: 1.15rem;
-    padding: 0 1rem;
+    display: block !important;
+    font-size: 1.1rem !important;
+    padding: 0 1rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .adm-sidebar-sub {
-    padding: 0 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .adm-sb-group {
-    margin-bottom: 0.8rem;
+    display: block !important;
+    padding: 0 1rem !important;
+    margin-bottom: 0.8rem !important;
+    font-size: 8px !important;
   }
 
   .adm-sb-group-label {
-    padding: 0 1rem;
+    display: none !important;
+  }
+
+  .adm-sb-group {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0.5rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 1rem 0.45rem !important;
+    margin: 0 !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .adm-sb-group::-webkit-scrollbar {
+    display: none !important;
   }
 
   .adm-sb-btn {
-    padding: 0.75rem 1rem;
-    font-size: 12px;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 130px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 0.65rem 0.85rem !important;
+    border: 1px solid rgba(192,200,212,0.14) !important;
+    border-left: 1px solid rgba(192,200,212,0.14) !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.03) !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  .adm-sb-btn.active {
+    border-color: var(--mk-pink) !important;
+    color: var(--mk-pink) !important;
+    background: rgba(232,49,122,0.10) !important;
+  }
+
+  .adm-sb-spacer {
+    display: none !important;
   }
 
   .adm-sidebar-logout {
-    padding: 0 1rem;
+    padding: 0.55rem 1rem 0 !important;
+  }
+
+  .adm-logout-btn {
+    width: 100% !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 999px !important;
   }
 
   .adm-main {
-    flex: 1;
-    padding: 1.2rem 1rem 6rem;
-    overflow-y: auto;
+    flex: 1 !important;
+    width: 100% !important;
+    padding: 1.3rem 1rem 6rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
 
   .adm-main-title {
-    font-size: 1.45rem;
+    font-size: 1.45rem !important;
+    line-height: 1.2 !important;
   }
 
   .adm-main-sub {
-    font-size: 9px;
-    line-height: 1.6;
+    font-size: 9px !important;
+    line-height: 1.7 !important;
   }
 
   .adm-login-box {
-    width: calc(100% - 2rem);
-    max-width: 360px;
-    padding: 2rem 1.4rem;
+    width: calc(100% - 2rem) !important;
+    max-width: 360px !important;
+    padding: 2rem 1.4rem !important;
   }
 
-  .adm-login-actions {
-    flex-direction: column;
-  }
-
-  .adm-upload-zone {
-    padding: 1.6rem 1rem;
-  }
-
+  .adm-login-actions,
   .adm-banner-actions,
   .adm-hero-actions,
   .adm-post-actions,
   .adm-product-actions,
   .adm-photo-actions {
-    flex-direction: column;
-    width: 100%;
+    flex-direction: column !important;
+    width: 100% !important;
   }
 
   .adm-btn-primary,
   .adm-btn-sec,
   .adm-btn-danger {
-    width: 100%;
-    text-align: center;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .adm-upload-zone {
+    padding: 1.5rem 1rem !important;
   }
 
   .adm-form-row,
   .by-form-row {
     grid-template-columns: 1fr !important;
-  }
-
-  .adm-photos-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem;
-  }
-
-  .adm-photo {
-    min-width: 0;
-    display: block;
-    overflow: hidden;
-  }
-
-  .adm-photo-img {
-    display: block;
-    width: 100%;
-    min-height: 120px;
-  }
-
-  .adm-photo-img img {
-    display: block !important;
-    width: 100% !important;
-    height: 140px !important;
-    min-height: 140px;
-    object-fit: cover;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .adm-banner-preview,
-  .adm-hero-preview-wrap {
-    width: 100%;
-  }
-
-  .adm-banner-preview img,
-  .adm-hero-preview-wrap img {
-    display: block !important;
-    width: 100% !important;
-    max-height: 240px;
-    object-fit: cover;
-    opacity: 1 !important;
-    visibility: visible !important;
   }
 
   .adm-banner-inp,
@@ -2369,39 +2376,55 @@ body {
   .adm-pwd-wrap input,
   .adm-form-group input,
   .adm-form-group textarea,
-  .adm-form-group select {
+  .adm-form-group select,
+  textarea,
+  input,
+  select {
     font-size: 16px !important;
   }
 
-  .adm-tab {
-    padding-bottom: 2rem;
+  .adm-photos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.8rem !important;
+  }
+
+  .adm-photo-img img {
+    display: block !important;
+    width: 100% !important;
+    height: 150px !important;
+    object-fit: cover !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .adm-banner-preview img,
+  .adm-hero-preview-wrap img {
+    display: block !important;
+    width: 100% !important;
+    max-height: 240px !important;
+    object-fit: cover !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 
 @media (max-width: 480px) {
-  .adm-sidebar {
-    max-height: 46vh;
+  .adm-sb-btn {
+    min-width: 118px !important;
+    font-size: 9px !important;
+    padding: 0.6rem 0.75rem !important;
   }
 
   .adm-main {
-    padding: 1rem 0.85rem 7rem;
+    padding: 1rem 0.85rem 6rem !important;
   }
 
   .adm-photos-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
   .adm-photo-img img {
     height: 220px !important;
-    min-height: 220px;
-  }
-
-  .adm-sb-btn {
-    font-size: 11px;
-  }
-
-  .adm-upload-label {
-    line-height: 1.5;
   }
 }
 
