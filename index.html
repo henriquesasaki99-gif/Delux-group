@@ -3973,11 +3973,42 @@ function _admUpdateStats() {
 }
 
 // ══════════════════════════════════════════════
-//  PERSISTÊNCIA — localStorage
+//  PERSISTÊNCIA — Firebase Firestore
 // ══════════════════════════════════════════════
-var LS = 'delux_adm_v1';
+// Tudo que for alterado pela aba Admin será salvo online no Firestore.
+// Caminho usado: site_config/admin
+var LS = 'delux_adm_v1'; // mantido apenas para migração/backup local antigo
+var DELUX_FIRESTORE_COLLECTION = 'site_config';
+var DELUX_FIRESTORE_DOC = 'admin';
 
-function _save() {
+function _waitDeluxFirestore() {
+  if (window.deluxFirestore) return Promise.resolve(window.deluxFirestore);
+  return new Promise(function(resolve, reject) {
+    var done = false;
+    function finish(api) {
+      if (done) return;
+      done = true;
+      resolve(api);
+    }
+    window.addEventListener('delux-firestore-ready', function() {
+      finish(window.deluxFirestore);
+    }, { once: true });
+    var tries = 0;
+    var timer = setInterval(function() {
+      tries++;
+      if (window.deluxFirestore) {
+        clearInterval(timer);
+        finish(window.deluxFirestore);
+      }
+      if (tries > 50) {
+        clearInterval(timer);
+        if (!done) reject(new Error('Firebase ainda não carregou.'));
+      }
+    }, 100);
+  });
+}
+
+async function _save() {
   try {
     // Coletar estado atual dos campos de coleções By
     var cols = [];
@@ -4017,15 +4048,38 @@ function _save() {
       byBanner: { img: byBannerImg, title: byBannerTit },
       mkBanner: { img: mkBannerImg, title: mkBannerTit }
     };
-    localStorage.setItem(LS, JSON.stringify(data));
+    var firebase = await _waitDeluxFirestore();
+    await firebase.save(data);
+    // backup local apenas para segurança/migração
+    try { localStorage.setItem(LS, JSON.stringify(data)); } catch(_) {}
   } catch(e) { console.warn('Save error:', e); }
 }
 
-function _load() {
+async function _load() {
   try {
-    var raw = localStorage.getItem(LS);
-    if (!raw) return;
-    var data = JSON.parse(raw);
+    var data = null;
+
+    // 1) Carrega primeiro do Firebase/Firestore para aparecer em todos os dispositivos
+    try {
+      var firebase = await _waitDeluxFirestore();
+      data = await firebase.load();
+    } catch(fbErr) {
+      console.warn('Firestore load indisponível, tentando backup local:', fbErr);
+    }
+
+    // 2) Migração: se ainda não existir no Firebase, tenta puxar o localStorage antigo
+    if (!data) {
+      var raw = localStorage.getItem(LS);
+      if (!raw) return;
+      data = JSON.parse(raw);
+      try {
+        var firebaseMig = await _waitDeluxFirestore();
+        await firebaseMig.save(data);
+        console.log('Dados antigos migrados do localStorage para o Firestore.');
+      } catch(migErr) {
+        console.warn('Não foi possível migrar para Firestore agora:', migErr);
+      }
+    }
 
     // Senha
     if (data.pwd) _admPwdB64 = data.pwd;
@@ -4260,9 +4314,15 @@ function _setAdmTextareaVal(id, val) {
 })();
 
 // ── BOTÃO LIMPAR DADOS (config tab) ──
-function admClearAll() {
+async function admClearAll() {
   if (!confirm('Apagar TODOS os dados salvos? Esta ação não pode ser desfeita.')) return;
-  localStorage.removeItem(LS);
+  try {
+    var firebase = await _waitDeluxFirestore();
+    await firebase.clear();
+  } catch(e) {
+    console.warn('Erro ao apagar no Firestore:', e);
+  }
+  try { localStorage.removeItem(LS); } catch(_) {}
   location.reload();
 }
 
@@ -4277,7 +4337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var div = document.createElement('div');
     div.style.cssText = 'margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(192,200,212,0.07);';
     div.innerHTML = '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--by-silver-bright);margin-bottom:0.8rem;">Dados salvos</div>'
-      + '<p style="font-size:11px;color:var(--by-silver-dim);margin-bottom:1rem;letter-spacing:0.03em;">As imagens são carregadas pelo Cloudinary para aparecerem em computador e celular. Algumas configurações continuam salvas neste navegador. Para limpar tudo e começar do zero:</p>'
+      + '<p style="font-size:11px;color:var(--by-silver-dim);margin-bottom:1rem;letter-spacing:0.03em;">As imagens são carregadas pelo Cloudinary e todas as alterações do Admin são salvas no Firebase/Firestore para aparecerem em computador e celular. Para limpar tudo e começar do zero:</p>'
       + '<button class="adm-btn-danger" style="padding:0.6rem 1.4rem;" onclick="admClearAll()">🗑 Apagar todos os dados</button>';
     cfgSection.appendChild(div);
   }
@@ -4294,7 +4354,11 @@ import {
   addDoc,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  doc,
+  setDoc,
+  getDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -4309,6 +4373,24 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// API global usada pelo painel Admin para salvar/carregar tudo no Firestore.
+window.deluxFirestore = {
+  async save(data) {
+    await setDoc(doc(db, 'site_config', 'admin'), {
+      ...data,
+      updatedAt: Date.now()
+    });
+  },
+  async load() {
+    const snap = await getDoc(doc(db, 'site_config', 'admin'));
+    return snap.exists() ? snap.data() : null;
+  },
+  async clear() {
+    await deleteDoc(doc(db, 'site_config', 'admin'));
+  }
+};
+window.dispatchEvent(new Event('delux-firestore-ready'));
 
 window.uploadImagemFirebase = async function(file, tipo = 'mk') {
 
