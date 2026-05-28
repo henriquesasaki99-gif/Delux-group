@@ -2816,6 +2816,58 @@ body {
   }
 }
 
+
+/* SETAS HERO GRANDES SEM FUNDO */
+.hero-nav-arrow {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-size: 100px !important;
+  font-weight: 300 !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  z-index: 999 !important;
+  transition: transform .3s ease, opacity .3s ease !important;
+  text-shadow: 0 0 15px rgba(0,0,0,.65) !important;
+  user-select: none !important;
+}
+
+.hero-nav-arrow:hover {
+  background: transparent !important;
+  transform: translateY(-50%) scale(1.1) !important;
+  opacity: .92 !important;
+}
+
+.hero-nav-arrow.prev {
+  left: 30px !important;
+}
+
+.hero-nav-arrow.next {
+  right: 30px !important;
+}
+
+@media (max-width: 768px) {
+  .hero-nav-arrow {
+    font-size: 60px !important;
+  }
+
+  .hero-nav-arrow.prev {
+    left: 10px !important;
+  }
+
+  .hero-nav-arrow.next {
+    right: 10px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3140,15 +3192,7 @@ body {
     <h3>Atendimento</h3>
     <p>Para atendimento rápido, fale com a Delux BY pelo Instagram ou WhatsApp.</p>
     <a class="btn-by-instagram-new" href="https://www.instagram.com/DELUX_BY" target="_blank" rel="noopener">Abrir Instagram</a>
-    
-    <form class="contact-form-public" onsubmit="return submitPublicLead(event, 'by')">
-      <input name="name" placeholder="Seu nome" required>
-      <input name="phone" placeholder="Seu telefone / WhatsApp" required>
-      <textarea name="message" placeholder="Mensagem" required></textarea>
-      <button class="btn-by-instagram-new" type="submit">Enviar mensagem</button>
-    </form>
-
-    <a class="btn-by-whatsapp-new" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
+<a class="btn-by-whatsapp-new" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
   </div>
 </section>
 
@@ -3396,15 +3440,7 @@ body {
     <h3>Atendimento</h3>
     <p>Para atendimento rápido, fale com a Delux Makes pelo Instagram ou WhatsApp.</p>
     <a class="btn-mk-pink" href="https://www.instagram.com/DELUX_MAKES" target="_blank" rel="noopener">Abrir Instagram</a>
-    
-    <form class="contact-form-public" onsubmit="return submitPublicLead(event, 'mk')">
-      <input name="name" placeholder="Seu nome" required>
-      <input name="phone" placeholder="Seu telefone / WhatsApp" required>
-      <textarea name="message" placeholder="Mensagem" required></textarea>
-      <button class="btn-mk-pink" type="submit">Enviar mensagem</button>
-    </form>
-
-    <a class="btn-mk-whatsapp" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
+<a class="btn-mk-whatsapp" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
   </div>
 </section>
 
@@ -5373,7 +5409,6 @@ carregarFotosFirebase();
 <script>
 /* MELHORIAS FIREBASE: VISITAS, BACKUP, LEADS E HERO DRAG */
 (function(){
-  window._deluxLeads = window._deluxLeads || [];
   window._deluxVisits = window._deluxVisits || { by: 0, mk: 0 };
 
   function waitFirestoreApi(){
@@ -5404,59 +5439,6 @@ carregarFotosFirebase();
 
   window._deluxRefreshExtras = async function(){
     var data = await window._deluxLoadAdminData();
-    window._deluxLeads = data.leads || window._deluxLeads || [];
-    window._deluxVisits = data.visits || window._deluxVisits || { by:0, mk:0 };
-
-    var by = Number(window._deluxVisits.by || 0);
-    var mk = Number(window._deluxVisits.mk || 0);
-    var total = by + mk;
-
-    var set = function(id, v){ var el = document.getElementById(id); if (el) el.textContent = v; };
-    set('adm-visits-by', by);
-    set('adm-visits-mk', mk);
-    set('adm-visits-total', total);
-
-    var list = document.getElementById('adm-leads-list');
-    if (list) {
-      if (!window._deluxLeads.length) {
-        list.innerHTML = '<div class="adm-empty-hint">Nenhum contato recebido.</div>';
-      } else {
-        list.innerHTML = window._deluxLeads.slice().reverse().map(function(l){
-          var d = l.createdAt ? new Date(l.createdAt).toLocaleString('pt-BR') : '';
-          var brand = l.brand === 'by' ? 'Delux BY' : 'Delux Makes';
-          return '<div class="adm-lead-card">'
-            + '<strong>' + brand + ' — ' + (l.name || '') + '</strong>'
-            + '<p><b>Data:</b> ' + d + '</p>'
-            + '<p><b>Telefone:</b> ' + (l.phone || '') + '</p>'
-            + '<p><b>Mensagem:</b> ' + (l.message || '') + '</p>'
-            + '</div>';
-        }).join('');
-      }
-    }
-  };
-
-  window.submitPublicLead = function(event, brand){
-    event.preventDefault();
-    (async function(){
-      var form = event.target;
-      var lead = {
-        brand: brand,
-        name: (form.elements.name.value || '').trim(),
-        phone: (form.elements.phone.value || '').trim(),
-        message: (form.elements.message.value || '').trim(),
-        createdAt: Date.now()
-      };
-      var data = await window._deluxLoadAdminData();
-      data.leads = data.leads || [];
-      data.leads.push(lead);
-      await window._deluxSaveAdminData(data);
-      form.reset();
-      alert('Mensagem enviada com sucesso!');
-    })().catch(function(e){
-      console.error(e);
-      alert('Erro ao enviar mensagem. Tente novamente.');
-    });
-    return false;
   };
 
   window.admExportBackup = async function(){
@@ -5566,6 +5548,179 @@ carregarFotosFirebase();
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(initHeroEnhancements, 1200);
     setTimeout(window._deluxRefreshExtras, 1600);
+  });
+})();
+</script>
+
+
+<script>
+/* HERO FUNCIONAL DELUX — SETAS, ARRASTAR E TECLADO */
+(function(){
+  function getSlides(brand){
+    return Array.prototype.slice.call(document.querySelectorAll(brand === 'by' ? '.by-slide' : '.mk-slide'));
+  }
+
+  function getDots(brand){
+    return Array.prototype.slice.call(document.querySelectorAll(brand === 'by' ? '.by-dot' : '.mk-dot'));
+  }
+
+  function getIndex(brand){
+    var slides = getSlides(brand);
+    var idx = slides.findIndex(function(s){ return s.classList.contains('active'); });
+    return idx >= 0 ? idx : 0;
+  }
+
+  function showSlideFallback(brand, index){
+    var slides = getSlides(brand);
+    if (!slides.length) return;
+
+    var dots = getDots(brand);
+    var current = getIndex(brand);
+    var next = ((index % slides.length) + slides.length) % slides.length;
+
+    slides.forEach(function(slide){
+      slide.classList.remove('active', 'leaving');
+    });
+
+    if (slides[current] && current !== next) {
+      slides[current].classList.add('leaving');
+    }
+
+    if (slides[next]) {
+      slides[next].classList.add('active');
+    }
+
+    dots.forEach(function(dot, i){
+      dot.classList.toggle('active', i === next);
+    });
+  }
+
+  window.deluxHeroShow = function(brand, index){
+    try {
+      if (brand === 'by' && typeof window.byHeroShow === 'function') {
+        window.byHeroShow(index);
+      } else if (brand === 'mk' && typeof window.mkHeroShow === 'function') {
+        window.mkHeroShow(index);
+      } else {
+        showSlideFallback(brand, index);
+      }
+    } catch(e) {
+      showSlideFallback(brand, index);
+    }
+  };
+
+  window.nextHeroSlide = function(brand){
+    window.deluxHeroShow(brand, getIndex(brand) + 1);
+  };
+
+  window.prevHeroSlide = function(brand){
+    window.deluxHeroShow(brand, getIndex(brand) - 1);
+  };
+
+  function ensureArrows(brand){
+    var box = document.querySelector(brand === 'by' ? '.by-hero-slideshow' : '.mk-hero-slideshow');
+    if (!box || box.dataset.deluxArrowsReady === '1') return;
+
+    box.dataset.deluxArrowsReady = '1';
+
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'hero-nav-arrow prev';
+    prev.innerHTML = '‹';
+    prev.setAttribute('aria-label', 'Imagem anterior');
+    prev.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.prevHeroSlide(brand);
+    });
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'hero-nav-arrow next';
+    next.innerHTML = '›';
+    next.setAttribute('aria-label', 'Próxima imagem');
+    next.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.nextHeroSlide(brand);
+    });
+
+    box.appendChild(prev);
+    box.appendChild(next);
+
+    var startX = 0;
+    var dragging = false;
+
+    function start(x){
+      startX = x;
+      dragging = true;
+    }
+
+    function finish(x){
+      if (!dragging) return;
+      dragging = false;
+
+      var diff = x - startX;
+      if (Math.abs(diff) < 45) return;
+
+      if (diff < 0) {
+        window.nextHeroSlide(brand);
+      } else {
+        window.prevHeroSlide(brand);
+      }
+    }
+
+    box.addEventListener('touchstart', function(e){
+      if (e.touches && e.touches[0]) start(e.touches[0].clientX);
+    }, {passive:true});
+
+    box.addEventListener('touchend', function(e){
+      if (e.changedTouches && e.changedTouches[0]) finish(e.changedTouches[0].clientX);
+    }, {passive:true});
+
+    box.addEventListener('mousedown', function(e){
+      start(e.clientX);
+    });
+
+    window.addEventListener('mouseup', function(e){
+      finish(e.clientX);
+    });
+  }
+
+  function initHeroControls(){
+    ensureArrows('by');
+    ensureArrows('mk');
+  }
+
+  document.addEventListener('keydown', function(e){
+    var byActive = document.getElementById('page-by') && document.getElementById('page-by').classList.contains('active');
+    var mkActive = document.getElementById('page-makes') && document.getElementById('page-makes').classList.contains('active');
+
+    if (!byActive && !mkActive) return;
+
+    if (e.key === 'ArrowLeft') {
+      window.prevHeroSlide(byActive ? 'by' : 'mk');
+    }
+
+    if (e.key === 'ArrowRight') {
+      window.nextHeroSlide(byActive ? 'by' : 'mk');
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function(){
+    initHeroControls();
+
+    setTimeout(initHeroControls, 800);
+    setTimeout(initHeroControls, 1800);
+
+    var observer = new MutationObserver(function(){
+      initHeroControls();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   });
 })();
 </script>
