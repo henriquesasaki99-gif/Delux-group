@@ -3140,6 +3140,14 @@ body {
     <h3>Atendimento</h3>
     <p>Para atendimento rápido, fale com a Delux BY pelo Instagram ou WhatsApp.</p>
     <a class="btn-by-instagram-new" href="https://www.instagram.com/DELUX_BY" target="_blank" rel="noopener">Abrir Instagram</a>
+    
+    <form class="contact-form-public" onsubmit="return submitPublicLead(event, 'by')">
+      <input name="name" placeholder="Seu nome" required>
+      <input name="phone" placeholder="Seu telefone / WhatsApp" required>
+      <textarea name="message" placeholder="Mensagem" required></textarea>
+      <button class="btn-by-instagram-new" type="submit">Enviar mensagem</button>
+    </form>
+
     <a class="btn-by-whatsapp-new" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
   </div>
 </section>
@@ -3388,6 +3396,14 @@ body {
     <h3>Atendimento</h3>
     <p>Para atendimento rápido, fale com a Delux Makes pelo Instagram ou WhatsApp.</p>
     <a class="btn-mk-pink" href="https://www.instagram.com/DELUX_MAKES" target="_blank" rel="noopener">Abrir Instagram</a>
+    
+    <form class="contact-form-public" onsubmit="return submitPublicLead(event, 'mk')">
+      <input name="name" placeholder="Seu nome" required>
+      <input name="phone" placeholder="Seu telefone / WhatsApp" required>
+      <textarea name="message" placeholder="Mensagem" required></textarea>
+      <button class="btn-mk-pink" type="submit">Enviar mensagem</button>
+    </form>
+
     <a class="btn-mk-whatsapp" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
   </div>
 </section>
@@ -3935,6 +3951,7 @@ body {
     <input id="adm-contact-by-hours" placeholder="Horário Delux BY">
     <input id="adm-contact-by-instagram-link" placeholder="Link Instagram Delux BY">
     <input id="adm-contact-by-whatsapp-link" placeholder="Link WhatsApp Delux BY">
+    <input id="adm-contact-by-whatsapp-msg" placeholder="Mensagem padrão WhatsApp Delux BY">
   </div>
 </div>
 
@@ -3947,6 +3964,7 @@ body {
     <input id="adm-contact-mk-hours" placeholder="Horário Delux Makes">
     <input id="adm-contact-mk-instagram-link" placeholder="Link Instagram Delux Makes">
     <input id="adm-contact-mk-whatsapp-link" placeholder="Link WhatsApp Delux Makes">
+    <input id="adm-contact-mk-whatsapp-msg" placeholder="Mensagem padrão WhatsApp Delux Makes">
   </div>
 </div>
 
@@ -4002,7 +4020,8 @@ var _contactConfig = {
     whatsapp: '(11) 99999-9999',
     hours: 'Consulte nosso horário de atendimento',
     instagramLink: 'https://www.instagram.com/DELUX_BY',
-    whatsappLink: 'https://wa.me/5511999999999'
+    whatsappLink: 'https://wa.me/5511999999999',
+    whatsappMsg: 'Olá! Gostaria de atendimento da Delux BY.'
   },
   mk: {
     address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
@@ -4010,7 +4029,8 @@ var _contactConfig = {
     whatsapp: '(11) 99999-9999',
     hours: 'Consulte nosso horário de atendimento',
     instagramLink: 'https://www.instagram.com/DELUX_MAKES',
-    whatsappLink: 'https://wa.me/5511999999999'
+    whatsappLink: 'https://wa.me/5511999999999',
+    whatsappMsg: 'Olá! Gostaria de atendimento da Delux Makes.'
   }
 };
 
@@ -4030,6 +4050,16 @@ function _setContactHref(selector, value) {
   if (el && value) el.href = value;
 }
 
+
+function _whatsLinkWithMessage(base, msg) {
+  var url = base || '';
+  var text = msg || '';
+  if (!url) return '';
+  var sep = url.indexOf('?') >= 0 ? '&' : '?';
+  if (url.indexOf('text=') >= 0) return url;
+  return url + sep + 'text=' + encodeURIComponent(text);
+}
+
 function _applyContacts() {
   _setContactText('by-contact-address', _contactConfig.by.address);
   _setContactText('by-contact-instagram', _contactConfig.by.instagram);
@@ -4042,9 +4072,9 @@ function _applyContacts() {
   _setContactText('mk-contact-hours', _contactConfig.mk.hours);
 
   _setContactHref('.btn-by-instagram-new', _contactConfig.by.instagramLink);
-  _setContactHref('.btn-by-whatsapp-new', _contactConfig.by.whatsappLink);
+  _setContactHref('.btn-by-whatsapp-new', _whatsLinkWithMessage(_contactConfig.by.whatsappLink, _contactConfig.by.whatsappMsg));
   _setContactHref('.mk-contact-card .btn-mk-pink', _contactConfig.mk.instagramLink);
-  _setContactHref('.mk-contact-card .btn-mk-whatsapp', _contactConfig.mk.whatsappLink);
+  _setContactHref('.mk-contact-card .btn-mk-whatsapp', _whatsLinkWithMessage(_contactConfig.mk.whatsappLink, _contactConfig.mk.whatsappMsg));
 }
 
 function _fillContactAdmin() {
@@ -4059,6 +4089,7 @@ function _fillContactAdmin() {
   fill('adm-contact-by-hours', _contactConfig.by.hours);
   fill('adm-contact-by-instagram-link', _contactConfig.by.instagramLink);
   fill('adm-contact-by-whatsapp-link', _contactConfig.by.whatsappLink);
+  fill('adm-contact-by-whatsapp-msg', _contactConfig.by.whatsappMsg);
 
   fill('adm-contact-mk-address', _contactConfig.mk.address);
   fill('adm-contact-mk-instagram', _contactConfig.mk.instagram);
@@ -4066,6 +4097,7 @@ function _fillContactAdmin() {
   fill('adm-contact-mk-hours', _contactConfig.mk.hours);
   fill('adm-contact-mk-instagram-link', _contactConfig.mk.instagramLink);
   fill('adm-contact-mk-whatsapp-link', _contactConfig.mk.whatsappLink);
+  fill('adm-contact-mk-whatsapp-msg', _contactConfig.mk.whatsappMsg);
 }
 
 async function admSaveContacts() {
@@ -4081,7 +4113,8 @@ async function admSaveContacts() {
       whatsapp: val('adm-contact-by-whatsapp'),
       hours: val('adm-contact-by-hours'),
       instagramLink: val('adm-contact-by-instagram-link'),
-      whatsappLink: val('adm-contact-by-whatsapp-link')
+      whatsappLink: val('adm-contact-by-whatsapp-link'),
+      whatsappMsg: val('adm-contact-by-whatsapp-msg')
     };
 
     _contactConfig.mk = {
@@ -4090,7 +4123,8 @@ async function admSaveContacts() {
       whatsapp: val('adm-contact-mk-whatsapp'),
       hours: val('adm-contact-mk-hours'),
       instagramLink: val('adm-contact-mk-instagram-link'),
-      whatsappLink: val('adm-contact-mk-whatsapp-link')
+      whatsappLink: val('adm-contact-mk-whatsapp-link'),
+      whatsappMsg: val('adm-contact-mk-whatsapp-msg')
     };
 
     _applyContacts();
@@ -4179,7 +4213,7 @@ function admTab(name) {
   var btn = document.getElementById('sb-' + name);
   if (tab) tab.style.display = 'block';
   if (btn) btn.classList.add('active');
-  if (name === 'config') { _admUpdateStats(); _fillContactAdmin(); }
+  if (name === 'config') { _admUpdateStats(); _fillContactAdmin(); if (window._deluxRefreshExtras) window._deluxRefreshExtras(); }
 }
 
 
@@ -5334,6 +5368,207 @@ carregarFotosFirebase();
 
 </script>
 
+
+
+<script>
+/* MELHORIAS FIREBASE: VISITAS, BACKUP, LEADS E HERO DRAG */
+(function(){
+  window._deluxLeads = window._deluxLeads || [];
+  window._deluxVisits = window._deluxVisits || { by: 0, mk: 0 };
+
+  function waitFirestoreApi(){
+    if (window.deluxFirestore) return Promise.resolve(window.deluxFirestore);
+    return new Promise(function(resolve){
+      var tries = 0;
+      var t = setInterval(function(){
+        tries++;
+        if (window.deluxFirestore || tries > 80) {
+          clearInterval(t);
+          resolve(window.deluxFirestore || null);
+        }
+      }, 100);
+    });
+  }
+
+  window._deluxLoadAdminData = async function(){
+    var api = await waitFirestoreApi();
+    if (!api) return {};
+    try { return await api.load() || {}; } catch(e) { console.warn(e); return {}; }
+  };
+
+  window._deluxSaveAdminData = async function(data){
+    var api = await waitFirestoreApi();
+    if (!api) throw new Error('Firebase não carregado');
+    await api.save(data);
+  };
+
+  window._deluxRefreshExtras = async function(){
+    var data = await window._deluxLoadAdminData();
+    window._deluxLeads = data.leads || window._deluxLeads || [];
+    window._deluxVisits = data.visits || window._deluxVisits || { by:0, mk:0 };
+
+    var by = Number(window._deluxVisits.by || 0);
+    var mk = Number(window._deluxVisits.mk || 0);
+    var total = by + mk;
+
+    var set = function(id, v){ var el = document.getElementById(id); if (el) el.textContent = v; };
+    set('adm-visits-by', by);
+    set('adm-visits-mk', mk);
+    set('adm-visits-total', total);
+
+    var list = document.getElementById('adm-leads-list');
+    if (list) {
+      if (!window._deluxLeads.length) {
+        list.innerHTML = '<div class="adm-empty-hint">Nenhum contato recebido.</div>';
+      } else {
+        list.innerHTML = window._deluxLeads.slice().reverse().map(function(l){
+          var d = l.createdAt ? new Date(l.createdAt).toLocaleString('pt-BR') : '';
+          var brand = l.brand === 'by' ? 'Delux BY' : 'Delux Makes';
+          return '<div class="adm-lead-card">'
+            + '<strong>' + brand + ' — ' + (l.name || '') + '</strong>'
+            + '<p><b>Data:</b> ' + d + '</p>'
+            + '<p><b>Telefone:</b> ' + (l.phone || '') + '</p>'
+            + '<p><b>Mensagem:</b> ' + (l.message || '') + '</p>'
+            + '</div>';
+        }).join('');
+      }
+    }
+  };
+
+  window.submitPublicLead = function(event, brand){
+    event.preventDefault();
+    (async function(){
+      var form = event.target;
+      var lead = {
+        brand: brand,
+        name: (form.elements.name.value || '').trim(),
+        phone: (form.elements.phone.value || '').trim(),
+        message: (form.elements.message.value || '').trim(),
+        createdAt: Date.now()
+      };
+      var data = await window._deluxLoadAdminData();
+      data.leads = data.leads || [];
+      data.leads.push(lead);
+      await window._deluxSaveAdminData(data);
+      form.reset();
+      alert('Mensagem enviada com sucesso!');
+    })().catch(function(e){
+      console.error(e);
+      alert('Erro ao enviar mensagem. Tente novamente.');
+    });
+    return false;
+  };
+
+  window.admExportBackup = async function(){
+    var data = await window._deluxLoadAdminData();
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'backup-delux-group-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  };
+
+  window.admImportBackupFile = function(event){
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      (async function(){
+        var data = JSON.parse(reader.result);
+        if (!confirm('Importar este backup e substituir os dados atuais?')) return;
+        await window._deluxSaveAdminData(data);
+        alert('Backup importado com sucesso. A página será recarregada.');
+        location.reload();
+      })().catch(function(e){
+        console.error(e);
+        alert('Erro ao importar backup.');
+      });
+    };
+    reader.readAsText(file);
+  };
+
+  function installHeroControls(selector, prevFn, nextFn){
+    var box = document.querySelector(selector);
+    if (!box || box.dataset.heroControlsReady) return;
+    box.dataset.heroControlsReady = '1';
+
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'hero-nav-arrow prev';
+    prev.innerHTML = '‹';
+    prev.onclick = function(e){ e.preventDefault(); prevFn(); };
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'hero-nav-arrow next';
+    next.innerHTML = '›';
+    next.onclick = function(e){ e.preventDefault(); nextFn(); };
+
+    box.appendChild(prev);
+    box.appendChild(next);
+
+    var startX = 0;
+    var tracking = false;
+
+    function start(x){ startX = x; tracking = true; }
+    function end(x){
+      if (!tracking) return;
+      tracking = false;
+      var dx = x - startX;
+      if (Math.abs(dx) > 45) {
+        if (dx < 0) nextFn();
+        else prevFn();
+      }
+    }
+
+    box.addEventListener('touchstart', function(e){ if(e.touches[0]) start(e.touches[0].clientX); }, {passive:true});
+    box.addEventListener('touchend', function(e){ if(e.changedTouches[0]) end(e.changedTouches[0].clientX); }, {passive:true});
+    box.addEventListener('mousedown', function(e){ start(e.clientX); });
+    window.addEventListener('mouseup', function(e){ end(e.clientX); });
+  }
+
+  function initHeroEnhancements(){
+    installHeroControls('.by-hero-slideshow', function(){
+      if (typeof byHeroShow === 'function') byHeroShow((_byHeroIndex || 0) - 1);
+    }, function(){
+      if (typeof byHeroShow === 'function') byHeroShow((_byHeroIndex || 0) + 1);
+    });
+
+    installHeroControls('.mk-hero-slideshow', function(){
+      if (typeof mkHeroShow === 'function') mkHeroShow((_mkHeroIndex || 0) - 1);
+    }, function(){
+      if (typeof mkHeroShow === 'function') mkHeroShow((_mkHeroIndex || 0) + 1);
+    });
+  }
+
+  async function countVisit(brand){
+    try {
+      if (sessionStorage.getItem('delux_visit_' + brand)) return;
+      sessionStorage.setItem('delux_visit_' + brand, '1');
+      var data = await window._deluxLoadAdminData();
+      data.visits = data.visits || { by:0, mk:0 };
+      data.visits[brand] = Number(data.visits[brand] || 0) + 1;
+      await window._deluxSaveAdminData(data);
+    } catch(e) { console.warn('Erro contador de visitas:', e); }
+  }
+
+  var originalEnterSite = window.enterSite;
+  if (typeof originalEnterSite === 'function') {
+    window.enterSite = function(brand){
+      originalEnterSite(brand);
+      countVisit(brand === 'by' ? 'by' : 'mk');
+      setTimeout(initHeroEnhancements, 900);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(initHeroEnhancements, 1200);
+    setTimeout(window._deluxRefreshExtras, 1600);
+  });
+})();
+</script>
 
 </body>
 </html>
