@@ -2606,6 +2606,227 @@ body {
   text-align: center !important;
 }
 
+
+/* CENTRALIZAÇÃO IGUAL DOS BOTÕES */
+.mk-contact-card .btn-mk-pink,
+.mk-contact-card .btn-mk-whatsapp {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mk-contact-card .btn-mk-pink {
+  text-indent: 0 !important;
+}
+
+
+/* CONTATO — DELUX BY MODELO CARD */
+.by-contact-section-new {
+  padding: 6rem 4rem;
+  background: var(--by-dark);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.by-contact-section-new .by-section-label {
+  margin-bottom: 1rem;
+}
+
+.by-contact-section-new .by-section-title {
+  margin-bottom: 2rem;
+}
+
+.by-contact-text-new {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--by-silver-dim);
+  max-width: 34rem;
+  margin-bottom: 2rem;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.by-contact-items-new {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.by-contact-item-new {
+  background: var(--by-mid);
+  border: 1px solid rgba(192,200,212,0.10);
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.by-contact-icon-new {
+  width: 38px;
+  height: 38px;
+  background: rgba(192,200,212,0.10);
+  border: 1px solid rgba(192,200,212,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.by-contact-item-new strong {
+  display: block;
+  font-size: 12px;
+  color: var(--by-silver-bright);
+  margin-bottom: 4px;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.by-contact-item-new p {
+  font-size: 12px;
+  color: var(--by-silver-dim);
+  line-height: 1.6;
+  margin: 0;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.by-contact-card-new {
+  background: var(--by-mid);
+  border: 1px solid rgba(192,200,212,0.10);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.by-contact-card-new h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--by-silver-bright);
+}
+
+.by-contact-card-new p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--by-silver-dim);
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.btn-by-instagram-new,
+.btn-by-whatsapp-new {
+  color: var(--by-dark);
+  padding: 0.85rem 2rem;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  transition: all 0.3s;
+  width: 100%;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.btn-by-instagram-new {
+  background: var(--by-silver);
+}
+
+.btn-by-instagram-new:hover {
+  background: var(--by-silver-bright);
+  transform: translateY(-2px);
+}
+
+.btn-by-whatsapp-new {
+  background: #25D366;
+  color: white;
+}
+
+.btn-by-whatsapp-new:hover {
+  background: #1ebe5d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37,211,102,0.20);
+}
+
+@media (max-width: 768px) {
+  .by-contact-section-new {
+    grid-template-columns: 1fr;
+    padding: 4rem 1.4rem;
+  }
+
+  .by-contact-card-new {
+    padding: 1.5rem;
+  }
+}
+
+
+/* OCULTAR CONTATO BY ANTIGO */
+.by-sobre-contato-wrap {
+  display: none !important;
+}
+
+
+/* ADMIN — EDITOR DE CONTATOS */
+.adm-contact-box {
+  border: 1px solid rgba(192,200,212,0.12);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(255,255,255,0.02);
+}
+
+.adm-contact-box.mk {
+  border-color: rgba(232,49,122,0.18);
+}
+
+.adm-contact-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: var(--by-silver-bright);
+  margin-bottom: 1rem;
+}
+
+.adm-contact-box.mk .adm-contact-title {
+  color: var(--mk-pink);
+}
+
+.adm-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.adm-contact-grid input {
+  background: rgba(255,255,255,0.04);
+  border: none;
+  border-bottom: 1px solid rgba(192,200,212,0.18);
+  color: var(--by-silver-bright);
+  padding: 0.75rem 0;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  outline: none;
+  letter-spacing: 0.04em;
+}
+
+.adm-contact-grid input::placeholder {
+  color: rgba(192,200,212,0.28);
+}
+
+@media (max-width: 768px) {
+  .adm-contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2881,7 +3102,60 @@ body {
     </div>
   </div>
 
-  <footer class="brand-footer by-footer-area">
+  
+<!-- CONTATO — DELUX BY NOVO MODELO -->
+<section id="by-contato-novo" class="by-contact-section-new">
+  <div class="by-contact-info-new">
+    <div class="by-section-label">Contato</div>
+    <h2 class="by-section-title">Fale com a <em>Delux BY</em></h2>
+    <p class="by-contact-text-new">
+      Entre em contato para dúvidas, pedidos, informações sobre produtos ou atendimento personalizado.
+    </p>
+
+    <div class="by-contact-items-new">
+      <div class="by-contact-item-new">
+        <span class="by-contact-icon-new">📍</span>
+        <div>
+          <strong>Endereço</strong>
+          <p id="by-contact-address">Rua Mascarenhas de Morais, 1538 — Vila Margarida</p>
+        </div>
+      </div>
+
+      <div class="by-contact-item-new">
+        <span class="by-contact-icon-new">📱</span>
+        <div>
+          <strong>Instagram</strong>
+          <p id="by-contact-instagram">@DELUX_BY</p>
+        </div>
+      </div>
+
+      <div class="by-contact-item-new">
+        <span class="by-contact-icon-new">💬</span>
+        <div>
+          <strong>WhatsApp</strong>
+          <p id="by-contact-whatsapp">(11) 99999-9999</p>
+        </div>
+      </div>
+
+      <div class="by-contact-item-new">
+        <span class="by-contact-icon-new">🕒</span>
+        <div>
+          <strong>Horário</strong>
+          <p id="by-contact-hours">Consulte nosso horário de atendimento</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="by-contact-card-new">
+    <h3>Atendimento</h3>
+    <p>Para atendimento rápido, fale com a Delux BY pelo Instagram ou WhatsApp.</p>
+    <a class="btn-by-instagram-new" href="https://www.instagram.com/DELUX_BY" target="_blank" rel="noopener">Abrir Instagram</a>
+    <a class="btn-by-whatsapp-new" href="https://wa.me/5511999999999" target="_blank" rel="noopener">Abrir WhatsApp</a>
+  </div>
+</section>
+
+<footer class="brand-footer by-footer-area">
     <span class="brand-footer-name">Delux <em>By</em></span>
     <span class="brand-footer-copy">© 2025 Delux Group. Todos os direitos reservados.</span>
     <div class="brand-footer-social">
@@ -3660,7 +3934,36 @@ body {
         </div>
       </div>
       <div class="adm-cfg-section">
-        <div class="adm-cfg-title">Alterar senha</div>
+        <div class="adm-cfg-title">
+<div class="adm-divider"></div>
+
+<div class="adm-contact-box">
+  <div class="adm-contact-title">Contato — Delux BY</div>
+  <div class="adm-contact-grid">
+    <input id="adm-by-address" placeholder="Endereço Delux BY">
+    <input id="adm-by-instagram" placeholder="Instagram Delux BY">
+    <input id="adm-by-whatsapp" placeholder="WhatsApp Delux BY">
+    <input id="adm-by-hours" placeholder="Horário Delux BY">
+    <input id="adm-by-instagram-link" placeholder="Link do Instagram Delux BY">
+    <input id="adm-by-whatsapp-link" placeholder="Link do WhatsApp Delux BY">
+  </div>
+</div>
+
+<div class="adm-contact-box mk">
+  <div class="adm-contact-title">Contato — Delux Makes</div>
+  <div class="adm-contact-grid">
+    <input id="adm-mk-address" placeholder="Endereço Delux Makes">
+    <input id="adm-mk-instagram" placeholder="Instagram Delux Makes">
+    <input id="adm-mk-whatsapp" placeholder="WhatsApp Delux Makes">
+    <input id="adm-mk-hours" placeholder="Horário Delux Makes">
+    <input id="adm-mk-instagram-link" placeholder="Link do Instagram Delux Makes">
+    <input id="adm-mk-whatsapp-link" placeholder="Link do WhatsApp Delux Makes">
+  </div>
+</div>
+
+<button class="adm-btn-primary" type="button" onclick="saveContactSettingsFromAdmin()">Salvar contatos</button>
+
+Alterar senha</div>
         <div class="adm-cfg-pwd-row">
           <input class="adm-cfg-inp" type="password" id="cfg-old" placeholder="Senha atual">
           <input class="adm-cfg-inp" type="password" id="cfg-new" placeholder="Nova senha (mín. 6 caracteres)">
@@ -4479,7 +4782,7 @@ function _waitDeluxFirestore() {
   });
 }
 
-async function _save() {
+window._save = async window._save = function _save() {
   try {
     // Coletar estado atual dos campos de coleções By
     var cols = [];
@@ -4921,6 +5224,139 @@ async function carregarFotosFirebase() {
 }
 
 carregarFotosFirebase();
+
+
+
+/* CONTATOS EDITÁVEIS PELO ADMIN */
+window.DELUX_DEFAULT_CONTACTS = window.DELUX_DEFAULT_CONTACTS || {
+  by: {
+    address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
+    instagram: '@DELUX_BY',
+    whatsapp: '(11) 99999-9999',
+    hours: 'Consulte nosso horário de atendimento',
+    instagramLink: 'https://www.instagram.com/DELUX_BY',
+    whatsappLink: 'https://wa.me/5511999999999'
+  },
+  mk: {
+    address: 'Rua Mascarenhas de Morais, 1538 — Vila Margarida',
+    instagram: '@DELUX_MAKES',
+    whatsapp: '(11) 99999-9999',
+    hours: 'Consulte nosso horário de atendimento',
+    instagramLink: 'https://www.instagram.com/DELUX_MAKES',
+    whatsappLink: 'https://wa.me/5511999999999'
+  }
+};
+
+function ensureContactData() {
+  window.ADM = window.ADM || {};
+  window.ADM.contacts = window.ADM.contacts || {};
+  window.ADM.contacts.by = Object.assign({}, window.DELUX_DEFAULT_CONTACTS.by, window.ADM.contacts.by || {});
+  window.ADM.contacts.mk = Object.assign({}, window.DELUX_DEFAULT_CONTACTS.mk, window.ADM.contacts.mk || {});
+}
+
+window.applyContactSettings = function() {
+  ensureContactData();
+
+  const by = window.ADM.contacts.by;
+  const mk = window.ADM.contacts.mk;
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value || '';
+  };
+
+  const setHref = (selector, value) => {
+    const el = document.querySelector(selector);
+    if (el && value) el.href = value;
+  };
+
+  setText('by-contact-address', by.address);
+  setText('by-contact-instagram', by.instagram);
+  setText('by-contact-whatsapp', by.whatsapp);
+  setText('by-contact-hours', by.hours);
+
+  setText('mk-contact-address', mk.address);
+  setText('mk-contact-instagram', mk.instagram);
+  setText('mk-contact-whatsapp', mk.whatsapp);
+  setText('mk-contact-hours', mk.hours);
+
+  setHref('.btn-by-instagram-new', by.instagramLink);
+  setHref('.btn-by-whatsapp-new', by.whatsappLink);
+  setHref('.mk-contact-card .btn-mk-pink', mk.instagramLink);
+  setHref('.mk-contact-card .btn-mk-whatsapp', mk.whatsappLink);
+};
+
+window.fillContactAdminFields = function() {
+  ensureContactData();
+
+  const fill = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value || '';
+  };
+
+  fill('adm-by-address', window.ADM.contacts.by.address);
+  fill('adm-by-instagram', window.ADM.contacts.by.instagram);
+  fill('adm-by-whatsapp', window.ADM.contacts.by.whatsapp);
+  fill('adm-by-hours', window.ADM.contacts.by.hours);
+  fill('adm-by-instagram-link', window.ADM.contacts.by.instagramLink);
+  fill('adm-by-whatsapp-link', window.ADM.contacts.by.whatsappLink);
+
+  fill('adm-mk-address', window.ADM.contacts.mk.address);
+  fill('adm-mk-instagram', window.ADM.contacts.mk.instagram);
+  fill('adm-mk-whatsapp', window.ADM.contacts.mk.whatsapp);
+  fill('adm-mk-hours', window.ADM.contacts.mk.hours);
+  fill('adm-mk-instagram-link', window.ADM.contacts.mk.instagramLink);
+  fill('adm-mk-whatsapp-link', window.ADM.contacts.mk.whatsappLink);
+};
+
+window.saveContactSettingsFromAdmin = async function() {
+  ensureContactData();
+
+  const val = (id) => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+
+  window.ADM.contacts.by = {
+    address: val('adm-by-address'),
+    instagram: val('adm-by-instagram'),
+    whatsapp: val('adm-by-whatsapp'),
+    hours: val('adm-by-hours'),
+    instagramLink: val('adm-by-instagram-link'),
+    whatsappLink: val('adm-by-whatsapp-link')
+  };
+
+  window.ADM.contacts.mk = {
+    address: val('adm-mk-address'),
+    instagram: val('adm-mk-instagram'),
+    whatsapp: val('adm-mk-whatsapp'),
+    hours: val('adm-mk-hours'),
+    instagramLink: val('adm-mk-instagram-link'),
+    whatsappLink: val('adm-mk-whatsapp-link')
+  };
+
+  window.applyContactSettings();
+
+  if (typeof window._save === 'function') {
+    await window._save();
+  } else if (typeof _save === 'function') {
+    await _save();
+  }
+
+  alert('Contatos salvos com sucesso!');
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    window.applyContactSettings();
+    window.fillContactAdminFields();
+  }, 800);
+
+  setInterval(function() {
+    window.applyContactSettings();
+    window.fillContactAdminFields();
+  }, 2500);
+});
 
 </script>
 
