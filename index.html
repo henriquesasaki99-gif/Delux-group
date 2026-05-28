@@ -2470,6 +2470,101 @@ body {
   }
 }
 
+
+/* CONTATO — DELUX MAKES */
+.mk-contact-section {
+  padding: 6rem 4rem;
+  background: var(--mk-cream);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.mk-contact-text {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #9e6679;
+  max-width: 34rem;
+  margin-bottom: 2rem;
+}
+
+.mk-contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mk-contact-item {
+  background: white;
+  border: 1px solid rgba(232,49,122,0.08);
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.mk-contact-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--mk-pink3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mk-contact-item strong {
+  display: block;
+  font-size: 12px;
+  color: #1a0a10;
+  margin-bottom: 4px;
+}
+
+.mk-contact-item p {
+  font-size: 12px;
+  color: #9e6679;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.mk-contact-card {
+  background: white;
+  border: 1px solid rgba(232,49,122,0.1);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 16px 40px rgba(232,49,122,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.mk-contact-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--mk-pink);
+}
+
+.mk-contact-card p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #9e6679;
+}
+
+@media (max-width: 768px) {
+  .mk-contact-section {
+    grid-template-columns: 1fr;
+    padding: 4rem 1.4rem;
+  }
+
+  .mk-contact-card {
+    padding: 1.5rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2940,7 +3035,51 @@ body {
     </p>
   </div>
 
-  <footer class="brand-footer mk-footer-area">
+  
+<!-- CONTATO — DELUX MAKES -->
+<section id="mk-contato" class="mk-contact-section">
+  <div class="mk-contact-info">
+    <div class="mk-label">Contato</div>
+    <h2 class="mk-title">Fale com a <em>Delux Makes</em></h2>
+    <p class="mk-contact-text">
+      Entre em contato para dúvidas, pedidos, informações sobre produtos ou atendimento personalizado.
+    </p>
+
+    <div class="mk-contact-items">
+      <div class="mk-contact-item">
+        <span class="mk-contact-icon">📍</span>
+        <div>
+          <strong>Endereço</strong>
+          <p id="mk-contact-address">Rua Mascarenhas de Morais, 1538 — Vila Margarida</p>
+        </div>
+      </div>
+
+      <div class="mk-contact-item">
+        <span class="mk-contact-icon">📱</span>
+        <div>
+          <strong>Instagram</strong>
+          <p id="mk-contact-instagram">@DELUX_MAKES</p>
+        </div>
+      </div>
+
+      <div class="mk-contact-item">
+        <span class="mk-contact-icon">🕒</span>
+        <div>
+          <strong>Horário</strong>
+          <p id="mk-contact-hours">Consulte nosso horário de atendimento</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mk-contact-card">
+    <h3>Atendimento</h3>
+    <p>Para atendimento rápido, chame a Delux Makes pelo Instagram ou WhatsApp.</p>
+    <a class="btn-mk-pink" href="https://www.instagram.com/DELUX_MAKES" target="_blank" rel="noopener">Abrir Instagram</a>
+  </div>
+</section>
+
+<footer class="brand-footer mk-footer-area">
     <span class="brand-footer-name" style="color:var(--mk-pink);">Delux <em>Makes</em></span>
     <span class="brand-footer-copy">© 2025 Delux Group. Todos os direitos reservados.</span>
     <div class="brand-footer-social">
