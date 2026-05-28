@@ -2221,6 +2221,190 @@ body {
   }
 }
 
+
+
+
+/* ============================
+   ADMIN MOBILE RESPONSIVO - AJUSTADO
+   ============================ */
+@media (max-width: 768px) {
+  #adm-panel {
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .adm-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 42vh;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(192,200,212,0.12);
+    padding: 1rem 0 0.8rem;
+  }
+
+  .adm-sidebar-logo {
+    font-size: 1.15rem;
+    padding: 0 1rem;
+  }
+
+  .adm-sidebar-sub {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .adm-sb-group {
+    margin-bottom: 0.8rem;
+  }
+
+  .adm-sb-group-label {
+    padding: 0 1rem;
+  }
+
+  .adm-sb-btn {
+    padding: 0.75rem 1rem;
+    font-size: 12px;
+  }
+
+  .adm-sidebar-logout {
+    padding: 0 1rem;
+  }
+
+  .adm-main {
+    flex: 1;
+    padding: 1.2rem 1rem 6rem;
+    overflow-y: auto;
+  }
+
+  .adm-main-title {
+    font-size: 1.45rem;
+  }
+
+  .adm-main-sub {
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .adm-login-box {
+    width: calc(100% - 2rem);
+    max-width: 360px;
+    padding: 2rem 1.4rem;
+  }
+
+  .adm-login-actions {
+    flex-direction: column;
+  }
+
+  .adm-upload-zone {
+    padding: 1.6rem 1rem;
+  }
+
+  .adm-banner-actions,
+  .adm-hero-actions,
+  .adm-post-actions,
+  .adm-product-actions,
+  .adm-photo-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .adm-btn-primary,
+  .adm-btn-sec,
+  .adm-btn-danger {
+    width: 100%;
+    text-align: center;
+  }
+
+  .adm-form-row,
+  .by-form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .adm-photos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .adm-photo {
+    min-width: 0;
+    display: block;
+    overflow: hidden;
+  }
+
+  .adm-photo-img {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+  }
+
+  .adm-photo-img img {
+    display: block !important;
+    width: 100% !important;
+    height: 140px !important;
+    min-height: 140px;
+    object-fit: cover;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .adm-banner-preview,
+  .adm-hero-preview-wrap {
+    width: 100%;
+  }
+
+  .adm-banner-preview img,
+  .adm-hero-preview-wrap img {
+    display: block !important;
+    width: 100% !important;
+    max-height: 240px;
+    object-fit: cover;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .adm-banner-inp,
+  .adm-input,
+  .adm-textarea,
+  .adm-select,
+  .adm-pwd-wrap input,
+  .adm-form-group input,
+  .adm-form-group textarea,
+  .adm-form-group select {
+    font-size: 16px !important;
+  }
+
+  .adm-tab {
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .adm-sidebar {
+    max-height: 46vh;
+  }
+
+  .adm-main {
+    padding: 1rem 0.85rem 7rem;
+  }
+
+  .adm-photos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adm-photo-img img {
+    height: 220px !important;
+    min-height: 220px;
+  }
+
+  .adm-sb-btn {
+    font-size: 11px;
+  }
+
+  .adm-upload-label {
+    line-height: 1.5;
+  }
+}
+
 </style>
 </head>
 <body>
