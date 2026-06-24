@@ -2914,6 +2914,170 @@ body {
   .hero-nav-arrow.next { right: 10px !important; }
 }
 
+
+
+/* =========================================================
+   DELUX SALES UPGRADE — loja pronta para vender
+   Inserido para melhorar conversão, confiança e compra via WhatsApp
+   ========================================================= */
+.delux-sales-bar {
+  position: sticky;
+  top: 64px;
+  z-index: 180;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 10px 18px;
+  background: linear-gradient(90deg, #e8317a, #f472a8, #e8317a);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(232,49,122,.18);
+}
+.delux-sales-bar a { color:#fff; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.65); }
+.delux-trust-row {
+  display:grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1rem;
+  padding: 1.4rem 4rem;
+  background:#fff;
+  border-bottom:1px solid rgba(232,49,122,.08);
+}
+.delux-trust-card {
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+  padding:1rem;
+  border:1px solid rgba(232,49,122,.08);
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#fff6fa);
+}
+.delux-trust-icon { font-size:1.5rem; }
+.delux-trust-card strong { display:block; font-size:12px; color:#1a0a10; }
+.delux-trust-card span { display:block; font-size:11px; color:#9e6679; margin-top:2px; }
+.mk-card { position:relative; }
+.mk-card::before {
+  content:'Pronta entrega';
+  position:absolute;
+  top:12px;
+  right:12px;
+  z-index:5;
+  background:#fff;
+  color:var(--mk-pink);
+  border:1px solid rgba(232,49,122,.16);
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  box-shadow:0 8px 20px rgba(232,49,122,.10);
+}
+.mk-card-price { gap:10px; align-items:stretch; }
+.mk-add {
+  width:auto !important;
+  min-width:118px;
+  height:38px !important;
+  padding:0 14px;
+  border-radius:999px !important;
+  font-size:11px !important;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  gap:6px;
+}
+.mk-add::before { content:'Comprar'; }
+.mk-add { color:transparent !important; position:relative; }
+.mk-add::before { color:var(--mk-pink); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.mk-add:hover::before { color:#fff; }
+.delux-shop-cta {
+  margin-top:2rem;
+  padding:1.5rem;
+  border-radius:24px;
+  background:linear-gradient(135deg,#fff,#fff0f6);
+  border:1px solid rgba(232,49,122,.12);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1.2rem;
+}
+.delux-shop-cta h3 { color:#1a0a10; font-size:1.2rem; margin-bottom:4px; }
+.delux-shop-cta p { color:#9e6679; font-size:13px; line-height:1.5; }
+.delux-shop-cta a {
+  background:var(--mk-pink);
+  color:#fff;
+  border-radius:999px;
+  padding:.85rem 1.4rem;
+  text-decoration:none;
+  font-weight:900;
+  font-size:12px;
+  white-space:nowrap;
+}
+.delux-cart-float {
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:650;
+  width:min(390px, calc(100vw - 36px));
+  background:#fff;
+  border:1px solid rgba(232,49,122,.15);
+  border-radius:24px;
+  box-shadow:0 20px 60px rgba(40,0,20,.22);
+  overflow:hidden;
+  font-family:'Nunito', sans-serif;
+  display:none;
+}
+.delux-cart-float.visible { display:block; }
+.delux-cart-head {
+  background:linear-gradient(90deg,#e8317a,#f472a8);
+  color:#fff;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:900;
+}
+.delux-cart-close { background:rgba(255,255,255,.18); border:0; color:#fff; width:30px; height:30px; border-radius:50%; cursor:pointer; }
+.delux-cart-body { padding:14px 16px; max-height:260px; overflow:auto; }
+.delux-cart-item { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(232,49,122,.08); color:#1a0a10; font-size:13px; }
+.delux-cart-item small { display:block; color:#9e6679; margin-top:2px; }
+.delux-cart-total { display:flex; justify-content:space-between; padding:12px 16px; font-weight:900; color:#1a0a10; background:#fff7fb; }
+.delux-cart-actions { padding:14px 16px 16px; display:grid; gap:10px; }
+.delux-cart-actions a, .delux-cart-actions button { border:0; border-radius:999px; padding:12px 14px; font-weight:900; cursor:pointer; text-align:center; text-decoration:none; font-size:13px; }
+.delux-checkout { background:var(--mk-pink); color:#fff; }
+.delux-clear-cart { background:#fff0f6; color:var(--mk-pink); }
+.delux-cart-bubble {
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:640;
+  background:var(--mk-pink);
+  color:#fff;
+  border:0;
+  border-radius:999px;
+  padding:13px 18px;
+  font-weight:900;
+  box-shadow:0 12px 32px rgba(232,49,122,.28);
+  cursor:pointer;
+  display:none;
+}
+.delux-cart-bubble.visible { display:block; }
+@media (max-width:900px) {
+  .delux-sales-bar { top:56px; font-size:11px; flex-wrap:wrap; }
+  .delux-trust-row { grid-template-columns:repeat(2,1fr); padding:1rem 1.5rem; }
+  .delux-shop-cta { flex-direction:column; align-items:flex-start; }
+}
+@media (max-width:600px) {
+  .delux-sales-bar { top:54px; padding:9px 12px; }
+  .delux-trust-row { grid-template-columns:1fr; padding:1rem; }
+  .mk-add { min-width:100%; margin-top:8px; }
+  .mk-card-price { flex-direction:column; align-items:flex-start; }
+}
+
 </style>
 </head>
 <body>
@@ -5699,6 +5863,189 @@ carregarFotosFirebase();
     if (e.key === 'ArrowLeft') window.deluxHeroPrev(byActive ? 'by' : 'mk');
     if (e.key === 'ArrowRight') window.deluxHeroNext(byActive ? 'by' : 'mk');
   });
+})();
+</script>
+
+
+
+<script>
+/* =========================================================
+   DELUX SALES UPGRADE — carrinho simples + checkout WhatsApp
+   ========================================================= */
+(function(){
+  var cart = [];
+  function moneyToNumber(value) {
+    value = String(value || '').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
+    var n = parseFloat(value);
+    return isNaN(n) ? 0 : n;
+  }
+  function formatBRL(n) {
+    return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  }
+  function getWhatsBase() {
+    try {
+      if (window._contactConfig && _contactConfig.mk && _contactConfig.mk.whatsappLink) return _contactConfig.mk.whatsappLink;
+    } catch(e) {}
+    var btn = document.querySelector('.mk-contact-card .btn-mk-whatsapp');
+    return btn ? btn.href.split('?')[0] : 'https://wa.me/5511999999999';
+  }
+  function buildWhatsMessage() {
+    var lines = ['Olá! Quero fazer um pedido na Delux Makes:', ''];
+    cart.forEach(function(item, i){ lines.push((i+1)+'. '+item.name+' — '+item.priceText); });
+    lines.push('');
+    lines.push('Total aproximado: '+formatBRL(cart.reduce(function(s,i){return s+i.price;},0)));
+    lines.push('Pode confirmar disponibilidade e forma de pagamento?');
+    return lines.join('\n');
+  }
+  function checkoutUrl() {
+    var base = getWhatsBase();
+    var sep = base.indexOf('?') >= 0 ? '&' : '?';
+    if (base.indexOf('text=') >= 0) base = base.split('?')[0], sep='?';
+    return base + sep + 'text=' + encodeURIComponent(buildWhatsMessage());
+  }
+  function ensureUI() {
+    if (!document.querySelector('.delux-sales-bar')) {
+      var page = document.getElementById('page-makes');
+      var nav = page && page.querySelector('.mk-nav');
+      if (page && nav) {
+        var bar = document.createElement('div');
+        bar.className = 'delux-sales-bar';
+        bar.innerHTML = '<span>💗 Atendimento rápido pelo WhatsApp</span><span>•</span><span>Produtos selecionados para pronta venda</span><span>•</span><a href="#mk-produtos">Comprar agora</a>';
+        nav.insertAdjacentElement('afterend', bar);
+      }
+    }
+    if (!document.querySelector('.delux-trust-row')) {
+      var hero = document.querySelector('#page-makes .mk-hero');
+      if (hero) {
+        var trust = document.createElement('div');
+        trust.className = 'delux-trust-row';
+        trust.innerHTML = '<div class="delux-trust-card"><b class="delux-trust-icon">🛍️</b><div><strong>Compra fácil</strong><span>Pedido direto no WhatsApp</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">✨</b><div><strong>Curadoria Delux</strong><span>Produtos e kits selecionados</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">📱</b><div><strong>Atendimento humano</strong><span>Tire dúvidas antes de comprar</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">💳</b><div><strong>Pagamento combinado</strong><span>Confirmação no atendimento</span></div></div>';
+        hero.insertAdjacentElement('afterend', trust);
+      }
+    }
+    if (!document.querySelector('.delux-shop-cta')) {
+      var grid = document.querySelector('#mk-produtos .mk-prod-grid');
+      if (grid) {
+        var cta = document.createElement('div');
+        cta.className = 'delux-shop-cta';
+        cta.innerHTML = '<div><h3>Gostou de algum produto?</h3><p>Clique em comprar, monte seu pedido e finalize pelo WhatsApp com a Delux Makes.</p></div><a href="#mk-produtos">Ver produtos</a>';
+        grid.insertAdjacentElement('afterend', cta);
+      }
+    }
+    if (!document.getElementById('delux-cart')) {
+      document.body.insertAdjacentHTML('beforeend', '<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu pedido</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" target="_blank" rel="noopener">Finalizar no WhatsApp</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');
+      document.getElementById('delux-cart-bubble').onclick = function(){ document.getElementById('delux-cart').classList.add('visible'); this.classList.remove('visible'); };
+      document.getElementById('delux-cart-close').onclick = function(){ document.getElementById('delux-cart').classList.remove('visible'); if(cart.length) document.getElementById('delux-cart-bubble').classList.add('visible'); };
+      document.getElementById('delux-clear-cart').onclick = function(){ cart=[]; renderCart(); };
+    }
+  }
+  function bindProducts() {
+    document.querySelectorAll('#page-makes .mk-add').forEach(function(btn, idx){
+      if (btn.dataset.deluxBound) return;
+      btn.dataset.deluxBound = '1';
+      btn.setAttribute('type','button');
+      btn.setAttribute('aria-label','Comprar produto');
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var nameEl = document.getElementById('mk-prod-name-'+idx);
+        var catEl = document.getElementById('mk-prod-cat-'+idx);
+        var priceEl = document.getElementById('mk-prod-price-'+idx);
+        var item = {
+          name: nameEl ? nameEl.textContent.trim() : 'Produto Delux Makes',
+          cat: catEl ? catEl.textContent.trim() : '',
+          priceText: priceEl ? priceEl.textContent.trim() : 'Consultar valor',
+          price: priceEl ? moneyToNumber(priceEl.textContent) : 0
+        };
+        cart.push(item);
+        renderCart(true);
+      });
+    });
+  }
+  function renderCart(open) {
+    ensureUI();
+    var body = document.getElementById('delux-cart-body');
+    var total = cart.reduce(function(s,i){return s+i.price;},0);
+    if (!body) return;
+    if (!cart.length) {
+      body.innerHTML = '<p style="color:#9e6679;font-size:13px;line-height:1.6;">Seu carrinho está vazio. Escolha um produto para montar seu pedido.</p>';
+      document.getElementById('delux-cart').classList.remove('visible');
+      document.getElementById('delux-cart-bubble').classList.remove('visible');
+    } else {
+      body.innerHTML = cart.map(function(item, i){ return '<div class="delux-cart-item"><div><strong>'+item.name+'</strong><small>'+item.cat+'</small></div><div>'+item.priceText+'</div></div>'; }).join('');
+      document.getElementById('delux-cart-count').textContent = cart.length;
+      document.getElementById('delux-cart-total').textContent = formatBRL(total);
+      document.getElementById('delux-checkout').href = checkoutUrl();
+      if (open) document.getElementById('delux-cart').classList.add('visible');
+      if (!document.getElementById('delux-cart').classList.contains('visible')) document.getElementById('delux-cart-bubble').classList.add('visible');
+    }
+  }
+  function updateHeroCopy() {
+    var badge = document.querySelector('#page-makes .mk-badge');
+    var desc = document.querySelector('#page-makes .mk-desc');
+    if (badge) badge.textContent = '✨ Loja de beleza • produtos, cursos e atendimento';
+    if (desc) desc.textContent = 'Escolha seus produtos favoritos, monte seu pedido e finalize pelo WhatsApp com atendimento personalizado da Delux Makes.';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureUI();
+    bindProducts();
+    updateHeroCopy();
+    renderCart(false);
+    setInterval(bindProducts, 1200);
+  });
+})();
+</script>
+
+
+<style>
+/* =========================================================
+   DELUX ONLINE SHOP UPGRADE — Coleções BY + Produtos Makes
+   ========================================================= */
+.delux-online-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;background:transparent!important}.delux-online-grid.mk{grid-template-columns:repeat(4,1fr)}
+.delux-shop-card{background:rgba(255,255,255,.025);border:1px solid rgba(192,200,212,.10);overflow:hidden;position:relative;transition:.25s;display:flex;flex-direction:column;min-height:100%}.delux-shop-card:hover{transform:translateY(-5px);border-color:rgba(192,200,212,.28);box-shadow:0 18px 50px rgba(0,0,0,.22)}
+.delux-shop-card.mk{background:#fff;border:1px solid rgba(232,49,122,.10);border-radius:20px;box-shadow:0 10px 28px rgba(232,49,122,.06)}.delux-shop-card.mk:hover{box-shadow:0 18px 44px rgba(232,49,122,.15);border-color:rgba(232,49,122,.22)}
+.delux-shop-media{position:relative;background:rgba(255,255,255,.035);aspect-ratio:4/5;overflow:hidden;display:flex;align-items:center;justify-content:center}.delux-shop-card.mk .delux-shop-media{background:#fff0f6;border-radius:20px 20px 0 0;aspect-ratio:1/1}.delux-shop-media img{width:100%;height:100%;object-fit:cover;display:block}.delux-shop-emoji{font-size:3.4rem;opacity:.85}.delux-shop-badge{position:absolute;top:12px;left:12px;background:rgba(13,13,13,.72);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:6px 10px;border-radius:50px;backdrop-filter:blur(8px)}.delux-shop-card.mk .delux-shop-badge{background:var(--mk-pink);border-color:var(--mk-pink)}
+.delux-img-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.28);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;z-index:2}.delux-img-nav.prev{left:8px}.delux-img-nav.next{right:8px}.delux-img-count{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.45);color:white;border-radius:50px;padding:4px 9px;font-size:10px;letter-spacing:1px}
+.delux-shop-body{padding:1.3rem 1.35rem 1.5rem;display:flex;flex-direction:column;gap:.65rem;flex:1}.delux-shop-cat{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);font-family:'Josefin Sans',sans-serif}.delux-shop-card.mk .delux-shop-cat{color:#9e6679;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.08em}.delux-shop-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--by-silver-bright);line-height:1.1}.delux-shop-card.mk .delux-shop-name{color:#1a0a10;font-weight:700}.delux-shop-desc{font-size:11px;line-height:1.7;color:var(--by-silver-dim);font-family:'Josefin Sans',sans-serif;min-height:42px}.delux-shop-card.mk .delux-shop-desc{color:#9e6679;font-family:'Nunito',sans-serif;font-size:12px}.delux-shop-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:.35rem}.delux-shop-price{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;color:var(--by-silver-bright)}.delux-shop-card.mk .delux-shop-price{color:var(--mk-pink)}.delux-shop-buy{border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:.72rem 1rem;border-radius:50px;background:var(--by-silver);color:var(--by-dark);font-family:'Josefin Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;white-space:nowrap}.delux-shop-card.mk .delux-shop-buy{background:var(--mk-pink);color:#fff;font-family:'Nunito',sans-serif;font-size:10px}.delux-shop-buy:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.delux-adm-shop-list{display:flex;flex-direction:column;gap:1.2rem}.delux-adm-shop-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1.2rem}.delux-adm-add{background:var(--by-silver);color:var(--by-dark);border:none;padding:.75rem 1.2rem;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase}.delux-adm-add.mk{background:var(--mk-pink);color:#fff;border-radius:50px}.delux-adm-card{background:rgba(255,255,255,.025);border:1px solid rgba(192,200,212,.10);padding:1.3rem;border-radius:6px}.delux-adm-card.mk{border-color:rgba(232,49,122,.16);background:rgba(232,49,122,.035)}.delux-adm-title-row{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}.delux-adm-title{font-family:'Cormorant Garamond',serif;color:var(--by-silver-bright);font-size:1.2rem}.delux-adm-card.mk .delux-adm-title{color:#fff}.delux-adm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}.delux-adm-grid.two{grid-template-columns:1fr 1fr}.delux-adm-field label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px}.delux-adm-card.mk .delux-adm-field label{color:var(--mk-rose)}.delux-adm-field input,.delux-adm-field textarea{width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(192,200,212,.18);color:#fff;padding:.65rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none}.delux-adm-card.mk .delux-adm-field input,.delux-adm-card.mk .delux-adm-field textarea{border-bottom-color:rgba(232,49,122,.25)}.delux-adm-field textarea{height:58px;resize:none}.delux-adm-imgs{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.7rem}.delux-adm-img{width:76px;height:76px;border-radius:7px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.12)}.delux-adm-img img{width:100%;height:100%;object-fit:cover}.delux-adm-x{position:absolute;top:4px;right:4px;border:none;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;width:20px;height:20px;cursor:pointer}.delux-adm-actions{display:flex;gap:.7rem;flex-wrap:wrap}.delux-adm-file{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;border:1px dashed rgba(192,200,212,.25);padding:.65rem 1rem;color:var(--by-silver);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}.delux-adm-card.mk .delux-adm-file{border-color:rgba(232,49,122,.35);color:var(--mk-pink);border-radius:50px}.delux-adm-file input{position:absolute;inset:0;opacity:0;cursor:pointer}.delux-adm-del{background:transparent;border:1px solid rgba(255,80,80,.25);color:#ff8a8a;padding:.65rem 1rem;cursor:pointer;font-size:10px;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:980px){.delux-online-grid,.delux-online-grid.mk{grid-template-columns:repeat(2,1fr)}.delux-adm-grid{grid-template-columns:1fr 1fr}}@media(max-width:640px){.delux-online-grid,.delux-online-grid.mk{grid-template-columns:1fr}.delux-adm-grid,.delux-adm-grid.two{grid-template-columns:1fr}.delux-shop-bottom{align-items:flex-start;flex-direction:column}.delux-shop-buy{width:100%}}
+</style>
+
+<script>
+/* =========================================================
+   DELUX ONLINE SHOP UPGRADE — edição, várias imagens e venda
+   ========================================================= */
+(function(){
+  var state={
+    by:[
+      {id:'by0',name:'Essentials',cat:'Coleção',desc:'Peças clássicas em preto e neutros que nunca saem de moda. O básico que não é básico.',price:'Consultar',icon:'🖤',images:[],active:0},
+      {id:'by1',name:'Glam Night',cat:'Coleção',desc:'Looks sofisticados para noites especiais. Brilho, elegância e muito charme.',price:'Consultar',icon:'✦',images:[],active:0},
+      {id:'by2',name:'Day Casual',cat:'Coleção',desc:'Conforto e estilo para o dia a dia. Para a mulher que quer se sentir linda a qualquer hora.',price:'Consultar',icon:'🌿',images:[],active:0}
+    ],
+    mk:[
+      {id:'mk0',name:'Base HD Perfeita',cat:'Base & Cobertura',desc:'Produto selecionado Delux Makes.',price:'R$ 89,90',icon:'💄',images:[],active:0},
+      {id:'mk1',name:'Paleta Glam Rosa',cat:'Sombras & Iluminadores',desc:'Produto selecionado Delux Makes.',price:'R$ 129,90',icon:'🌟',images:[],active:0},
+      {id:'mk2',name:'Batom Matte Delux',cat:'Labiais',desc:'Produto selecionado Delux Makes.',price:'R$ 49,90',icon:'💋',images:[],active:0},
+      {id:'mk3',name:'Kit Pincel Pro',cat:'Acessórios',desc:'Produto selecionado Delux Makes.',price:'R$ 179,90',icon:'✨',images:[],active:0}
+    ]
+  };
+  var shopCart=[];
+  function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function getWa(brand){try{if(window._contactConfig&&_contactConfig[brand]&&_contactConfig[brand].whatsappLink)return _contactConfig[brand].whatsappLink.split('?')[0];}catch(e){} var a=document.querySelector(brand==='by'?'.btn-by-whatsapp-new':'.btn-mk-whatsapp'); return a?a.href.split('?')[0]:'https://wa.me/5511999999999';}
+  function itemMsg(brand,item){var lines=['Olá! Tenho interesse '+(brand==='by'?'nesta coleção/peça da Delux BY:':'neste produto da Delux Makes:'),'',item.name,'Categoria: '+(item.cat||'-'),'Valor: '+(item.price||'Consultar'),'','Pode confirmar disponibilidade, pagamento e entrega?'];return getWa(brand)+'?text='+encodeURIComponent(lines.join('\n'));}
+  function mediaHtml(brand,item,idx){var img=item.images&&item.images[item.active||0];var count=(item.images||[]).length;return '<div class="delux-shop-media">'+(img?'<img src="'+esc(img)+'" alt="'+esc(item.name)+'">':'<div class="delux-shop-emoji">'+esc(item.icon||'🛍️')+'</div>')+'<span class="delux-shop-badge">'+(brand==='by'?'Delux BY':'Pronta venda')+'</span>'+(count>1?'<button class="delux-img-nav prev" onclick="deluxShopImg(\''+brand+'\','+idx+',-1)">‹</button><button class="delux-img-nav next" onclick="deluxShopImg(\''+brand+'\','+idx+',1)">›</button><span class="delux-img-count">'+((item.active||0)+1)+'/'+count+'</span>':'')+'</div>';}
+  function cardHtml(brand,item,idx){return '<div class="delux-shop-card '+(brand==='mk'?'mk':'')+'">'+mediaHtml(brand,item,idx)+'<div class="delux-shop-body"><div class="delux-shop-cat">'+esc(item.cat||'')+'</div><div class="delux-shop-name">'+esc(item.name||'Item Delux')+'</div><p class="delux-shop-desc">'+esc(item.desc||'')+'</p><div class="delux-shop-bottom"><span class="delux-shop-price">'+esc(item.price||'Consultar')+'</span><a class="delux-shop-buy" href="'+itemMsg(brand,item)+'" target="_blank" rel="noopener">Comprar</a></div></div></div>';}
+  function renderPublic(){var byGrid=document.querySelector('#by-colecoes .by-col-grid');if(byGrid){byGrid.className='by-col-grid delux-online-grid';byGrid.innerHTML=state.by.map(function(it,i){return cardHtml('by',it,i);}).join('');}var mkGrid=document.querySelector('#mk-produtos .mk-prod-grid');if(mkGrid){mkGrid.className='mk-prod-grid delux-online-grid mk';mkGrid.innerHTML=state.mk.map(function(it,i){return cardHtml('mk',it,i);}).join('');}}
+  window.deluxShopImg=function(brand,idx,dir){var it=state[brand][idx];if(!it||!it.images||!it.images.length)return;it.active=((it.active||0)+dir+it.images.length)%it.images.length;renderPublic();};
+  function adminCard(brand,item,idx){var mk=brand==='mk';return '<div class="delux-adm-card '+(mk?'mk':'')+'"><div class="delux-adm-title-row"><div class="delux-adm-title">'+String(idx+1).padStart(2,'0')+' — '+esc(item.name||'Novo item')+'</div><button class="delux-adm-del" onclick="deluxAdmRemoveItem(\''+brand+'\','+idx+')">Remover</button></div><div class="delux-adm-grid"><div class="delux-adm-field"><label>Nome</label><input value="'+esc(item.name)+'" oninput="deluxAdmSet(\''+brand+'\','+idx+',\'name\',this.value)"></div><div class="delux-adm-field"><label>Categoria</label><input value="'+esc(item.cat)+'" oninput="deluxAdmSet(\''+brand+'\','+idx+',\'cat\',this.value)"></div><div class="delux-adm-field"><label>Preço</label><input value="'+esc(item.price)+'" oninput="deluxAdmSet(\''+brand+'\','+idx+',\'price\',this.value)" placeholder="R$ 0,00 ou Consultar"></div><div class="delux-adm-field"><label>Ícone</label><input value="'+esc(item.icon)+'" oninput="deluxAdmSet(\''+brand+'\','+idx+',\'icon\',this.value)"></div></div><div class="delux-adm-grid two"><div class="delux-adm-field"><label>Descrição de venda</label><textarea oninput="deluxAdmSet(\''+brand+'\','+idx+',\'desc\',this.value)">'+esc(item.desc)+'</textarea></div><div><label class="delux-adm-file"><input type="file" accept="image/*" multiple onchange="deluxAdmAddImgs(\''+brand+'\','+idx+',this.files);this.value=\'\'">Adicionar imagens</label><div class="delux-adm-imgs">'+(item.images||[]).map(function(src,k){return '<div class="delux-adm-img"><img src="'+esc(src)+'"><button class="delux-adm-x" onclick="deluxAdmDelImg(\''+brand+'\','+idx+','+k+')">×</button></div>';}).join('')+'</div></div></div></div>';}
+  function renderAdmin(){var by=document.getElementById('adm-tab-by-colecoes');if(by){by.innerHTML='<div class="delux-adm-shop-head"><div><div class="adm-main-title">Coleções — Delux By</div><div class="adm-main-sub">Cadastre coleções/peças para vender online, com várias imagens por item e botão de compra pelo WhatsApp.</div></div><button class="delux-adm-add" onclick="deluxAdmAddItem(\'by\')">+ Adicionar coleção</button></div><div class="adm-divider"></div><div class="delux-adm-shop-list">'+state.by.map(function(it,i){return adminCard('by',it,i);}).join('')+'</div>';}var mk=document.getElementById('adm-tab-mk-produtos');if(mk){mk.innerHTML='<div class="delux-adm-shop-head"><div><div class="adm-main-title" style="color:var(--mk-pink);">Produtos — Delux Makes</div><div class="adm-main-sub">Cadastre produtos para vender online, com várias imagens por item e botão de compra pelo WhatsApp.</div></div><button class="delux-adm-add mk" onclick="deluxAdmAddItem(\'mk\')">+ Adicionar produto</button></div><div class="adm-divider"></div><div class="delux-adm-shop-list">'+state.mk.map(function(it,i){return adminCard('mk',it,i);}).join('')+'</div>';}}
+  window.deluxAdmSet=function(brand,idx,key,val){if(!state[brand][idx])return;state[brand][idx][key]=val;renderPublic();debouncedSave();};
+  window.deluxAdmAddItem=function(brand){state[brand].push({id:brand+Date.now(),name:brand==='by'?'Nova coleção':'Novo produto',cat:brand==='by'?'Coleção':'Categoria',desc:'Descrição do item para venda online.',price:'Consultar',icon:brand==='by'?'👗':'💄',images:[],active:0});renderPublic();renderAdmin();debouncedSave();};
+  window.deluxAdmRemoveItem=function(brand,idx){state[brand].splice(idx,1);renderPublic();renderAdmin();debouncedSave();};
+  window.deluxAdmDelImg=function(brand,idx,k){var it=state[brand][idx];if(!it)return;it.images.splice(k,1);it.active=0;renderPublic();renderAdmin();debouncedSave();};
+  window.deluxAdmAddImgs=function(brand,idx,files){Array.from(files||[]).forEach(function(file){if(!file.type||!file.type.startsWith('image/'))return;admUploadToCloudinary(file,'delux_'+brand+'_shop').then(function(src){state[brand][idx].images.push(src);renderPublic();renderAdmin();debouncedSave();}).catch(admUploadErro);});};
+  var saveTimer=null;function debouncedSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveExtra,500);}async function saveExtra(){try{var fb=await _waitDeluxFirestore();var data=await fb.load()||{};data.onlineShop={by:state.by,mk:state.mk};await fb.save(data);}catch(e){try{localStorage.setItem('deluxOnlineShop',JSON.stringify(state));}catch(x){} console.warn('Online shop save:',e);}}
+  async function loadExtra(){var loaded=false;try{var fb=await _waitDeluxFirestore();var data=await fb.load();if(data&&data.onlineShop){state.by=data.onlineShop.by||state.by;state.mk=data.onlineShop.mk||state.mk;loaded=true;}}catch(e){} if(!loaded){try{var ls=JSON.parse(localStorage.getItem('deluxOnlineShop')||'null');if(ls){state.by=ls.by||state.by;state.mk=ls.mk||state.mk;}}catch(x){}}renderPublic();renderAdmin();}
+  document.addEventListener('DOMContentLoaded',function(){renderPublic();renderAdmin();loadExtra();setTimeout(function(){renderPublic();renderAdmin();},1200);});
 })();
 </script>
 
