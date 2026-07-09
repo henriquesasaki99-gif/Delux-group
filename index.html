@@ -6415,17 +6415,32 @@ carregarFotosFirebase();
   function moneyBR(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
   function esc(v){return String(v??'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
   function whatsappText(p){return encodeURIComponent('Olá, tenho interesse no produto '+(p.name||'')+' da '+(p.store||'Delux Group')+' no valor de '+moneyBR(p.price)+'.');}
-  function getProducts(){
+  async function getProducts(){
+    try{
+      if(window._waitDeluxFirestore){
+        var fb = await window._waitDeluxFirestore();
+        var data = await fb.load();
+        if(data && Array.isArray(data.erpProductsPublic)){
+          try{localStorage.setItem('deluxPublicProductsCache', JSON.stringify(data.erpProductsPublic));}catch(x){}
+          return data.erpProductsPublic.filter(function(p){return p.publicVisible!==false && Number(p.stock||0)>0;});
+        }
+      }
+    }catch(e){console.warn('Vitrine pública: Firebase indisponível, usando cache local.', e);}
+    try{
+      var cache=JSON.parse(localStorage.getItem('deluxPublicProductsCache')||'[]');
+      if(cache && cache.length) return cache.filter(function(p){return p.publicVisible!==false && Number(p.stock||0)>0;});
+    }catch(e){}
     try{
       var db=JSON.parse(localStorage.getItem('deluxDB')||'{}');
       return (db.products||[]).filter(function(p){return p.publicVisible && Number(p.stock||0)>0;});
     }catch(e){return []}
   }
-  function renderPublicProducts(filter){
+  async function renderPublicProducts(filter){
     var grid=document.getElementById('deluxPublicProducts');
     var filters=document.getElementById('deluxPublicFilters');
     if(!grid||!filters)return;
-    var products=getProducts().sort(function(a,b){return (b.publicHighlight?1:0)-(a.publicHighlight?1:0) || String(a.name).localeCompare(String(b.name));});
+    grid.innerHTML='<div class="delux-public-empty">Carregando produtos publicados...</div>';
+    var products=(await getProducts()).sort(function(a,b){return (b.publicHighlight?1:0)-(a.publicHighlight?1:0) || String(a.name).localeCompare(String(b.name));});
     var lojas=[...new Set(products.map(function(p){return p.store||'Delux Group';}))];
     var active=filter||'Todas';
     filters.innerHTML=['Todas'].concat(lojas).map(function(l){return '<button class="'+(l===active?'active':'')+'" data-store="'+esc(l)+'">'+esc(l)+'</button>';}).join('');
@@ -6438,7 +6453,8 @@ carregarFotosFirebase();
   }
   window.deluxRenderPublicProducts=renderPublicProducts;
   document.addEventListener('DOMContentLoaded',function(){renderPublicProducts('Todas');});
-  window.addEventListener('storage',function(e){if(e.key==='deluxDB')renderPublicProducts('Todas');});
+  window.addEventListener('storage',function(e){if(e.key==='deluxDB'||e.key==='deluxPublicProductsCache')renderPublicProducts('Todas');});
+  setInterval(function(){renderPublicProducts('Todas');}, 60000);
 })();
 </script>
 
