@@ -4512,28 +4512,62 @@ async function admSaveContacts() {
 }
 
 
-// ── NAVEGAÇÃO ──
-function enterSite(brand) {
-  var landing = document.getElementById('landing');
-  landing.classList.add('exiting');
-  setTimeout(function() {
-    landing.style.display = 'none';
-    var page = document.getElementById(brand === 'by' ? 'page-by' : 'page-makes');
-    page.classList.add('active', 'page-enter');
-    window.scrollTo(0,0);
-  }, 800);
+// ── NAVEGAÇÃO CORRIGIDA ──
+// Salva a última página aberta para que o site não volte sozinho para a tela inicial após atualização/sincronização.
+function _deluxSetRoute(brand) {
+  try { localStorage.setItem('deluxCurrentPage', brand || 'landing'); } catch(e) {}
+  if (brand === 'by' || brand === 'makes') {
+    try { if (location.hash !== '#' + brand) history.replaceState(null, '', '#' + brand); } catch(e) {}
+  } else {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
+  }
 }
-
-function goBack() {
-  var pages = document.querySelectorAll('#page-by, #page-makes');
-  pages.forEach(function(p) { p.classList.remove('active','page-enter'); });
+function _deluxShowPageNow(brand, animate) {
   var landing = document.getElementById('landing');
-  landing.style.display = 'flex';
-  landing.classList.remove('exiting');
-  landing.style.opacity = '1';
-  landing.style.transform = '';
+  var by = document.getElementById('page-by');
+  var mk = document.getElementById('page-makes');
+  if (!landing || !by || !mk) return;
+  by.classList.remove('active','page-enter');
+  mk.classList.remove('active','page-enter');
+  if (brand === 'by' || brand === 'makes') {
+    landing.style.display = 'none';
+    landing.classList.add('exiting');
+    landing.style.opacity = '0';
+    var page = brand === 'by' ? by : mk;
+    page.classList.add('active');
+    if (animate) page.classList.add('page-enter');
+  } else {
+    landing.style.display = 'flex';
+    landing.classList.remove('exiting');
+    landing.style.opacity = '1';
+    landing.style.transform = '';
+  }
+}
+function enterSite(brand) {
+  brand = brand === 'by' ? 'by' : 'makes';
+  _deluxSetRoute(brand);
+  var landing = document.getElementById('landing');
+  if (landing) landing.classList.add('exiting');
+  setTimeout(function() {
+    _deluxShowPageNow(brand, true);
+    window.scrollTo(0,0);
+  }, 250);
+}
+function goBack() {
+  _deluxSetRoute('landing');
+  _deluxShowPageNow('landing', false);
   window.scrollTo(0,0);
 }
+document.addEventListener('DOMContentLoaded', function(){
+  var saved = (location.hash || '').replace('#','') || (function(){ try { return localStorage.getItem('deluxCurrentPage') || ''; } catch(e){ return ''; } })();
+  if (saved === 'by' || saved === 'makes') {
+    _deluxShowPageNow(saved, false);
+  }
+});
+window.addEventListener('hashchange', function(){
+  var h = (location.hash || '').replace('#','');
+  if (h === 'by' || h === 'makes') { _deluxSetRoute(h); _deluxShowPageNow(h, false); }
+});
 
 // ── ADMIN TRIGGER ──
 
@@ -6543,12 +6577,16 @@ carregarFotosFirebase();
           if(!warn){
             warn=document.createElement('div'); warn.id='delux-sync-warning';
             warn.style.cssText='position:fixed;right:14px;bottom:14px;z-index:2000;background:#111;color:#fff;border:1px solid rgba(255,255,255,.18);padding:12px 14px;border-radius:10px;font:12px Arial;box-shadow:0 10px 30px rgba(0,0,0,.35)';
-            warn.innerHTML='Banco atualizado em outra tela. <button style="margin-left:8px;padding:6px 10px;border:0;border-radius:6px;cursor:pointer" onclick="location.reload()">Atualizar</button>';
+            warn.innerHTML='Banco atualizado em outra tela. <button style="margin-left:8px;padding:6px 10px;border:0;border-radius:6px;cursor:pointer" onclick="if(window.deluxSoftRefresh){window.deluxSoftRefresh()}else{location.reload()}">Atualizar</button>';
             document.body.appendChild(warn);
           }
         } else {
           if(window.deluxRenderPublicProducts) window.deluxRenderPublicProducts('Todas');
-          setTimeout(function(){ location.reload(); }, 350);
+          setTimeout(function(){
+            if (typeof _load === 'function') { try { _load(); } catch(e){} }
+            if(window.deluxRenderPublicProducts) window.deluxRenderPublicProducts('Todas');
+            if(window.deluxMkGroups && window.renderPublicMkGroups) { try { window.renderPublicMkGroups(); } catch(e){} }
+          }, 350);
         }
       });
     }catch(e){ console.warn('Delux realtime indisponível:', e); }
@@ -6608,6 +6646,27 @@ carregarFotosFirebase();
         }
       }catch(e){}
     },2200);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== PROTEÇÃO CONTRA VOLTAR PARA A TELA INICIAL ===== */
+(function(){
+  window.deluxSoftRefresh = async function(){
+    try { if (typeof _load === 'function') await _load(); } catch(e) { console.warn('Soft refresh _load:', e); }
+    try { if (window.deluxRenderPublicProducts) window.deluxRenderPublicProducts('Todas'); } catch(e) {}
+    try { if (window.deluxMkGroups && typeof renderPublicMkGroups === 'function') renderPublicMkGroups(); } catch(e) {}
+    var warn=document.getElementById('delux-sync-warning'); if(warn) warn.remove();
+    var current=(location.hash||'').replace('#','') || (function(){try{return localStorage.getItem('deluxCurrentPage')||''}catch(e){return''}})();
+    if(current==='by'||current==='makes') { try{ _deluxShowPageNow(current,false); }catch(e){} }
+  };
+  var oldReload = null;
+  // Não bloqueia recarregamento manual do navegador; apenas garante que, se houver reload por script antigo, a rota volta correta.
+  document.addEventListener('DOMContentLoaded', function(){
+    var current=(location.hash||'').replace('#','') || (function(){try{return localStorage.getItem('deluxCurrentPage')||''}catch(e){return''}})();
+    if(current==='by'||current==='makes') setTimeout(function(){ try{_deluxShowPageNow(current,false)}catch(e){} }, 500);
   });
 })();
 </script>
