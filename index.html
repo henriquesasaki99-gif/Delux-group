@@ -6458,5 +6458,180 @@ carregarFotosFirebase();
 })();
 </script>
 
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg",
+  authDomain: "delux-group.firebaseapp.com",
+  projectId: "delux-group",
+  storageBucket: "delux-group.firebasestorage.app",
+  messagingSenderId: "971726312316",
+  appId: "1:971726312316:web:ed515078f8aa4932018af9",
+  measurementId: "G-ED9Q04M7NC"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const ref = doc(db, "site_config", "admin");
+
+window.deluxDadosSite = {
+  banners: {},
+  heroBy: [],
+  heroMakes: [],
+  fotos: { by: [], mk: [] },
+  posts: { by: [], mk: [] },
+  contatos: {},
+  produtosSite: []
+};
+
+window.salvarDeluxSite = async function() {
+  await setDoc(ref, {
+    ...window.deluxDadosSite,
+    atualizadoEm: Date.now()
+  }, { merge: true });
+
+  aplicarDeluxSite(window.deluxDadosSite);
+};
+
+window.carregarDeluxSite = async function() {
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    window.deluxDadosSite = {
+      ...window.deluxDadosSite,
+      ...snap.data()
+    };
+    aplicarDeluxSite(window.deluxDadosSite);
+  }
+};
+
+function aplicarDeluxSite(dados) {
+  aplicarBanner("by", dados);
+  aplicarBanner("mk", dados);
+  aplicarHero("by", dados.heroBy || []);
+  aplicarHero("mk", dados.heroMakes || []);
+  aplicarFotos("by", dados.fotos?.by || []);
+  aplicarFotos("mk", dados.fotos?.mk || []);
+  aplicarPosts("by", dados.posts?.by || []);
+  aplicarPosts("mk", dados.posts?.mk || []);
+  aplicarContatos(dados.contatos || {});
+  aplicarProdutos(dados.produtosSite || []);
+}
+
+function aplicarBanner(tipo, dados) {
+  const banner = dados.banners?.[tipo];
+  if (!banner) return;
+
+  const wrap = document.getElementById(tipo === "by" ? "by-banner-wrap" : "mk-banner-wrap");
+  const img = document.getElementById(tipo === "by" ? "by-banner-img" : "mk-banner-img");
+  const titulo = document.getElementById(tipo === "by" ? "by-banner-title" : "mk-banner-title");
+
+  if (wrap && img && banner.imagem) {
+    img.src = banner.imagem;
+    wrap.style.display = "block";
+  }
+
+  if (titulo) {
+    titulo.textContent = banner.titulo || "";
+  }
+}
+
+function aplicarHero(tipo, imagens) {
+  const container = document.getElementById(tipo === "by" ? "by-hero-slideshow" : "mk-hero-slideshow");
+  if (!container) return;
+
+  if (!imagens.length) return;
+
+  container.innerHTML = imagens.map((img, i) => `
+    <img src="${img.src || img}" class="${tipo === "by" ? "by-slide" : "mk-slide"} ${i === 0 ? "active" : ""}">
+  `).join("");
+}
+
+function aplicarFotos(tipo, fotos) {
+  const grid = document.querySelector(tipo === "by" ? ".pub-photos-grid" : ".mk-pub-photos-grid");
+  if (!grid) return;
+
+  grid.innerHTML = fotos.map(f => `
+    <div class="${tipo === "by" ? "pub-photo" : "mk-pub-photo"}">
+      <img src="${f.src || f.url || f}" alt="foto">
+      ${f.titulo ? `<div>${f.titulo}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+function aplicarPosts(tipo, posts) {
+  const section = document.getElementById(tipo === "by" ? "by-posts-section" : "mk-posts-section");
+  const list = document.getElementById(tipo === "by" ? "by-posts-list" : "mk-posts-list");
+  if (!list) return;
+
+  if (!posts.length) {
+    if (section) section.style.display = "none";
+    return;
+  }
+
+  if (section) section.style.display = "block";
+
+  list.innerHTML = posts.map(p => `
+    <div class="pub-post">
+      <div class="pub-post-dt">${p.data || ""}</div>
+      <div class="pub-post-ttl">${p.titulo || ""}</div>
+      <div class="pub-post-body">${p.texto || p.descricao || ""}</div>
+    </div>
+  `).join("");
+}
+
+function aplicarContatos(contatos) {
+  document.querySelectorAll("[data-delux-whatsapp]").forEach(el => {
+    el.href = "https://wa.me/" + (contatos.whatsapp || "");
+  });
+
+  document.querySelectorAll("[data-delux-instagram]").forEach(el => {
+    el.href = contatos.instagram || "#";
+  });
+
+  document.querySelectorAll("[data-delux-email]").forEach(el => {
+    el.href = "mailto:" + (contatos.email || "");
+  });
+}
+
+function aplicarProdutos(produtos) {
+  const vitrine = document.getElementById("delux-produtos-site");
+  if (!vitrine) return;
+
+  const publicados = produtos.filter(p => p.publicado || p.publicarSite);
+
+  if (!publicados.length) {
+    vitrine.innerHTML = "<p>Nenhum produto publicado no momento.</p>";
+    return;
+  }
+
+  vitrine.innerHTML = publicados.map(p => `
+    <div class="produto-card">
+      ${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : ""}
+      <h3>${p.nome || ""}</h3>
+      <p>${p.loja || ""}</p>
+      <strong>R$ ${Number(p.preco || 0).toFixed(2).replace(".", ",")}</strong>
+      <p>${p.descricao || p.descricaoCurta || ""}</p>
+      <a target="_blank" href="https://wa.me/${p.whatsapp || "5513999999999"}?text=${encodeURIComponent("Olá, tenho interesse no produto: " + (p.nome || ""))}">
+        Comprar pelo WhatsApp
+      </a>
+    </div>
+  `).join("");
+}
+
+onSnapshot(ref, snap => {
+  if (snap.exists()) {
+    window.deluxDadosSite = {
+      ...window.deluxDadosSite,
+      ...snap.data()
+    };
+    aplicarDeluxSite(window.deluxDadosSite);
+  }
+});
+
+window.carregarDeluxSite();
+</script>
+
 </body>
 </html>
