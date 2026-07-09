@@ -3164,6 +3164,42 @@ body {
 @media(max-width:900px){.delux-public-grid{grid-template-columns:repeat(2,1fr)}.delux-public-products{padding:4rem 1.2rem}}
 @media(max-width:520px){.delux-public-grid{grid-template-columns:1fr}}
 
+
+
+/* ===== CORREÇÃO MOBILE DO ADMIN/SISTEMA DELUX ===== */
+@media (max-width: 900px) {
+  .center-logo-wrap { min-width: 86vw; padding: 1.6rem 1rem; }
+  .center-brand-pills { flex-direction: column; gap: 10px; width: 100%; }
+  .center-pill { width: 100%; text-align: center; }
+  .side-content { display: none; }
+  .split-bg { flex-direction: column; }
+  .divider { display: none; }
+  .by-nav, .mk-nav { padding: .8rem 1rem; flex-wrap: wrap; gap: .7rem; }
+  .by-nav-links, .mk-nav-links { width: 100%; gap: .8rem; overflow-x: auto; padding-bottom: .2rem; }
+  .by-hero, .mk-hero, .by-sobre-contato-wrap { grid-template-columns: 1fr; }
+  .by-hero-left, .mk-hero-left, .by-section, .mk-section, .by-sobre, .by-contato, #by-gallery-section, #mk-gallery-section { padding: 5rem 1.1rem 2rem; }
+  .by-hero-right, .mk-hero-right { padding: 1rem; }
+  .by-hero-slideshow, .mk-hero-slideshow { max-width: 100%; min-height: 360px; }
+  .by-hero-placeholder, .mk-hero-placeholder { min-height: 360px; }
+  .by-col-grid, .mk-prod-grid, .by-looks-grid, .pub-photos-grid, .mk-pub-photos-grid { grid-template-columns: 1fr; }
+  .brand-footer { padding: 1.5rem 1rem; flex-direction: column; gap: 1rem; text-align: center; }
+
+  #adm-panel { flex-direction: column; overflow: hidden; }
+  .adm-sidebar { width: 100%; height: auto; max-height: 42vh; overflow-y: auto; border-right: none; border-bottom: 1px solid rgba(192,200,212,.12); padding: 1rem 0; }
+  .adm-sidebar-logo, .adm-sidebar-sub, .adm-sb-group-label { padding: 0 1rem; }
+  .adm-sb-group { margin-bottom: .7rem; }
+  .adm-sb-btn { padding: .85rem 1rem; font-size: 12px; }
+  .adm-main { padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .adm-main-title { font-size: 1.45rem; }
+  .adm-form-row, .by-form-row, .adm-grid, .delux-adm-grid, .delux-adm-grid.two { grid-template-columns: 1fr !important; }
+  .adm-upload-zone { padding: 1.3rem .9rem; }
+  .adm-photos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .adm-login-box { width: min(92vw, 360px); padding: 2rem 1.4rem; }
+  .adm-banner-actions, .adm-hero-actions, .adm-login-actions { flex-direction: column; }
+  .adm-btn-primary, .adm-btn-sec, .adm-btn-danger { width: 100%; }
+  input, select, textarea, button { font-size: 16px; }
+}
+
 </style>
 </head>
 <body>
@@ -5225,7 +5261,7 @@ function _admUpdateStats() {
 var DELUX_FIRESTORE_COLLECTION = 'site_config';
 var DELUX_FIRESTORE_DOC = 'admin';
 
-function _waitDeluxFirestore() {
+window._waitDeluxFirestore = function _waitDeluxFirestore() {
   if (window.deluxFirestore) return Promise.resolve(window.deluxFirestore);
   return new Promise(function(resolve, reject) {
     var done = false;
@@ -5586,7 +5622,8 @@ import {
   doc,
   setDoc,
   getDoc,
-  deleteDoc
+  deleteDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -5601,14 +5638,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+window.DELUX_CLIENT_ID = window.DELUX_CLIENT_ID || ('delux_' + Date.now() + '_' + Math.random().toString(36).slice(2));
 
 // API global usada pelo painel Admin para salvar/carregar tudo no Firestore.
 window.deluxFirestore = {
   async save(data) {
     await setDoc(doc(db, 'site_config', 'admin'), {
       ...data,
-      updatedAt: Date.now()
-    });
+      updatedAt: Date.now(),
+      updatedBy: window.DELUX_CLIENT_ID
+    }, { merge: true });
   },
   async load() {
     const snap = await getDoc(doc(db, 'site_config', 'admin'));
@@ -5616,6 +5655,11 @@ window.deluxFirestore = {
   },
   async clear() {
     await deleteDoc(doc(db, 'site_config', 'admin'));
+  },
+  subscribe(callback) {
+    return onSnapshot(doc(db, 'site_config', 'admin'), (snap) => {
+      callback(snap.exists() ? snap.data() : null);
+    }, (err) => console.warn('Realtime Firestore:', err));
   }
 };
 window.dispatchEvent(new Event('delux-firestore-ready'));
@@ -6458,179 +6502,41 @@ carregarFotosFirebase();
 })();
 </script>
 
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg",
-  authDomain: "delux-group.firebaseapp.com",
-  projectId: "delux-group",
-  storageBucket: "delux-group.firebasestorage.app",
-  messagingSenderId: "971726312316",
-  appId: "1:971726312316:web:ed515078f8aa4932018af9",
-  measurementId: "G-ED9Q04M7NC"
-};
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const ref = doc(db, "site_config", "admin");
-
-window.deluxDadosSite = {
-  banners: {},
-  heroBy: [],
-  heroMakes: [],
-  fotos: { by: [], mk: [] },
-  posts: { by: [], mk: [] },
-  contatos: {},
-  produtosSite: []
-};
-
-window.salvarDeluxSite = async function() {
-  await setDoc(ref, {
-    ...window.deluxDadosSite,
-    atualizadoEm: Date.now()
-  }, { merge: true });
-
-  aplicarDeluxSite(window.deluxDadosSite);
-};
-
-window.carregarDeluxSite = async function() {
-  const snap = await getDoc(ref);
-  if (snap.exists()) {
-    window.deluxDadosSite = {
-      ...window.deluxDadosSite,
-      ...snap.data()
-    };
-    aplicarDeluxSite(window.deluxDadosSite);
+<script>
+/* ===== SINCRONIZAÇÃO EM TEMPO REAL ENTRE ADMIN, SITE E SISTEMA ===== */
+(function(){
+  var firstSnapshot = true;
+  function admOpen(){
+    var p=document.getElementById('adm-panel');
+    return p && getComputedStyle(p).display !== 'none';
   }
-};
-
-function aplicarDeluxSite(dados) {
-  aplicarBanner("by", dados);
-  aplicarBanner("mk", dados);
-  aplicarHero("by", dados.heroBy || []);
-  aplicarHero("mk", dados.heroMakes || []);
-  aplicarFotos("by", dados.fotos?.by || []);
-  aplicarFotos("mk", dados.fotos?.mk || []);
-  aplicarPosts("by", dados.posts?.by || []);
-  aplicarPosts("mk", dados.posts?.mk || []);
-  aplicarContatos(dados.contatos || {});
-  aplicarProdutos(dados.produtosSite || []);
-}
-
-function aplicarBanner(tipo, dados) {
-  const banner = dados.banners?.[tipo];
-  if (!banner) return;
-
-  const wrap = document.getElementById(tipo === "by" ? "by-banner-wrap" : "mk-banner-wrap");
-  const img = document.getElementById(tipo === "by" ? "by-banner-img" : "mk-banner-img");
-  const titulo = document.getElementById(tipo === "by" ? "by-banner-title" : "mk-banner-title");
-
-  if (wrap && img && banner.imagem) {
-    img.src = banner.imagem;
-    wrap.style.display = "block";
+  async function startRealtime(){
+    try{
+      if(!window._waitDeluxFirestore) return;
+      var api = await window._waitDeluxFirestore();
+      if(!api || !api.subscribe) return;
+      api.subscribe(function(data){
+        if(firstSnapshot){ firstSnapshot=false; return; }
+        if(data && data.updatedBy && data.updatedBy === window.DELUX_CLIENT_ID) return;
+        if(admOpen()){
+          var warn=document.getElementById('delux-sync-warning');
+          if(!warn){
+            warn=document.createElement('div'); warn.id='delux-sync-warning';
+            warn.style.cssText='position:fixed;right:14px;bottom:14px;z-index:2000;background:#111;color:#fff;border:1px solid rgba(255,255,255,.18);padding:12px 14px;border-radius:10px;font:12px Arial;box-shadow:0 10px 30px rgba(0,0,0,.35)';
+            warn.innerHTML='Banco atualizado em outra tela. <button style="margin-left:8px;padding:6px 10px;border:0;border-radius:6px;cursor:pointer" onclick="location.reload()">Atualizar</button>';
+            document.body.appendChild(warn);
+          }
+        } else {
+          if(window.deluxRenderPublicProducts) window.deluxRenderPublicProducts('Todas');
+          setTimeout(function(){ location.reload(); }, 350);
+        }
+      });
+    }catch(e){ console.warn('Delux realtime indisponível:', e); }
   }
-
-  if (titulo) {
-    titulo.textContent = banner.titulo || "";
-  }
-}
-
-function aplicarHero(tipo, imagens) {
-  const container = document.getElementById(tipo === "by" ? "by-hero-slideshow" : "mk-hero-slideshow");
-  if (!container) return;
-
-  if (!imagens.length) return;
-
-  container.innerHTML = imagens.map((img, i) => `
-    <img src="${img.src || img}" class="${tipo === "by" ? "by-slide" : "mk-slide"} ${i === 0 ? "active" : ""}">
-  `).join("");
-}
-
-function aplicarFotos(tipo, fotos) {
-  const grid = document.querySelector(tipo === "by" ? ".pub-photos-grid" : ".mk-pub-photos-grid");
-  if (!grid) return;
-
-  grid.innerHTML = fotos.map(f => `
-    <div class="${tipo === "by" ? "pub-photo" : "mk-pub-photo"}">
-      <img src="${f.src || f.url || f}" alt="foto">
-      ${f.titulo ? `<div>${f.titulo}</div>` : ""}
-    </div>
-  `).join("");
-}
-
-function aplicarPosts(tipo, posts) {
-  const section = document.getElementById(tipo === "by" ? "by-posts-section" : "mk-posts-section");
-  const list = document.getElementById(tipo === "by" ? "by-posts-list" : "mk-posts-list");
-  if (!list) return;
-
-  if (!posts.length) {
-    if (section) section.style.display = "none";
-    return;
-  }
-
-  if (section) section.style.display = "block";
-
-  list.innerHTML = posts.map(p => `
-    <div class="pub-post">
-      <div class="pub-post-dt">${p.data || ""}</div>
-      <div class="pub-post-ttl">${p.titulo || ""}</div>
-      <div class="pub-post-body">${p.texto || p.descricao || ""}</div>
-    </div>
-  `).join("");
-}
-
-function aplicarContatos(contatos) {
-  document.querySelectorAll("[data-delux-whatsapp]").forEach(el => {
-    el.href = "https://wa.me/" + (contatos.whatsapp || "");
-  });
-
-  document.querySelectorAll("[data-delux-instagram]").forEach(el => {
-    el.href = contatos.instagram || "#";
-  });
-
-  document.querySelectorAll("[data-delux-email]").forEach(el => {
-    el.href = "mailto:" + (contatos.email || "");
-  });
-}
-
-function aplicarProdutos(produtos) {
-  const vitrine = document.getElementById("delux-produtos-site");
-  if (!vitrine) return;
-
-  const publicados = produtos.filter(p => p.publicado || p.publicarSite);
-
-  if (!publicados.length) {
-    vitrine.innerHTML = "<p>Nenhum produto publicado no momento.</p>";
-    return;
-  }
-
-  vitrine.innerHTML = publicados.map(p => `
-    <div class="produto-card">
-      ${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : ""}
-      <h3>${p.nome || ""}</h3>
-      <p>${p.loja || ""}</p>
-      <strong>R$ ${Number(p.preco || 0).toFixed(2).replace(".", ",")}</strong>
-      <p>${p.descricao || p.descricaoCurta || ""}</p>
-      <a target="_blank" href="https://wa.me/${p.whatsapp || "5513999999999"}?text=${encodeURIComponent("Olá, tenho interesse no produto: " + (p.nome || ""))}">
-        Comprar pelo WhatsApp
-      </a>
-    </div>
-  `).join("");
-}
-
-onSnapshot(ref, snap => {
-  if (snap.exists()) {
-    window.deluxDadosSite = {
-      ...window.deluxDadosSite,
-      ...snap.data()
-    };
-    aplicarDeluxSite(window.deluxDadosSite);
-  }
-});
-
-window.carregarDeluxSite();
+  document.addEventListener('DOMContentLoaded', startRealtime);
+})();
 </script>
 
 </body>
