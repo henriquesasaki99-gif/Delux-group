@@ -3078,6 +3078,92 @@ body {
   .mk-card-price { flex-direction:column; align-items:flex-start; }
 }
 
+
+/* BOTÃO ÁREA DO VENDEDOR / ERP */
+.delux-seller-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.center-pill.seller-pill-btn {
+  background: linear-gradient(135deg, rgba(232,49,122,0.96), rgba(192,200,212,0.22));
+  border: 1px solid rgba(255,255,255,0.38);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(232,49,122,0.22);
+}
+.center-pill.seller-pill-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(232,49,122,0.32);
+}
+.by-seller-btn {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(192,200,212,0.11);
+  border: 1px solid rgba(192,200,212,0.25);
+  color: var(--by-silver-bright);
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Josefin Sans', sans-serif;
+  transition: all 0.3s;
+}
+.by-seller-btn:hover {
+  background: var(--by-silver);
+  color: var(--by-dark);
+}
+.mk-seller-btn {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  background: var(--mk-pink);
+  border: 1px solid rgba(232,49,122,0.3);
+  color: #fff;
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.3s;
+}
+.mk-seller-btn:hover {
+  background: var(--mk-rose);
+  transform: translateY(-1px);
+}
+@media (max-width:900px) {
+  .center-brand-pills { flex-direction: column; gap: 12px; }
+  .by-nav, .mk-nav { gap: 10px; flex-wrap: wrap; }
+  .by-nav-links, .mk-nav-links { gap: 1rem; flex-wrap: wrap; }
+  .by-seller-btn, .mk-seller-btn { width: 100%; max-width: 220px; }
+}
+
+
+/* Vitrine pública sincronizada com ERP */
+.delux-public-products{padding:6rem 4rem;background:#fff;color:#1a0a10;font-family:'Nunito',sans-serif;}
+.delux-public-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;}
+.delux-public-head h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);line-height:1.1;}
+.delux-public-head h2 em{color:var(--mk-pink);font-style:italic;}
+.delux-public-head p{color:#9e6679;max-width:520px;font-size:13px;line-height:1.7;}
+.delux-public-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.delux-public-filters button{border:1px solid rgba(232,49,122,.22);background:#fff5f9;color:var(--mk-pink);border-radius:999px;padding:.55rem 1rem;font-weight:700;cursor:pointer;}
+.delux-public-filters button.active{background:var(--mk-pink);color:#fff;}
+.delux-public-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem;}
+.delux-public-card{border:1px solid rgba(232,49,122,.08);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 30px rgba(232,49,122,.06);}
+.delux-public-img{width:100%;aspect-ratio:1;object-fit:cover;background:#fff0f5;display:flex;align-items:center;justify-content:center;color:var(--mk-pink);font-weight:800;}
+.delux-public-body{padding:1rem 1.1rem 1.2rem;}
+.delux-public-store{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mk-pink);font-weight:800;margin-bottom:.35rem;}
+.delux-public-name{font-weight:800;font-size:14px;margin-bottom:.25rem;}
+.delux-public-cat{font-size:12px;color:#9e6679;margin-bottom:.65rem;}
+.delux-public-desc{font-size:12px;color:#74485a;line-height:1.5;min-height:36px;margin-bottom:.8rem;}
+.delux-public-bottom{display:flex;align-items:center;justify-content:space-between;gap:.7rem;}
+.delux-public-price{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:var(--mk-pink);font-weight:800;}
+.delux-public-card a{background:var(--mk-pink);color:#fff;text-decoration:none;border-radius:999px;padding:.55rem .8rem;font-size:11px;font-weight:800;white-space:nowrap;}
+.delux-public-badge{display:inline-block;background:#17131a;color:#fff;border-radius:999px;padding:3px 8px;font-size:9px;font-weight:800;margin-left:6px;}
+.delux-public-empty{padding:2rem;border:1px dashed rgba(232,49,122,.25);border-radius:16px;color:#9e6679;background:#fff5f9;}
+@media(max-width:900px){.delux-public-grid{grid-template-columns:repeat(2,1fr)}.delux-public-products{padding:4rem 1.2rem}}
+@media(max-width:520px){.delux-public-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -3138,6 +3224,7 @@ body {
     <div class="center-brand-pills">
       <button class="center-pill by-pill-btn" onclick="enterSite('by')">Delux By</button>
       <button class="center-pill mk-pill-btn" onclick="enterSite('makes')">Delux Makes</button>
+      <a class="center-pill seller-pill-btn delux-seller-link" href="sistema/index.html" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
     </div>
   </div>
 
@@ -3169,6 +3256,7 @@ body {
       <li><a href="#by-sobre-contato">Sobre</a></li>
       <li><a href="#by-sobre-contato">Contato</a></li>
     </ul>
+    <a class="by-seller-btn delux-seller-link" href="sistema/index.html">👤 Área do Vendedor</a>
     <button class="back-btn" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -3429,6 +3517,7 @@ body {
       <li><a href="#mk-sobre">Sobre</a></li>
       <li><a href="#mk-sobre">Contato</a></li>
     </ul>
+    <a class="mk-seller-btn delux-seller-link" href="sistema/index.html">👤 Área do Vendedor</a>
     <button class="back-btn-mk" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -6009,6 +6098,66 @@ carregarFotosFirebase();
 .delux-adm-shop-list{display:flex;flex-direction:column;gap:1.2rem}.delux-adm-shop-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1.2rem}.delux-adm-add{background:var(--by-silver);color:var(--by-dark);border:none;padding:.75rem 1.2rem;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase}.delux-adm-add.mk{background:var(--mk-pink);color:#fff;border-radius:50px}.delux-adm-card{background:rgba(255,255,255,.025);border:1px solid rgba(192,200,212,.10);padding:1.3rem;border-radius:6px}.delux-adm-card.mk{border-color:rgba(232,49,122,.16);background:rgba(232,49,122,.035)}.delux-adm-title-row{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}.delux-adm-title{font-family:'Cormorant Garamond',serif;color:var(--by-silver-bright);font-size:1.2rem}.delux-adm-card.mk .delux-adm-title{color:#fff}.delux-adm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}.delux-adm-grid.two{grid-template-columns:1fr 1fr}.delux-adm-field label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--by-silver-dim);display:block;margin-bottom:6px}.delux-adm-card.mk .delux-adm-field label{color:var(--mk-rose)}.delux-adm-field input,.delux-adm-field textarea{width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(192,200,212,.18);color:#fff;padding:.65rem 0;font-family:'Josefin Sans',sans-serif;font-size:12px;outline:none}.delux-adm-card.mk .delux-adm-field input,.delux-adm-card.mk .delux-adm-field textarea{border-bottom-color:rgba(232,49,122,.25)}.delux-adm-field textarea{height:58px;resize:none}.delux-adm-imgs{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.7rem}.delux-adm-img{width:76px;height:76px;border-radius:7px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.12)}.delux-adm-img img{width:100%;height:100%;object-fit:cover}.delux-adm-x{position:absolute;top:4px;right:4px;border:none;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;width:20px;height:20px;cursor:pointer}.delux-adm-actions{display:flex;gap:.7rem;flex-wrap:wrap}.delux-adm-file{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;border:1px dashed rgba(192,200,212,.25);padding:.65rem 1rem;color:var(--by-silver);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}.delux-adm-card.mk .delux-adm-file{border-color:rgba(232,49,122,.35);color:var(--mk-pink);border-radius:50px}.delux-adm-file input{position:absolute;inset:0;opacity:0;cursor:pointer}.delux-adm-del{background:transparent;border:1px solid rgba(255,80,80,.25);color:#ff8a8a;padding:.65rem 1rem;cursor:pointer;font-size:10px;letter-spacing:2px;text-transform:uppercase}
 .delux-cart-item{align-items:center}.delux-cart-item-main{flex:1;min-width:0}.delux-cart-item-main strong{display:block;white-space:normal}.delux-cart-side{display:flex;flex-direction:column;align-items:flex-end;gap:7px;min-width:110px}.delux-cart-qty{display:inline-flex;align-items:center;gap:8px;background:#fff0f6;border-radius:999px;padding:3px}.delux-cart-qty button{width:24px;height:24px;border:0;border-radius:50%;background:var(--mk-pink);color:#fff;font-weight:900;cursor:pointer;line-height:1}.delux-cart-qty span{min-width:18px;text-align:center;font-weight:900;color:#1a0a10;font-size:12px}.delux-cart-remove{border:0;background:transparent;color:#d04478;font-size:11px;font-weight:800;cursor:pointer;text-decoration:underline}.delux-cart-brand{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;background:rgba(13,13,13,.07);color:#6b4a57!important;font-size:9px!important;letter-spacing:.08em;text-transform:uppercase}.delux-cart-empty{color:#9e6679;font-size:13px;line-height:1.6}.delux-cart-note{padding:0 16px 12px;color:#9e6679;font-size:11px;line-height:1.5}.delux-shop-buy.added{filter:brightness(1.08);box-shadow:0 0 0 3px rgba(232,49,122,.14)}
 .delux-mk-toggle{font-size:1.35rem;color:#9e6679;font-weight:900}.delux-mk-open-products{display:flex;flex-direction:column;gap:2rem;margin-top:1rem}.delux-mk-open-head{display:flex;justify-content:space-between;align-items:flex-end;margin:1.6rem 0 .6rem}.delux-mk-group .delux-mk-group-count{display:inline-block;margin-top:1rem}.delux-mk-products-grid .delux-shop-card{min-width:0}.delux-shop-card.mk{overflow:hidden}.delux-shop-name,.delux-shop-desc,.delux-shop-cat{word-break:normal;overflow-wrap:break-word}.delux-shop-body{min-width:0}@media(max-width:1180px){.delux-mk-group-cards{grid-template-columns:repeat(2,minmax(220px,1fr))}}@media(max-width:980px){.delux-online-grid,.delux-online-grid.mk{grid-template-columns:repeat(2,1fr)}.delux-adm-grid{grid-template-columns:1fr 1fr}}@media(max-width:640px){.delux-online-grid,.delux-online-grid.mk{grid-template-columns:1fr}.delux-adm-grid,.delux-adm-grid.two{grid-template-columns:1fr}.delux-shop-bottom{align-items:flex-start;flex-direction:column}.delux-shop-buy{width:100%}}
+
+/* BOTÃO ÁREA DO VENDEDOR / ERP */
+.delux-seller-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.center-pill.seller-pill-btn {
+  background: linear-gradient(135deg, rgba(232,49,122,0.96), rgba(192,200,212,0.22));
+  border: 1px solid rgba(255,255,255,0.38);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(232,49,122,0.22);
+}
+.center-pill.seller-pill-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(232,49,122,0.32);
+}
+.by-seller-btn {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(192,200,212,0.11);
+  border: 1px solid rgba(192,200,212,0.25);
+  color: var(--by-silver-bright);
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Josefin Sans', sans-serif;
+  transition: all 0.3s;
+}
+.by-seller-btn:hover {
+  background: var(--by-silver);
+  color: var(--by-dark);
+}
+.mk-seller-btn {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  background: var(--mk-pink);
+  border: 1px solid rgba(232,49,122,0.3);
+  color: #fff;
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.3s;
+}
+.mk-seller-btn:hover {
+  background: var(--mk-rose);
+  transform: translateY(-1px);
+}
+@media (max-width:900px) {
+  .center-brand-pills { flex-direction: column; gap: 12px; }
+  .by-nav, .mk-nav { gap: 10px; flex-wrap: wrap; }
+  .by-nav-links, .mk-nav-links { gap: 1rem; flex-wrap: wrap; }
+  .by-seller-btn, .mk-seller-btn { width: 100%; max-width: 220px; }
+}
+
 </style>
 
 <script>
@@ -6140,6 +6289,66 @@ carregarFotosFirebase();
 @media(max-width:1180px){.delux-mk-group-cards{grid-template-columns:repeat(2,minmax(220px,1fr))!important;}.delux-mk-products-grid{grid-template-columns:repeat(3,minmax(160px,1fr))!important;}}
 @media(max-width:760px){#mk-produtos{padding-left:1.1rem!important;padding-right:1.1rem!important}.delux-mk-toolbar{align-items:flex-start;flex-direction:column}.delux-mk-group-cards{grid-template-columns:1fr!important;}.delux-mk-products-grid{grid-template-columns:repeat(2,minmax(130px,1fr))!important;gap:.8rem!important}.delux-shop-media{height:155px!important}.delux-shop-name{font-size:1.1rem!important}.delux-shop-desc{font-size:10px!important}.delux-mk-manage{width:100%;justify-content:center}}
 @media(max-width:460px){.delux-mk-products-grid{grid-template-columns:1fr!important}.delux-shop-media{height:210px!important}}
+
+/* BOTÃO ÁREA DO VENDEDOR / ERP */
+.delux-seller-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.center-pill.seller-pill-btn {
+  background: linear-gradient(135deg, rgba(232,49,122,0.96), rgba(192,200,212,0.22));
+  border: 1px solid rgba(255,255,255,0.38);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(232,49,122,0.22);
+}
+.center-pill.seller-pill-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(232,49,122,0.32);
+}
+.by-seller-btn {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(192,200,212,0.11);
+  border: 1px solid rgba(192,200,212,0.25);
+  color: var(--by-silver-bright);
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Josefin Sans', sans-serif;
+  transition: all 0.3s;
+}
+.by-seller-btn:hover {
+  background: var(--by-silver);
+  color: var(--by-dark);
+}
+.mk-seller-btn {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  background: var(--mk-pink);
+  border: 1px solid rgba(232,49,122,0.3);
+  color: #fff;
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.3s;
+}
+.mk-seller-btn:hover {
+  background: var(--mk-rose);
+  transform: translateY(-1px);
+}
+@media (max-width:900px) {
+  .center-brand-pills { flex-direction: column; gap: 12px; }
+  .by-nav, .mk-nav { gap: 10px; flex-wrap: wrap; }
+  .by-nav-links, .mk-nav-links { gap: 1rem; flex-wrap: wrap; }
+  .by-seller-btn, .mk-seller-btn { width: 100%; max-width: 220px; }
+}
+
 </style>
 
 <script>
@@ -6197,6 +6406,39 @@ carregarFotosFirebase();
   async function saveGroups(){try{var fb=await _waitDeluxFirestore();var data=await fb.load()||{};data.onlineShop=data.onlineShop||{};data.onlineShop.mkGroups=mkGroups;await fb.save(data)}catch(e){try{localStorage.setItem('deluxMkGroups',JSON.stringify(mkGroups))}catch(x){}console.warn('Salvar grupos Makes:',e)}}
   async function loadGroups(){var loaded=false;try{var fb=await _waitDeluxFirestore();var data=await fb.load();if(data&&data.onlineShop&&data.onlineShop.mkGroups){mkGroups=data.onlineShop.mkGroups;loaded=true}else if(data&&data.onlineShop&&data.onlineShop.mk&&!loaded){mkGroups=[{id:'grp_produtos',name:'Produtos',desc:'Produtos cadastrados para venda online.',products:data.onlineShop.mk}];loaded=true}}catch(e){}if(!loaded){try{var ls=JSON.parse(localStorage.getItem('deluxMkGroups')||'null');if(ls){mkGroups=ls;loaded=true}}catch(x){}}renderPublicMkGroups();renderAdminMkGroups();renderGroupedCart(false)}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){renderPublicMkGroups();renderAdminMkGroups();ensureCart();renderGroupedCart(false);loadGroups()},300);setTimeout(function(){renderPublicMkGroups();renderAdminMkGroups()},1600);});
+})();
+</script>
+
+
+<script>
+(function(){
+  function moneyBR(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+  function whatsappText(p){return encodeURIComponent('Olá, tenho interesse no produto '+(p.name||'')+' da '+(p.store||'Delux Group')+' no valor de '+moneyBR(p.price)+'.');}
+  function getProducts(){
+    try{
+      var db=JSON.parse(localStorage.getItem('deluxDB')||'{}');
+      return (db.products||[]).filter(function(p){return p.publicVisible && Number(p.stock||0)>0;});
+    }catch(e){return []}
+  }
+  function renderPublicProducts(filter){
+    var grid=document.getElementById('deluxPublicProducts');
+    var filters=document.getElementById('deluxPublicFilters');
+    if(!grid||!filters)return;
+    var products=getProducts().sort(function(a,b){return (b.publicHighlight?1:0)-(a.publicHighlight?1:0) || String(a.name).localeCompare(String(b.name));});
+    var lojas=[...new Set(products.map(function(p){return p.store||'Delux Group';}))];
+    var active=filter||'Todas';
+    filters.innerHTML=['Todas'].concat(lojas).map(function(l){return '<button class="'+(l===active?'active':'')+'" data-store="'+esc(l)+'">'+esc(l)+'</button>';}).join('');
+    filters.querySelectorAll('button').forEach(function(btn){btn.onclick=function(){renderPublicProducts(btn.getAttribute('data-store')||'Todas');};});
+    var list=active==='Todas'?products:products.filter(function(p){return (p.store||'Delux Group')===active;});
+    grid.innerHTML=list.map(function(p){
+      var img=p.image?'<img class="delux-public-img" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'<div class="delux-public-img">Delux</div>';
+      return '<article class="delux-public-card">'+img+'<div class="delux-public-body"><div class="delux-public-store">'+esc(p.store||'Delux Group')+(p.publicHighlight?'<span class="delux-public-badge">Destaque</span>':'')+'</div><div class="delux-public-name">'+esc(p.name)+'</div><div class="delux-public-cat">'+esc(p.publicCategory||p.category||'Produto')+'</div><div class="delux-public-desc">'+esc(p.publicDescription||'Produto disponível para compra pelo WhatsApp.')+'</div><div class="delux-public-bottom"><strong class="delux-public-price">'+moneyBR(p.price)+'</strong><a target="_blank" href="https://wa.me/?text='+whatsappText(p)+'">Comprar</a></div></div></article>';
+    }).join('') || '<div class="delux-public-empty">Nenhum produto publicado no site ainda. Acesse a Área do Vendedor, edite um produto e marque “Publicar no site”.</div>';
+  }
+  window.deluxRenderPublicProducts=renderPublicProducts;
+  document.addEventListener('DOMContentLoaded',function(){renderPublicProducts('Todas');});
+  window.addEventListener('storage',function(e){if(e.key==='deluxDB')renderPublicProducts('Todas');});
 })();
 </script>
 
