@@ -53,13 +53,11 @@
   <div id="employeeClockPanel" class="panel">
     <div class="panel-title"><div><h3>Ponto do funcionário</h3><p class="muted">Registre entrada, saída para intervalo, retorno e saída final. Os horários entram automaticamente na folha.</p></div><span class="badge success">Ponto online</span></div>
     <div id="clockEmployeeInfo" class="list-item"></div>
-    <div id="liveClock" class="time-clock">--:--:--</div>
-    <div class="list-item" style="text-align:center;margin-bottom:10px"><b>Horário automático do computador</b><br><span class="muted">A data e a hora não podem ser digitadas ou alteradas pelo funcionário. O sistema registra o momento exato do clique.</span></div>
     <div id="clockNextAction" class="list-item"></div>
     <label for="employeeClockNote" style="display:block;margin-top:12px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#bbb">Observação opcional</label>
-    <textarea id="employeeClockNote" maxlength="300" placeholder="Ex.: atraso por transporte, consulta médica ou outro motivo. A data e o horário não podem ser alterados."></textarea>
-    <small class="muted">O funcionário pode escrever somente uma observação. A data e o horário serão registrados automaticamente pelo computador.</small>
-    <div class="time-actions" style="margin-top:12px"><button class="success" onclick="clockPunch()">Registrar ponto com horário atual</button><button class="secondary" onclick="renderMyAttendance()">Atualizar registros</button></div>
+    <textarea id="employeeClockNote" maxlength="300" placeholder="Escreva somente quando precisar justificar atraso ou registrar uma observação."></textarea>
+    <button class="success" style="width:100%;margin-top:14px;padding:18px;font-size:18px" onclick="clockPunch()">BATER PONTO</button>
+    <p class="muted" style="text-align:center;margin-top:10px">Ao apertar o botão, a data e o horário atuais do computador serão registrados automaticamente.</p>
     <div style="margin-top:16px"><h3>Meus registros recentes</h3><div id="myAttendanceList" class="list"></div></div>
   </div>
   <div id="attendanceAdminPanel" class="panel hidden">
