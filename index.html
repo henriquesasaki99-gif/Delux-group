@@ -4512,15 +4512,18 @@ async function admSaveContacts() {
 }
 
 
-// ── NAVEGAÇÃO CORRIGIDA ──
-// Salva a última página aberta para que o site não volte sozinho para a tela inicial após atualização/sincronização.
+// ── NAVEGAÇÃO ──
+// Sempre inicia na tela principal. A página atual é mantida somente enquanto esta aba estiver aberta.
+var _deluxCurrentPage = 'landing';
+window._deluxCurrentPage = _deluxCurrentPage;
 function _deluxSetRoute(brand) {
-  try { localStorage.setItem('deluxCurrentPage', brand || 'landing'); } catch(e) {}
-  if (brand === 'by' || brand === 'makes') {
-    try { if (location.hash !== '#' + brand) history.replaceState(null, '', '#' + brand); } catch(e) {}
-  } else {
-    try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
-  }
+  _deluxCurrentPage = (brand === 'by' || brand === 'makes') ? brand : 'landing';
+  window._deluxCurrentPage = _deluxCurrentPage;
+  // Remove qualquer rota antiga (#by / #makes) sem recarregar a página.
+  try {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    localStorage.removeItem('deluxCurrentPage');
+  } catch(e) {}
 }
 function _deluxShowPageNow(brand, animate) {
   var landing = document.getElementById('landing');
@@ -4530,6 +4533,8 @@ function _deluxShowPageNow(brand, animate) {
   by.classList.remove('active','page-enter');
   mk.classList.remove('active','page-enter');
   if (brand === 'by' || brand === 'makes') {
+    _deluxCurrentPage = brand;
+    window._deluxCurrentPage = _deluxCurrentPage;
     landing.style.display = 'none';
     landing.classList.add('exiting');
     landing.style.opacity = '0';
@@ -4537,6 +4542,8 @@ function _deluxShowPageNow(brand, animate) {
     page.classList.add('active');
     if (animate) page.classList.add('page-enter');
   } else {
+    _deluxCurrentPage = 'landing';
+    window._deluxCurrentPage = _deluxCurrentPage;
     landing.style.display = 'flex';
     landing.classList.remove('exiting');
     landing.style.opacity = '1';
@@ -4559,14 +4566,10 @@ function goBack() {
   window.scrollTo(0,0);
 }
 document.addEventListener('DOMContentLoaded', function(){
-  var saved = (location.hash || '').replace('#','') || (function(){ try { return localStorage.getItem('deluxCurrentPage') || ''; } catch(e){ return ''; } })();
-  if (saved === 'by' || saved === 'makes') {
-    _deluxShowPageNow(saved, false);
-  }
-});
-window.addEventListener('hashchange', function(){
-  var h = (location.hash || '').replace('#','');
-  if (h === 'by' || h === 'makes') { _deluxSetRoute(h); _deluxShowPageNow(h, false); }
+  // Regra solicitada: toda nova abertura/recarregamento começa na tela inicial.
+  _deluxSetRoute('landing');
+  _deluxShowPageNow('landing', false);
+  window.scrollTo(0,0);
 });
 
 // ── ADMIN TRIGGER ──
@@ -6652,22 +6655,18 @@ carregarFotosFirebase();
 
 
 <script>
-/* ===== PROTEÇÃO CONTRA VOLTAR PARA A TELA INICIAL ===== */
+/* ===== ATUALIZAÇÃO DE DADOS SEM ALTERAR A TELA ESCOLHIDA ===== */
 (function(){
   window.deluxSoftRefresh = async function(){
     try { if (typeof _load === 'function') await _load(); } catch(e) { console.warn('Soft refresh _load:', e); }
     try { if (window.deluxRenderPublicProducts) window.deluxRenderPublicProducts('Todas'); } catch(e) {}
     try { if (window.deluxMkGroups && typeof renderPublicMkGroups === 'function') renderPublicMkGroups(); } catch(e) {}
     var warn=document.getElementById('delux-sync-warning'); if(warn) warn.remove();
-    var current=(location.hash||'').replace('#','') || (function(){try{return localStorage.getItem('deluxCurrentPage')||''}catch(e){return''}})();
-    if(current==='by'||current==='makes') { try{ _deluxShowPageNow(current,false); }catch(e){} }
+    var current = window._deluxCurrentPage || _deluxCurrentPage || 'landing';
+    if(current==='by'||current==='makes') {
+      try { _deluxShowPageNow(current,false); } catch(e) {}
+    }
   };
-  var oldReload = null;
-  // Não bloqueia recarregamento manual do navegador; apenas garante que, se houver reload por script antigo, a rota volta correta.
-  document.addEventListener('DOMContentLoaded', function(){
-    var current=(location.hash||'').replace('#','') || (function(){try{return localStorage.getItem('deluxCurrentPage')||''}catch(e){return''}})();
-    if(current==='by'||current==='makes') setTimeout(function(){ try{_deluxShowPageNow(current,false)}catch(e){} }, 500);
-  });
 })();
 </script>
 
