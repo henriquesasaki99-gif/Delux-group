@@ -158,6 +158,7 @@
         <div id="siteByBannerPreview" class="photo-preview">Sem banner</div>
         <div class="actions"><button onclick="siteSaveBanner('by')">Salvar banner</button><button class="danger" onclick="siteRemoveBanner('by')">Remover banner</button></div>
         <label class="upload-box">Adicionar imagens ao Hero<input type="file" accept="image/*" multiple onchange="siteAddHero(event,'by')"></label>
+        <div class="actions"><button class="danger" onclick="siteRemoveAllHero('by')">Apagar todas as imagens do Hero — Delux By</button></div>
         <div id="siteByHeroList" class="list"></div>
       </div>
     </div>
@@ -168,6 +169,7 @@
         <div id="siteMkBannerPreview" class="photo-preview">Sem banner</div>
         <div class="actions"><button onclick="siteSaveBanner('mk')">Salvar banner</button><button class="danger" onclick="siteRemoveBanner('mk')">Remover banner</button></div>
         <label class="upload-box">Adicionar imagens ao Hero<input type="file" accept="image/*" multiple onchange="siteAddHero(event,'mk')"></label>
+        <div class="actions"><button class="danger" onclick="siteRemoveAllHero('mk')">Apagar todas as imagens do Hero — Delux Makes</button></div>
         <div id="siteMkHeroList" class="list"></div>
       </div>
     </div>
@@ -558,6 +560,7 @@ window.siteSaveBanner=async brand=>{if(!siteAdminOnly())return;let d=siteData(),
 window.siteRemoveBanner=async brand=>{if(!siteAdminOnly()||!confirm('Remover este banner do site?'))return;let d=siteData();d[brand==='by'?'byBanner':'mkBanner']={img:'',title:''};siteDraft[brand==='by'?'byBannerImg':'mkBannerImg']=null;await saveSiteData('Banner removido.')};
 window.siteAddHero=async(e,brand)=>{if(!siteAdminOnly())return;let fs=[...(e.target.files||[])];if(!fs.length)return;try{syncStatus('Enviando imagens do Hero...');let d=siteData(),arr=brand==='by'?d.byHero:d.mkHero;for(let f of fs){let src=await uploadImageToCloudinary(f);arr.push({id:uid('hero'),src})}e.target.value='';await saveSiteData('Hero atualizado.')}catch(err){alert(err.message||'Erro no envio')}};
 window.siteRemoveHero=async(brand,i)=>{if(!siteAdminOnly())return;let d=siteData(),arr=brand==='by'?d.byHero:d.mkHero;arr.splice(i,1);await saveSiteData('Imagem removida do Hero.')};
+window.siteRemoveAllHero=async brand=>{if(!siteAdminOnly())return;let d=siteData(),arr=brand==='by'?d.byHero:d.mkHero,label=brand==='by'?'Delux By':'Delux Makes';if(!arr.length)return alert('Não há imagens no Hero da '+label+'.');if(!confirm('Apagar TODAS as imagens do Hero da '+label+'? Esta ação removerá '+arr.length+' imagem(ns) do site.'))return;if(brand==='by')d.byHero=[];else d.mkHero=[];await saveSiteData('Todas as imagens do Hero da '+label+' foram apagadas.')};
 window.siteAddGallery=async(e,brand)=>{if(!siteAdminOnly())return;let fs=[...(e.target.files||[])];try{let d=siteData(),arr=d.photos[brand];for(let f of fs){let src=await uploadImageToCloudinary(f);arr.unshift({id:uid('foto'),src,titulo:''})}e.target.value='';await saveSiteData('Galeria atualizada.')}catch(err){alert(err.message||'Erro no envio')}};
 window.siteGalleryTitle=(brand,i,v)=>{let d=siteData();if(d.photos[brand][i])d.photos[brand][i].titulo=v};
 window.siteRemoveGallery=async(brand,i)=>{if(!siteAdminOnly())return;siteData().photos[brand].splice(i,1);await saveSiteData('Foto removida.')};
