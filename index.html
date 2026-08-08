@@ -3245,6 +3245,40 @@ body {
 @media(max-width:760px){.delux-auto-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.delux-auto-category-head{align-items:center}.delux-auto-desc{min-height:0}}
 @media(max-width:460px){.delux-auto-products{grid-template-columns:1fr}}
 </style>
+
+<style id="delux-hide-stock-quantity">
+/* Nunca exibir quantidade real de estoque no site público */
+[data-stock-qty], .stock-qty, .estoque-quantidade, .inventory-qty, .product-stock-qty { display:none !important; }
+</style>
+<script>
+/* Proteção final da vitrine: remove qualquer quantidade de estoque que código legado tente exibir. */
+(function(){
+  function sanitizeStockText(root){
+    root=root||document.body;
+    if(!root)return;
+    var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    var nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function(n){
+      var t=(n.nodeValue||'').trim();
+      if(!t)return;
+      if(/estoque\s*:\s*\d+/i.test(t) || /\b\d+\s*unidades?\b/i.test(t) || /\b\d+\s*unidade\(s\)\b/i.test(t)){
+        var parent=n.parentElement;
+        var stock=0;
+        if(parent){
+          var card=parent.closest('[data-product-stock], .delux-auto-card, .delux-shop-card, .mk-card, .by-col-card');
+          if(card && card.dataset && card.dataset.productStock!=null) stock=Number(card.dataset.productStock)||0;
+        }
+        n.nodeValue = stock>0 ? 'Produto disponível para compra' : 'Produto disponível para compra';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    sanitizeStockText(document.body);
+    var obs=new MutationObserver(function(){sanitizeStockText(document.body)});
+    obs.observe(document.body,{childList:true,subtree:true,characterData:true});
+  });
+})();
+</script>
 </head>
 <body>
 
