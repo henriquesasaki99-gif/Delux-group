@@ -3201,6 +3201,43 @@ body {
 }
 
 </style>
+
+<style>
+/* Catálogo automático por loja e categoria */
+.delux-auto-catalog{display:block!important;background:transparent!important;}
+.delux-auto-category{margin:0 0 3rem;padding:0;}
+.delux-auto-category-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.10)}
+.delux-auto-category.mk .delux-auto-category-head{border-bottom-color:rgba(232,49,122,.16)}
+.delux-auto-category-head h3{margin:0;font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600}
+.delux-auto-category.by .delux-auto-category-head h3{color:var(--by-silver-bright)}
+.delux-auto-category.mk .delux-auto-category-head h3{color:var(--mk-pink)}
+.delux-auto-category-head span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.55}
+.delux-auto-products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem}
+.delux-auto-card{overflow:hidden;position:relative;transition:transform .25s,box-shadow .25s}
+.delux-auto-card:hover{transform:translateY(-4px)}
+.delux-auto-card.by{background:var(--by-mid);border:1px solid rgba(192,200,212,.10);border-radius:6px;color:var(--by-silver-bright)}
+.delux-auto-card.mk{background:#fff;border:1px solid rgba(232,49,122,.10);border-radius:20px;color:#1a0a10;box-shadow:0 10px 30px rgba(232,49,122,.06)}
+.delux-auto-img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:rgba(255,255,255,.04)}
+.delux-auto-placeholder{display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:2rem;opacity:.35}
+.delux-auto-body{padding:1rem 1.1rem 1.2rem;position:relative}
+.delux-auto-name{font-weight:700;font-size:14px;margin:.3rem 0 .35rem}
+.delux-auto-card.by .delux-auto-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem}
+.delux-auto-meta{font-size:10px;opacity:.55;margin-bottom:.7rem}
+.delux-auto-desc{font-size:11px;line-height:1.6;opacity:.7;min-height:2.8em}
+.delux-auto-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:1rem}
+.delux-auto-bottom strong{font-size:1.05rem}
+.delux-auto-card.mk .delux-auto-bottom strong{color:var(--mk-pink)}
+.delux-auto-bottom a{text-decoration:none;padding:.55rem .85rem;border-radius:999px;font-size:10px;font-weight:800}
+.delux-auto-card.by .delux-auto-bottom a{background:var(--by-silver);color:var(--by-dark)}
+.delux-auto-card.mk .delux-auto-bottom a{background:var(--mk-pink);color:#fff}
+.delux-auto-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:999px;margin-bottom:.35rem}
+.delux-auto-card.by .delux-auto-badge{background:rgba(192,200,212,.12);color:var(--by-silver)}
+.delux-auto-card.mk .delux-auto-badge{background:var(--mk-pink3);color:var(--mk-pink)}
+.delux-auto-empty{padding:2rem;border:1px dashed rgba(255,255,255,.15);text-align:center;opacity:.65;border-radius:14px}
+@media(max-width:1050px){.delux-auto-products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.delux-auto-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.delux-auto-category-head{align-items:center}.delux-auto-desc{min-height:0}}
+@media(max-width:460px){.delux-auto-products{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
@@ -5916,50 +5953,56 @@ carregarFotosFirebase();
 
 
 <script>
+/* ===== CATÁLOGO UNIFICADO: SISTEMA -> LOJA -> CATEGORIA ===== */
 (function(){
   function moneyBR(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
   function esc(v){return String(v??'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+  function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+  function storeKind(name){var s=norm(name);if(s.indexOf('makes')>=0||s.indexOf('make')>=0)return 'mk';if(s==='by'||s.indexOf('delux by')>=0||/(^|\s)by($|\s)/.test(s))return 'by';return '';}
   function whatsappText(p){return encodeURIComponent('Olá, tenho interesse no produto '+(p.name||'')+' da '+(p.store||'Delux Group')+' no valor de '+moneyBR(p.price)+'.');}
   async function getProducts(){
     try{
       if(window._waitDeluxFirestore){
-        var fb = await window._waitDeluxFirestore();
-        var data = await fb.load();
+        var fb=await window._waitDeluxFirestore();
+        var data=await fb.load();
         if(data && Array.isArray(data.erpProductsPublic)){
-          try{localStorage.setItem('deluxPublicProductsCache', JSON.stringify(data.erpProductsPublic));}catch(x){}
+          try{localStorage.setItem('deluxPublicProductsCache',JSON.stringify(data.erpProductsPublic));}catch(x){}
           return data.erpProductsPublic.filter(function(p){return p.publicVisible!==false && Number(p.stock||0)>0;});
         }
       }
-    }catch(e){console.warn('Vitrine pública: Firebase indisponível, usando cache local.', e);}
-    try{
-      var cache=JSON.parse(localStorage.getItem('deluxPublicProductsCache')||'[]');
-      if(cache && cache.length) return cache.filter(function(p){return p.publicVisible!==false && Number(p.stock||0)>0;});
-    }catch(e){}
-    try{
-      var db=JSON.parse(localStorage.getItem('deluxDB')||'{}');
-      return (db.products||[]).filter(function(p){return p.publicVisible && Number(p.stock||0)>0;});
-    }catch(e){return []}
+    }catch(e){console.warn('Catálogo unificado: Firebase indisponível, usando cache.',e);}
+    try{var cache=JSON.parse(localStorage.getItem('deluxPublicProductsCache')||'[]');if(cache&&cache.length)return cache.filter(function(p){return p.publicVisible!==false&&Number(p.stock||0)>0;});}catch(e){}
+    return [];
   }
-  async function renderPublicProducts(filter){
-    var grid=document.getElementById('deluxPublicProducts');
-    var filters=document.getElementById('deluxPublicFilters');
-    if(!grid||!filters)return;
-    grid.innerHTML='<div class="delux-public-empty">Carregando produtos publicados...</div>';
-    var products=(await getProducts()).sort(function(a,b){return (b.publicHighlight?1:0)-(a.publicHighlight?1:0) || String(a.name).localeCompare(String(b.name));});
-    var lojas=[...new Set(products.map(function(p){return p.store||'Delux Group';}))];
-    var active=filter||'Todas';
-    filters.innerHTML=['Todas'].concat(lojas).map(function(l){return '<button class="'+(l===active?'active':'')+'" data-store="'+esc(l)+'">'+esc(l)+'</button>';}).join('');
-    filters.querySelectorAll('button').forEach(function(btn){btn.onclick=function(){renderPublicProducts(btn.getAttribute('data-store')||'Todas');};});
-    var list=active==='Todas'?products:products.filter(function(p){return (p.store||'Delux Group')===active;});
-    grid.innerHTML=list.map(function(p){
-      var img=p.image?'<img class="delux-public-img" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'<div class="delux-public-img">Delux</div>';
-      return '<article class="delux-public-card">'+img+'<div class="delux-public-body"><div class="delux-public-store">'+esc(p.store||'Delux Group')+(p.publicHighlight?'<span class="delux-public-badge">Destaque</span>':'')+'</div><div class="delux-public-name">'+esc(p.name)+'</div><div class="delux-public-cat">'+esc(p.publicCategory||p.category||'Produto')+'</div><div class="delux-public-desc">'+esc(p.publicDescription||'Produto disponível para compra pelo WhatsApp.')+'</div><div class="delux-public-bottom"><strong class="delux-public-price">'+moneyBR(p.price)+'</strong><a target="_blank" href="https://wa.me/?text='+whatsappText(p)+'">Comprar</a></div></div></article>';
-    }).join('') || '<div class="delux-public-empty">Nenhum produto publicado no site ainda. Acesse a Área do Vendedor, edite um produto e marque “Publicar no site”.</div>';
+  function grouped(products,kind){
+    var map={};
+    products.filter(function(p){return storeKind(p.store)===kind;}).forEach(function(p){
+      var cat=String(p.category||'Sem categoria').trim()||'Sem categoria';
+      (map[cat]||(map[cat]=[])).push(p);
+    });
+    Object.keys(map).forEach(function(cat){map[cat].sort(function(a,b){return (b.publicHighlight?1:0)-(a.publicHighlight?1:0)||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');});});
+    return map;
   }
-  window.deluxRenderPublicProducts=renderPublicProducts;
-  document.addEventListener('DOMContentLoaded',function(){renderPublicProducts('Todas');});
-  window.addEventListener('storage',function(e){if(e.key==='deluxDB'||e.key==='deluxPublicProductsCache')renderPublicProducts('Todas');});
-  setInterval(function(){renderPublicProducts('Todas');}, 60000);
+  function card(p,kind){
+    var img=p.image?'<img class="delux-auto-img" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'<div class="delux-auto-img delux-auto-placeholder">Delux</div>';
+    return '<article class="delux-auto-card '+kind+'">'+img+'<div class="delux-auto-body">'+(p.publicHighlight?'<span class="delux-auto-badge">Destaque</span>':'')+'<div class="delux-auto-name">'+esc(p.name||'Produto')+'</div><div class="delux-auto-meta">Estoque: '+esc(p.stock||0)+'</div><div class="delux-auto-desc">'+esc(p.publicDescription||'Produto disponível para compra.')+'</div><div class="delux-auto-bottom"><strong>'+moneyBR(p.price)+'</strong><a target="_blank" rel="noopener" href="https://wa.me/?text='+whatsappText(p)+'">Comprar</a></div></div></article>';
+  }
+  function renderInto(products,kind){
+    var section=document.getElementById(kind==='by'?'by-colecoes':'mk-produtos');if(!section)return;
+    var grid=section.querySelector(kind==='by'?'.by-col-grid':'.mk-prod-grid');if(!grid)return;
+    var groups=grouped(products,kind),cats=Object.keys(groups).sort(function(a,b){return a.localeCompare(b,'pt-BR');});
+    grid.className=(kind==='by'?'by-col-grid ':'mk-prod-grid ')+'delux-auto-catalog';
+    if(!cats.length){grid.innerHTML='<div class="delux-auto-empty">Nenhum produto publicado para esta loja.</div>';return;}
+    grid.innerHTML=cats.map(function(cat){return '<section class="delux-auto-category '+kind+'"><div class="delux-auto-category-head"><h3>'+esc(cat)+'</h3><span>'+groups[cat].length+' produto(s)</span></div><div class="delux-auto-products">'+groups[cat].map(function(p){return card(p,kind);}).join('')+'</div></section>';}).join('');
+  }
+  async function renderUnifiedCatalog(){
+    var products=await getProducts();
+    renderInto(products,'by');renderInto(products,'mk');
+  }
+  window.deluxRenderPublicProducts=renderUnifiedCatalog;
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(renderUnifiedCatalog,2100);});
+  window.addEventListener('storage',function(e){if(e.key==='deluxDB'||e.key==='deluxPublicProductsCache')renderUnifiedCatalog();});
+  setInterval(renderUnifiedCatalog,30000);
 })();
 </script>
 
