@@ -5661,7 +5661,7 @@ carregarFotosFirebase();
     bindProducts();
     updateHeroCopy();
     renderCart(false);
-    setInterval(bindProducts, 1200);
+    setTimeout(bindProducts, 1200);
   });
 })();
 </script>
@@ -6048,7 +6048,7 @@ carregarFotosFirebase();
   window.deluxRenderPublicProducts=renderUnifiedCatalog;
   document.addEventListener('DOMContentLoaded',function(){setTimeout(renderUnifiedCatalog,2100);});
   window.addEventListener('storage',function(e){if(e.key==='deluxDB'||e.key==='deluxPublicProductsCache')renderUnifiedCatalog();});
-  setInterval(renderUnifiedCatalog,30000);
+  // Atualização periódica removida: Firebase em tempo real já mantém o catálogo sincronizado.
 })();
 </script>
 
@@ -6226,8 +6226,37 @@ window.deluxUpdateFulfillmentFields=function(){let mode=document.querySelector('
 function orderId(){let d=new Date(),ymd=d.toISOString().slice(0,10).replaceAll('-',''),rnd=Math.random().toString(36).slice(2,6).toUpperCase();return 'WEB-'+ymd+'-'+rnd;}
 window.deluxSubmitOnlineOrder=async function(){let btn=document.getElementById('deluxOnlineSubmit'),items=currentItems();if(!items.length)return alert('Seu carrinho está vazio.');let name=document.getElementById('deluxOrderName').value.trim(),phone=document.getElementById('deluxOrderPhone').value.trim(),email=document.getElementById('deluxOrderEmail').value.trim(),mode=document.querySelector('input[name="deluxFulfillment"]:checked')?.value||'retirada';if(!name||!phone)return alert('Informe seu nome e WhatsApp.');let pickupStore=document.getElementById('deluxPickupStore').value,cep=document.getElementById('deluxOrderCep').value.trim(),city=document.getElementById('deluxOrderCity').value.trim(),address=document.getElementById('deluxOrderAddress').value.trim(),reference=document.getElementById('deluxOrderReference').value.trim();if(mode==='retirada'&&!pickupStore)return alert('Selecione a loja para retirada.');if(mode==='frete'&&(!cep||!city||!address))return alert('Informe CEP, cidade e endereço para consultar o frete.');btn.disabled=true;btn.textContent='Enviando pedido...';let id=orderId();try{await runTransaction(db,async tx=>{let snap=await tx.get(ref),root=snap.exists()?snap.data():{},erp=root.erpDB||{},products=Array.isArray(erp.products)?erp.products:[];for(let it of items){let p=products.find(x=>String(x.id)===String(it.id));if(!p||Number(p.stock||0)<Number(it.qty||1))throw new Error('O produto “'+it.name+'” não possui disponibilidade suficiente para este pedido.');it.price=Number(p.price||it.price);it.store=p.store||it.store;it.category=p.category||it.category;it.sku=p.sku||it.sku;it.barcode=p.barcode||it.barcode;}erp.onlineOrders=Array.isArray(erp.onlineOrders)?erp.onlineOrders:[];let subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),order={id,createdAt:new Date().toISOString(),customer:{name,phone,email},items,subtotal,freightValue:null,total:subtotal,fulfillment:mode==='retirada'?'Retirada na loja':'Consultar frete',pickupStore:mode==='retirada'?pickupStore:'',shipping:mode==='frete'?{cep,city,address,reference}:null,status:mode==='retirada'?'Aguardando confirmação':'Aguardando cálculo de frete',paymentMethod:'Pix após confirmação',paymentStatus:'Aguardando confirmação',source:'Site Delux Group',saleId:'',updatedAt:new Date().toISOString()};erp.onlineOrders.push(order);root.erpDB=erp;root.updatedAt=Date.now();root.updatedBy='site_order_'+Date.now();tx.set(ref,root,{merge:true});});saveCart([]);let legacy=document.getElementById('delux-cart');if(legacy)legacy.classList.remove('visible');let bubble=document.getElementById('delux-cart-bubble');if(bubble)bubble.classList.remove('visible');document.getElementById('deluxOnlineOrderForm').classList.add('delux-online-hidden');let success=document.getElementById('deluxOnlineOrderSuccess');success.classList.remove('delux-online-hidden');success.innerHTML='<b>Pedido '+esc(id)+' enviado com sucesso!</b><br>A loja recebeu seu pedido no sistema. '+(mode==='frete'?'Agora aguarde o cálculo do frete.':'Aguarde a confirmação para retirada.')+'<br><br>Pagamento via Pix será combinado após a confirmação.';}catch(e){alert(e.message||'Não foi possível enviar o pedido. Tente novamente.')}finally{btn.disabled=false;btn.textContent='Enviar pedido para a loja';}};
 function wireCheckout(){let a=document.getElementById('delux-checkout');if(a){a.removeAttribute('target');a.href='#';a.textContent='Finalizar pedido online';a.onclick=e=>{e.preventDefault();window.deluxOpenOnlineCheckout();};}}
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(wireCheckout,800);setTimeout(wireCheckout,2500);});
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(wireCheckout,800);});
 new MutationObserver(()=>wireCheckout()).observe(document.body,{childList:true,subtree:true});
+</script>
+
+
+<script>
+/* ===== OTIMIZAÇÃO DE PERFORMANCE DO SITE PÚBLICO ===== */
+(function(){
+  function optimizePublicImages(root){
+    (root || document).querySelectorAll('img').forEach(function(img){
+      if(img.closest('.by-hero-slideshow,.mk-hero-slideshow,.brand-banner,.center-logo-wrap')) return;
+      if(!img.hasAttribute('loading')) img.loading='lazy';
+      if(!img.hasAttribute('decoding')) img.decoding='async';
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    optimizePublicImages(document);
+    var target=document.getElementById('page-by') || document.body;
+    if(window.MutationObserver && target){
+      var queued=false;
+      var mo=new MutationObserver(function(){
+        if(queued) return;
+        queued=true;
+        requestAnimationFrame(function(){queued=false;optimizePublicImages(document);});
+      });
+      mo.observe(target,{childList:true,subtree:true});
+      var mk=document.getElementById('page-makes');
+      if(mk && mk!==target) mo.observe(mk,{childList:true,subtree:true});
+    }
+  });
+})();
 </script>
 
 </body>
