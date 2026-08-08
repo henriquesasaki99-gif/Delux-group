@@ -3201,6 +3201,24 @@ body {
 }
 
 </style>
+
+<style id="delux-seller-click-fix">
+/* Correção: botões centrais devem ficar acima das zonas de clique By/Makes */
+#landing .center-logo-wrap {
+  z-index: 60 !important;
+}
+#landing .center-brand-pills {
+  position: relative;
+  z-index: 61 !important;
+  pointer-events: auto !important;
+}
+#landing .center-brand-pills .center-pill,
+#landing .delux-seller-link {
+  position: relative;
+  z-index: 62 !important;
+  pointer-events: auto !important;
+}
+</style>
 </head>
 <body>
 
@@ -3260,7 +3278,7 @@ body {
     <div class="center-brand-pills">
       <button class="center-pill by-pill-btn" onclick="enterSite('by')">Delux By</button>
       <button class="center-pill mk-pill-btn" onclick="enterSite('makes')">Delux Makes</button>
-      <a class="center-pill seller-pill-btn delux-seller-link" href="./sistema.html" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
+      <a class="center-pill seller-pill-btn delux-seller-link" href="./sistema.html" onclick="event.stopPropagation();" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
     </div>
   </div>
 
