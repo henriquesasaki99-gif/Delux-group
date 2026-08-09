@@ -3339,7 +3339,7 @@ body {
     <div class="center-brand-pills">
       <button class="center-pill by-pill-btn" onclick="enterSite('by')">Delux By</button>
       <button class="center-pill mk-pill-btn" onclick="enterSite('makes')">Delux Makes</button>
-      <a class="center-pill seller-pill-btn delux-seller-link" href="sistema.html" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
+      <a class="center-pill seller-pill-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
     </div>
   </div>
 
@@ -3371,7 +3371,7 @@ body {
       <li><a href="#by-sobre-contato">Sobre</a></li>
       <li><a href="#by-sobre-contato">Contato</a></li>
     </ul>
-    <a class="by-seller-btn delux-seller-link" href="sistema.html">👤 Área do Vendedor</a>
+    <a class="by-seller-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;">👤 Área do Vendedor</a>
     <button class="back-btn" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -3632,7 +3632,7 @@ body {
       <li><a href="#mk-sobre">Sobre</a></li>
       <li><a href="#mk-sobre">Contato</a></li>
     </ul>
-    <a class="mk-seller-btn delux-seller-link" href="sistema.html">👤 Área do Vendedor</a>
+    <a class="mk-seller-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;">👤 Área do Vendedor</a>
     <button class="back-btn-mk" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -6169,5 +6169,19 @@ carregarFotosFirebase();
 })();
 </script>
 
+<script id="delux-seller-direct-nav">
+(function(){
+  function openSeller(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    window.location.assign(new URL('sistema.html', window.location.href).href);
+  }
+  document.addEventListener('click', function(e){
+    var link = e.target && e.target.closest ? e.target.closest('.delux-seller-link') : null;
+    if (link) openSeller(e);
+  }, true);
+})();
+</script>
 </body>
 </html>
