@@ -6166,7 +6166,7 @@ carregarFotosFirebase();
               <div class="full"><label>Nome completo</label><input id="dcName" autocomplete="name"></div>
               <div><label>Telefone / WhatsApp</label><input id="dcPhone" inputmode="tel" autocomplete="tel"></div>
               <div><label>E-mail</label><input id="dcEmail" type="email" autocomplete="email"></div>
-              <div class="full"><label>Endereço completo</label><textarea id="dcAddress" rows="3" autocomplete="street-address" placeholder="Rua, número, complemento, bairro, cidade e CEP"></textarea></div>
+              <div class="full" id="dcAddressWrap" style="display:none"><label>Endereço completo</label><textarea id="dcAddress" rows="3" autocomplete="street-address" placeholder="Rua, número, complemento, bairro, cidade e CEP"></textarea></div>
             </div>
             <div class="delux-delivery-options">
               <label class="delux-delivery-option"><input type="radio" name="dcFulfillment" value="Retirada na loja" checked> <b>Retirar na loja</b><br><small>Sem custo de frete. O pagamento será alinhado com a loja.</small></label>
@@ -6191,7 +6191,7 @@ carregarFotosFirebase();
     $('dcFreightNotice').style.display=mode==='Entrega'?'block':'none';
     var address=$('dcAddress');
     if(address){
-      var wrap=address.parentElement;
+      var wrap=$('dcAddressWrap')||address.parentElement;
       if(wrap)wrap.style.display=mode==='Entrega'?'block':'none';
       address.required=mode==='Entrega';
       if(mode==='Retirada na loja')address.value='';
@@ -6221,7 +6221,7 @@ carregarFotosFirebase();
       shipping:mode==='Entrega'?{address:address}:{},
       freightValue:mode==='Retirada na loja'?0:null,
       total:mode==='Retirada na loja'?subtotal():null,
-      status:mode==='Retirada na loja'?'Aguardando pagamento':'Aguardando cálculo de frete',
+      status:mode==='Retirada na loja'?'Aguardando confirmação do pedido':'Aguardando cotação de frete',
       paymentStatus:'Aguardando pagamento',
       stockDeducted:false,
       readByStore:false,
@@ -6238,7 +6238,20 @@ carregarFotosFirebase();
       await fb.save(data);
       var wa=storePhone();
       var waUrl=wa?'https://wa.me/'+wa+'?text='+encodeURIComponent(buildStoreWhatsapp(order)):'#';
-      $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br><b>Guarde este número para acompanhar seu pedido.</b><br>'+(mode==='Entrega'?'A entrega está aguardando a cotação do frete.':'Retirada sem frete. Agora alinhe o pagamento com a loja.')+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
+      $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br><b>Código de consulta gerado automaticamente: '+esc(order.id)+'</b><br>'+(mode==='Entrega'?'Status: Aguardando cotação de frete.':'Status: Aguardando confirmação do pedido.')+'<br><button type="button" id="dcTrackThisOrder" class="delux-order-whatsapp" style="border:0;cursor:pointer;margin-top:8px">Consultar este pedido</button>'+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
+      setTimeout(function(){
+        var b=$('dcTrackThisOrder');
+        if(b)b.onclick=function(){
+          var modal=document.getElementById('deluxOrderTrackModal');
+          var idInput=document.getElementById('deluxTrackId');
+          var phInput=document.getElementById('deluxTrackPhone');
+          if(idInput)idInput.value=order.id;
+          if(phInput)phInput.value=order.customer.phone||'';
+          if(modal)modal.classList.add('open');
+          var searchBtn=document.getElementById('deluxTrackSearch');
+          if(searchBtn)searchBtn.click();
+        };
+      },0);
       try{
         localStorage.setItem('deluxCartV2','[]');
         localStorage.setItem('deluxLastOrderId',order.id);
@@ -6373,91 +6386,6 @@ carregarFotosFirebase();
 </script>
 
 
-<script id="delux-checkout-address-conditional">
-(function(){
-  function findDeliverySelect(){
-    return document.querySelector(
-      '#checkoutDeliveryType, #deliveryType, #shippingType, #delux-delivery-type, ' +
-      'select[name="deliveryType"], select[name="shippingType"]'
-    );
-  }
-
-  function findAddressField(){
-    return document.querySelector(
-      '#checkoutAddress, #customerAddress, #deliveryAddress, #delux-address, ' +
-      'input[name="address"], textarea[name="address"]'
-    );
-  }
-
-  function normalizeValue(v){
-    return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  }
-
-  function isDeliveryValue(v){
-    var n=normalizeValue(v);
-    return n.includes('entrega') || n.includes('delivery') || n.includes('frete');
-  }
-
-  function updateAddressRequirement(){
-    var select=findDeliverySelect();
-    var address=findAddressField();
-    if(!select || !address) return;
-
-    var delivery=isDeliveryValue(select.value);
-    address.required=delivery;
-
-    var wrap=address.closest('.form-group, .field, .checkout-field, .delux-field, label, div');
-    if(wrap){
-      if(delivery){
-        wrap.style.display='';
-      }else{
-        wrap.style.display='none';
-        address.value='';
-      }
-    }else{
-      address.style.display=delivery?'':'none';
-      if(!delivery) address.value='';
-    }
-
-    address.setAttribute(
-      'placeholder',
-      delivery ? 'Endereço completo para entrega' : 'Endereço não necessário para retirada'
-    );
-  }
-
-  document.addEventListener('change',function(e){
-    var select=findDeliverySelect();
-    if(select && e.target===select) updateAddressRequirement();
-  });
-
-  document.addEventListener('DOMContentLoaded',function(){
-    updateAddressRequirement();
-    setTimeout(updateAddressRequirement,300);
-    setTimeout(updateAddressRequirement,1000);
-  });
-
-  // Safety validation before checkout submission/finalization.
-  document.addEventListener('click',function(e){
-    var btn=e.target.closest && e.target.closest(
-      '#finalizeOrder, #finishOrder, #checkoutSubmit, #delux-finalize-order, ' +
-      'button[data-action="finalize-order"], .delux-checkout-finish'
-    );
-    if(!btn) return;
-
-    var select=findDeliverySelect();
-    var address=findAddressField();
-    if(select && address && isDeliveryValue(select.value) && !String(address.value||'').trim()){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      alert('Para entrega, informe o endereço completo.');
-      address.focus();
-      return false;
-    }
-  },true);
-})();
-</script>
-
-
 <style id="delux-order-tracking-css">
 .delux-track-btn{position:fixed;right:18px;bottom:76px;z-index:9998;border:0;border-radius:999px;background:#171821;color:#fff;padding:12px 16px;font:800 13px Arial;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.25)}
 .delux-track-btn:hover{transform:translateY(-1px)}
@@ -6499,7 +6427,7 @@ carregarFotosFirebase();
     return isNaN(d.getTime())?'-':d.toLocaleString('pt-BR');
   }
   function statusText(o){
-    if(o.paymentStatus==='Pago' && o.status==='Aguardando pagamento')return 'Pago';
+    if(o.paymentStatus==='Pago' && ['Aguardando pagamento','Aguardando confirmação do pedido'].includes(o.status))return 'Pago';
     return o.status||'Pedido recebido';
   }
   function ensure(){
