@@ -3339,7 +3339,7 @@ body {
     <div class="center-brand-pills">
       <button class="center-pill by-pill-btn" onclick="enterSite('by')">Delux By</button>
       <button class="center-pill mk-pill-btn" onclick="enterSite('makes')">Delux Makes</button>
-      <a class="center-pill seller-pill-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
+      <a class="center-pill seller-pill-btn delux-seller-link" href="sistema.html" aria-label="Abrir Área do Vendedor">👤 Área do Vendedor</a>
     </div>
   </div>
 
@@ -3371,7 +3371,7 @@ body {
       <li><a href="#by-sobre-contato">Sobre</a></li>
       <li><a href="#by-sobre-contato">Contato</a></li>
     </ul>
-    <a class="by-seller-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;">👤 Área do Vendedor</a>
+    <a class="by-seller-btn delux-seller-link" href="sistema.html">👤 Área do Vendedor</a>
     <button class="back-btn" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -3632,7 +3632,7 @@ body {
       <li><a href="#mk-sobre">Sobre</a></li>
       <li><a href="#mk-sobre">Contato</a></li>
     </ul>
-    <a class="mk-seller-btn delux-seller-link" href="sistema.html" onclick="event.preventDefault();event.stopPropagation();window.location.assign(new URL('sistema.html', window.location.href).href);return false;">👤 Área do Vendedor</a>
+    <a class="mk-seller-btn delux-seller-link" href="sistema.html">👤 Área do Vendedor</a>
     <button class="back-btn-mk" onclick="goBack()">← Voltar</button>
   </nav>
 
@@ -6171,15 +6171,34 @@ carregarFotosFirebase();
 
 <script id="delux-seller-direct-nav">
 (function(){
-  function openSeller(e){
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-    window.location.assign(new URL('sistema.html', window.location.href).href);
+  function sellerUrl(){
+    var path = window.location.pathname || '/';
+    var dir = path.endsWith('/') ? path : path.substring(0, path.lastIndexOf('/') + 1);
+    return window.location.origin + dir + 'sistema.html?v=' + Date.now();
   }
+  async function openSeller(e){
+    if(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    }
+    var url = sellerUrl();
+    try{
+      var r = await fetch(url, {cache:'no-store'});
+      var t = await r.text();
+      if(!r.ok || t.indexOf('Delux Group - Sistema Integrado') === -1 || t.indexOf('id="loginScreen"') === -1){
+        alert('O arquivo sistema.html não está publicado na mesma pasta do index.html. No GitHub, deixe index.html e sistema.html lado a lado e publique os dois na mesma branch do GitHub Pages.');
+        return;
+      }
+      window.location.href = url;
+    }catch(err){
+      window.location.href = url;
+    }
+  }
+  window.openDeluxSeller = openSeller;
   document.addEventListener('click', function(e){
     var link = e.target && e.target.closest ? e.target.closest('.delux-seller-link') : null;
-    if (link) openSeller(e);
+    if(link) openSeller(e);
   }, true);
 })();
 </script>
