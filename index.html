@@ -6189,6 +6189,13 @@ carregarFotosFirebase();
     var mode=(document.querySelector('input[name="dcFulfillment"]:checked')||{}).value||'Retirada na loja';
     $('dcPickupWrap').style.display=mode==='Retirada na loja'?'block':'none';
     $('dcFreightNotice').style.display=mode==='Entrega'?'block':'none';
+    var address=$('dcAddress');
+    if(address){
+      var wrap=address.parentElement;
+      if(wrap)wrap.style.display=mode==='Entrega'?'block':'none';
+      address.required=mode==='Entrega';
+      if(mode==='Retirada na loja')address.value='';
+    }
     $('dcSummary').innerHTML='<b>Produtos:</b> '+money(subtotal())+'<br><b>Frete:</b> '+(mode==='Retirada na loja'?'R$ 0,00':'Aguardando cotação')+'<br><b>Total:</b> '+(mode==='Retirada na loja'?money(subtotal()):'Será informado pela loja');
   }
   function openCheckout(){
@@ -6197,10 +6204,11 @@ carregarFotosFirebase();
   }
   async function submitOrder(){
     var name=$('dcName').value.trim(), phone=$('dcPhone').value.trim(), email=$('dcEmail').value.trim(), address=$('dcAddress').value.trim();
-    if(!name||!phone||!email||!address)return alert('Preencha nome completo, telefone, endereço e e-mail.');
+    var mode=(document.querySelector('input[name="dcFulfillment"]:checked')||{}).value||'Retirada na loja';
+    if(!name||!phone||!email)return alert('Preencha nome completo, telefone e e-mail.');
+    if(mode==='Entrega'&&!address)return alert('Para entrega, informe o endereço completo.');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return alert('Informe um e-mail válido.');
     if(phoneDigits(phone).length<10)return alert('Informe um telefone válido com DDD.');
-    var mode=(document.querySelector('input[name="dcFulfillment"]:checked')||{}).value||'Retirada na loja';
     var order={
       id:orderId(),
       createdAt:new Date().toISOString(),
@@ -6230,8 +6238,12 @@ carregarFotosFirebase();
       await fb.save(data);
       var wa=storePhone();
       var waUrl=wa?'https://wa.me/'+wa+'?text='+encodeURIComponent(buildStoreWhatsapp(order)):'#';
-      $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br>'+(mode==='Entrega'?'A entrega está aguardando a cotação do frete.':'Retirada sem frete. Agora alinhe o pagamento com a loja.')+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
-      try{localStorage.setItem('deluxCartV2','[]')}catch(e){}
+      $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br><b>Guarde este número para acompanhar seu pedido.</b><br>'+(mode==='Entrega'?'A entrega está aguardando a cotação do frete.':'Retirada sem frete. Agora alinhe o pagamento com a loja.')+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
+      try{
+        localStorage.setItem('deluxCartV2','[]');
+        localStorage.setItem('deluxLastOrderId',order.id);
+        localStorage.setItem('deluxLastOrderPhone',order.customer.phone||'');
+      }catch(e){}
       var count=$('delux-cart-count'), total=$('delux-cart-total'), body=$('delux-cart-body'), bubble=$('delux-cart-bubble');
       if(count)count.textContent='0'; if(total)total.textContent='R$ 0,00'; if(body)body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio.</p>'; if(bubble)bubble.classList.remove('visible');
     }catch(e){
@@ -6357,6 +6369,222 @@ carregarFotosFirebase();
     var obs=new MutationObserver(normalizeBuyButtons);
     obs.observe(document.body,{childList:true,subtree:true});
   });
+})();
+</script>
+
+
+<script id="delux-checkout-address-conditional">
+(function(){
+  function findDeliverySelect(){
+    return document.querySelector(
+      '#checkoutDeliveryType, #deliveryType, #shippingType, #delux-delivery-type, ' +
+      'select[name="deliveryType"], select[name="shippingType"]'
+    );
+  }
+
+  function findAddressField(){
+    return document.querySelector(
+      '#checkoutAddress, #customerAddress, #deliveryAddress, #delux-address, ' +
+      'input[name="address"], textarea[name="address"]'
+    );
+  }
+
+  function normalizeValue(v){
+    return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+
+  function isDeliveryValue(v){
+    var n=normalizeValue(v);
+    return n.includes('entrega') || n.includes('delivery') || n.includes('frete');
+  }
+
+  function updateAddressRequirement(){
+    var select=findDeliverySelect();
+    var address=findAddressField();
+    if(!select || !address) return;
+
+    var delivery=isDeliveryValue(select.value);
+    address.required=delivery;
+
+    var wrap=address.closest('.form-group, .field, .checkout-field, .delux-field, label, div');
+    if(wrap){
+      if(delivery){
+        wrap.style.display='';
+      }else{
+        wrap.style.display='none';
+        address.value='';
+      }
+    }else{
+      address.style.display=delivery?'':'none';
+      if(!delivery) address.value='';
+    }
+
+    address.setAttribute(
+      'placeholder',
+      delivery ? 'Endereço completo para entrega' : 'Endereço não necessário para retirada'
+    );
+  }
+
+  document.addEventListener('change',function(e){
+    var select=findDeliverySelect();
+    if(select && e.target===select) updateAddressRequirement();
+  });
+
+  document.addEventListener('DOMContentLoaded',function(){
+    updateAddressRequirement();
+    setTimeout(updateAddressRequirement,300);
+    setTimeout(updateAddressRequirement,1000);
+  });
+
+  // Safety validation before checkout submission/finalization.
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest && e.target.closest(
+      '#finalizeOrder, #finishOrder, #checkoutSubmit, #delux-finalize-order, ' +
+      'button[data-action="finalize-order"], .delux-checkout-finish'
+    );
+    if(!btn) return;
+
+    var select=findDeliverySelect();
+    var address=findAddressField();
+    if(select && address && isDeliveryValue(select.value) && !String(address.value||'').trim()){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      alert('Para entrega, informe o endereço completo.');
+      address.focus();
+      return false;
+    }
+  },true);
+})();
+</script>
+
+
+<style id="delux-order-tracking-css">
+.delux-track-btn{position:fixed;right:18px;bottom:76px;z-index:9998;border:0;border-radius:999px;background:#171821;color:#fff;padding:12px 16px;font:800 13px Arial;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.delux-track-btn:hover{transform:translateY(-1px)}
+.delux-track-modal{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:100001;display:none;align-items:center;justify-content:center;padding:18px}
+.delux-track-modal.open{display:flex}
+.delux-track-card{width:min(680px,100%);max-height:92vh;overflow:auto;background:#fff;color:#24141c;border-radius:24px;padding:24px;box-shadow:0 28px 80px rgba(0,0,0,.35)}
+.delux-track-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px}
+.delux-track-head h2{margin:0;color:#d71968;font-family:'Cormorant Garamond',serif;font-size:2rem}
+.delux-track-close{border:0;background:#fff0f6;color:#d71968;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}
+.delux-track-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.delux-track-grid label{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#8b5c70;margin-bottom:5px}
+.delux-track-grid input{width:100%;border:1px solid #f0c9d9;background:#fffafd;color:#24141c;border-radius:12px;padding:12px;outline:none}
+.delux-track-search{border:0;border-radius:12px;background:#e8317a;color:#fff;padding:12px 16px;font-weight:900;cursor:pointer}
+.delux-track-result{margin-top:16px}
+.delux-track-status{display:inline-flex;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;background:#fff0f6;color:#c51f60}
+.delux-track-box{margin-top:12px;border:1px solid #f0d6e1;border-radius:16px;padding:14px;background:#fffafd;line-height:1.6}
+.delux-track-items{margin-top:12px}
+.delux-track-item{padding:9px 0;border-bottom:1px solid #f3dce6;display:flex;justify-content:space-between;gap:12px}
+.delux-track-item:last-child{border-bottom:0}
+.delux-track-error{padding:14px;border-radius:14px;background:#fff1f3;color:#9b2145;font-weight:700}
+.delux-track-note{font-size:12px;color:#8b5c70;margin-top:10px;line-height:1.5}
+@media(max-width:650px){.delux-track-grid{grid-template-columns:1fr}.delux-track-btn{right:12px;bottom:72px}}
+</style>
+
+<script id="delux-order-tracking-js">
+(function(){
+  function $(id){return document.getElementById(id)}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+  function money(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function digits(v){return String(v||'').replace(/\D/g,'')}
+  function samePhone(a,b){
+    var x=digits(a),y=digits(b);
+    if(!x||!y)return false;
+    return x===y || (x.length>=8&&y.length>=8&&x.slice(-8)===y.slice(-8));
+  }
+  function fmtDate(v){
+    if(!v)return '-';
+    var d=new Date(v);
+    return isNaN(d.getTime())?'-':d.toLocaleString('pt-BR');
+  }
+  function statusText(o){
+    if(o.paymentStatus==='Pago' && o.status==='Aguardando pagamento')return 'Pago';
+    return o.status||'Pedido recebido';
+  }
+  function ensure(){
+    if($('deluxOrderTrackBtn'))return;
+    document.body.insertAdjacentHTML('beforeend',`
+      <button type="button" class="delux-track-btn" id="deluxOrderTrackBtn">🔎 Consultar pedido</button>
+      <div class="delux-track-modal" id="deluxOrderTrackModal">
+        <div class="delux-track-card">
+          <div class="delux-track-head"><h2>Consultar pedido</h2><button class="delux-track-close" type="button" id="deluxOrderTrackClose">×</button></div>
+          <p class="delux-track-note">Informe o número recebido ao finalizar a compra e o telefone usado no pedido.</p>
+          <div class="delux-track-grid">
+            <div><label>Número do pedido</label><input id="deluxTrackId" placeholder="Ex.: WEB-20260809-ABCDE" autocomplete="off"></div>
+            <div><label>Telefone / WhatsApp</label><input id="deluxTrackPhone" inputmode="tel" autocomplete="tel"></div>
+            <button type="button" class="delux-track-search" id="deluxTrackSearch">Consultar</button>
+          </div>
+          <div class="delux-track-result" id="deluxTrackResult"></div>
+        </div>
+      </div>`);
+    try{
+      $('deluxTrackId').value=localStorage.getItem('deluxLastOrderId')||'';
+      $('deluxTrackPhone').value=localStorage.getItem('deluxLastOrderPhone')||'';
+    }catch(e){}
+    $('deluxOrderTrackBtn').onclick=function(){$('deluxOrderTrackModal').classList.add('open')};
+    $('deluxOrderTrackClose').onclick=function(){$('deluxOrderTrackModal').classList.remove('open')};
+    $('deluxOrderTrackModal').onclick=function(e){if(e.target===this)this.classList.remove('open')};
+    $('deluxTrackSearch').onclick=search;
+    ['deluxTrackId','deluxTrackPhone'].forEach(function(id){
+      $(id).addEventListener('keydown',function(e){if(e.key==='Enter')search()});
+    });
+  }
+  async function search(){
+    var id=String($('deluxTrackId').value||'').trim().toUpperCase();
+    var phone=String($('deluxTrackPhone').value||'').trim();
+    var out=$('deluxTrackResult');
+    if(!id||digits(phone).length<8){
+      out.innerHTML='<div class="delux-track-error">Informe o número do pedido e o telefone utilizado na compra.</div>';
+      return;
+    }
+    $('deluxTrackSearch').disabled=true;
+    $('deluxTrackSearch').textContent='Consultando...';
+    out.innerHTML='<div class="delux-track-box">Buscando pedido...</div>';
+    try{
+      if(!window._waitDeluxFirestore)throw new Error('Firebase não carregado');
+      var fb=await window._waitDeluxFirestore();
+      var data=await fb.load()||{};
+      var orders=data.erpDB&&Array.isArray(data.erpDB.onlineOrders)?data.erpDB.onlineOrders:[];
+      var order=orders.find(function(o){return String(o.id||'').trim().toUpperCase()===id});
+      if(!order || !samePhone(order.customer&&order.customer.phone,phone)){
+        out.innerHTML='<div class="delux-track-error">Pedido não encontrado. Confira o número do pedido e o telefone informado na compra.</div>';
+        return;
+      }
+      var freight=(order.freightValue===null||order.freightValue===undefined)?null:Number(order.freightValue||0);
+      var total=(order.total===null||order.total===undefined)?null:Number(order.total||0);
+      var paid=order.paymentStatus==='Pago';
+      var items=(order.items||[]).map(function(i){
+        return '<div class="delux-track-item"><span><b>'+esc(i.qty||1)+'x '+esc(i.name||'Produto')+'</b><br><small>'+esc(i.store||'')+'</small></span><b>'+money(Number(i.price||0)*Number(i.qty||1))+'</b></div>';
+      }).join('');
+      var delivery=order.fulfillment==='Entrega'||order.fulfillment==='Consultar frete';
+      out.innerHTML=
+        '<div class="delux-track-box">'+
+          '<div><span class="delux-track-status">'+esc(statusText(order))+'</span></div>'+
+          '<h3 style="margin:12px 0 4px">'+esc(order.id)+'</h3>'+
+          '<div><b>Cliente:</b> '+esc(order.customer&&order.customer.name||'')+'</div>'+
+          '<div><b>Forma:</b> '+esc(order.fulfillment||'-')+'</div>'+
+          (!delivery&&order.pickupStore?'<div><b>Retirada:</b> '+esc(order.pickupStore)+'</div>':'')+
+          '<div><b>Pagamento:</b> '+(paid?'Pago':'Aguardando pagamento')+'</div>'+
+          '<div><b>Criado em:</b> '+esc(fmtDate(order.createdAt))+'</div>'+
+          '<div><b>Última atualização:</b> '+esc(fmtDate(order.updatedAt||order.createdAt))+'</div>'+
+          '<div class="delux-track-items"><b>Itens</b>'+items+'</div>'+
+          '<div style="margin-top:12px"><b>Subtotal:</b> '+money(order.subtotal||0)+'</div>'+
+          '<div><b>Frete:</b> '+(delivery?(freight===null?'Aguardando cotação':money(freight)):'R$ 0,00')+'</div>'+
+          '<div style="font-size:18px;margin-top:5px"><b>Total:</b> '+(total===null?'Aguardando cotação do frete':money(total))+'</div>'+
+          (order.status==='Pronto para retirada'?'<div style="margin-top:12px"><b>✓ Seu pedido está pronto para retirada.</b></div>':'')+
+          (order.status==='Finalizado'?'<div style="margin-top:12px"><b>✓ Pedido finalizado.</b></div>':'')+
+          (order.status==='Cancelado'?'<div style="margin-top:12px"><b>Pedido cancelado.</b></div>':'')+
+        '</div>';
+    }catch(e){
+      console.error(e);
+      out.innerHTML='<div class="delux-track-error">Não foi possível consultar agora. Verifique sua conexão e tente novamente.</div>';
+    }finally{
+      $('deluxTrackSearch').disabled=false;
+      $('deluxTrackSearch').textContent='Consultar';
+    }
+  }
+  document.addEventListener('DOMContentLoaded',ensure);
 })();
 </script>
 
