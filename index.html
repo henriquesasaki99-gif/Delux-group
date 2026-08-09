@@ -5540,132 +5540,7 @@ carregarFotosFirebase();
 
 
 
-<script>
-/* =========================================================
-   DELUX SALES UPGRADE — carrinho simples + checkout WhatsApp
-   ========================================================= */
-(function(){
-  var cart = [];
-  function moneyToNumber(value) {
-    value = String(value || '').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
-    var n = parseFloat(value);
-    return isNaN(n) ? 0 : n;
-  }
-  function formatBRL(n) {
-    return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
-  }
-  function getWhatsBase() {
-    try {
-      if (window._contactConfig && _contactConfig.mk && _contactConfig.mk.whatsappLink) return _contactConfig.mk.whatsappLink;
-    } catch(e) {}
-    var btn = document.querySelector('.mk-contact-card .btn-mk-whatsapp');
-    return btn ? btn.href.split('?')[0] : 'https://wa.me/5511999999999';
-  }
-  function buildWhatsMessage() {
-    var lines = ['Olá! Quero fazer um pedido na Delux Makes:', ''];
-    cart.forEach(function(item, i){ lines.push((i+1)+'. '+item.name+' — '+item.priceText); });
-    lines.push('');
-    lines.push('Total aproximado: '+formatBRL(cart.reduce(function(s,i){return s+i.price;},0)));
-    lines.push('Pode confirmar disponibilidade e forma de pagamento?');
-    return lines.join('\n');
-  }
-  function checkoutUrl() {
-    var base = getWhatsBase();
-    var sep = base.indexOf('?') >= 0 ? '&' : '?';
-    if (base.indexOf('text=') >= 0) base = base.split('?')[0], sep='?';
-    return base + sep + 'text=' + encodeURIComponent(buildWhatsMessage());
-  }
-  function ensureUI() {
-    if (!document.querySelector('.delux-sales-bar')) {
-      var page = document.getElementById('page-makes');
-      var nav = page && page.querySelector('.mk-nav');
-      if (page && nav) {
-        var bar = document.createElement('div');
-        bar.className = 'delux-sales-bar';
-        bar.innerHTML = '<span>💗 Atendimento rápido pelo WhatsApp</span><span>•</span><span>Produtos selecionados para pronta venda</span><span>•</span><a href="#mk-produtos">Comprar agora</a>';
-        nav.insertAdjacentElement('afterend', bar);
-      }
-    }
-    if (!document.querySelector('.delux-trust-row')) {
-      var hero = document.querySelector('#page-makes .mk-hero');
-      if (hero) {
-        var trust = document.createElement('div');
-        trust.className = 'delux-trust-row';
-        trust.innerHTML = '<div class="delux-trust-card"><b class="delux-trust-icon">🛍️</b><div><strong>Compra fácil</strong><span>Pedido direto no WhatsApp</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">✨</b><div><strong>Curadoria Delux</strong><span>Produtos e kits selecionados</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">📱</b><div><strong>Atendimento humano</strong><span>Tire dúvidas antes de comprar</span></div></div><div class="delux-trust-card"><b class="delux-trust-icon">💳</b><div><strong>Pagamento combinado</strong><span>Confirmação no atendimento</span></div></div>';
-        hero.insertAdjacentElement('afterend', trust);
-      }
-    }
-    if (!document.querySelector('.delux-shop-cta')) {
-      var grid = document.querySelector('#mk-produtos .mk-prod-grid');
-      if (grid) {
-        var cta = document.createElement('div');
-        cta.className = 'delux-shop-cta';
-        cta.innerHTML = '<div><h3>Gostou de algum produto?</h3><p>Clique em comprar, monte seu pedido e finalize pelo WhatsApp com a Delux Makes.</p></div><a href="#mk-produtos">Ver produtos</a>';
-        grid.insertAdjacentElement('afterend', cta);
-      }
-    }
-    if (!document.getElementById('delux-cart')) {
-      document.body.insertAdjacentHTML('beforeend', '<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu pedido</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" role="button">Finalizar pedido</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');
-      document.getElementById('delux-cart-bubble').onclick = function(){ document.getElementById('delux-cart').classList.add('visible'); this.classList.remove('visible'); };
-      document.getElementById('delux-cart-close').onclick = function(){ document.getElementById('delux-cart').classList.remove('visible'); if(cart.length) document.getElementById('delux-cart-bubble').classList.add('visible'); };
-      document.getElementById('delux-clear-cart').onclick = function(){ cart=[]; renderCart(); };
-    }
-  }
-  function bindProducts() {
-    document.querySelectorAll('#page-makes .mk-add').forEach(function(btn, idx){
-      if (btn.dataset.deluxBound) return;
-      btn.dataset.deluxBound = '1';
-      btn.setAttribute('type','button');
-      btn.setAttribute('aria-label','Comprar produto');
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        var nameEl = document.getElementById('mk-prod-name-'+idx);
-        var catEl = document.getElementById('mk-prod-cat-'+idx);
-        var priceEl = document.getElementById('mk-prod-price-'+idx);
-        var item = {
-          name: nameEl ? nameEl.textContent.trim() : 'Produto Delux Makes',
-          cat: catEl ? catEl.textContent.trim() : '',
-          priceText: priceEl ? priceEl.textContent.trim() : 'Consultar valor',
-          price: priceEl ? moneyToNumber(priceEl.textContent) : 0
-        };
-        cart.push(item);
-        renderCart(true);
-      });
-    });
-  }
-  function renderCart(open) {
-    ensureUI();
-    var body = document.getElementById('delux-cart-body');
-    var total = cart.reduce(function(s,i){return s+i.price;},0);
-    if (!body) return;
-    if (!cart.length) {
-      body.innerHTML = '<p style="color:#9e6679;font-size:13px;line-height:1.6;">Seu carrinho está vazio. Escolha um produto para montar seu pedido.</p>';
-      document.getElementById('delux-cart').classList.remove('visible');
-      document.getElementById('delux-cart-bubble').classList.remove('visible');
-    } else {
-      body.innerHTML = cart.map(function(item, i){ return '<div class="delux-cart-item"><div><strong>'+item.name+'</strong><small>'+item.cat+'</small></div><div>'+item.priceText+'</div></div>'; }).join('');
-      document.getElementById('delux-cart-count').textContent = cart.length;
-      document.getElementById('delux-cart-total').textContent = formatBRL(total);
-      document.getElementById('delux-checkout').href = checkoutUrl();
-      if (open) document.getElementById('delux-cart').classList.add('visible');
-      if (!document.getElementById('delux-cart').classList.contains('visible')) document.getElementById('delux-cart-bubble').classList.add('visible');
-    }
-  }
-  function updateHeroCopy() {
-    var badge = document.querySelector('#page-makes .mk-badge');
-    var desc = document.querySelector('#page-makes .mk-desc');
-    if (badge) badge.textContent = '✨ Loja de beleza • produtos, cursos e atendimento';
-    if (desc) desc.textContent = 'Escolha seus produtos favoritos, monte seu pedido e finalize pelo WhatsApp com atendimento personalizado da Delux Makes.';
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureUI();
-    bindProducts();
-    updateHeroCopy();
-    renderCart(false);
-    setInterval(bindProducts, 1200);
-  });
-})();
-</script>
+
 
 
 <style>
@@ -6382,6 +6257,105 @@ carregarFotosFirebase();
     setTimeout(bindCheckoutButton,500);
     setTimeout(bindCheckoutButton,1600);
     setInterval(bindCheckoutButton,2500);
+  });
+})();
+</script>
+
+
+<script id="delux-cart-final-guard">
+(function(){
+  function moneyToNumber(value){
+    var s=String(value||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
+    var n=parseFloat(s);
+    return isNaN(n)?0:n;
+  }
+  function loadCart(){
+    try{return JSON.parse(localStorage.getItem('deluxCartV2')||'[]')||[]}catch(e){return[]}
+  }
+  function saveCart(c){
+    try{localStorage.setItem('deluxCartV2',JSON.stringify(c))}catch(e){}
+  }
+  function addStaticMakes(btn){
+    var card=btn.closest('.mk-card');
+    if(!card)return;
+    var idx=(card.id||'').replace('mk-prod-card-','');
+    var name=(document.getElementById('mk-prod-name-'+idx)||{}).textContent||'Produto Delux Makes';
+    var cat=(document.getElementById('mk-prod-cat-'+idx)||{}).textContent||'';
+    var priceText=(document.getElementById('mk-prod-price-'+idx)||{}).textContent||'Consultar';
+    var price=moneyToNumber(priceText);
+    var key='static-mk-'+idx;
+    var c=loadCart(), found=c.find(function(x){return x.key===key});
+    if(found) found.qty=(Number(found.qty)||1)+1;
+    else c.push({
+      key:key,
+      id:key,
+      brand:'mk',
+      store:'Delux Makes',
+      name:String(name).trim(),
+      cat:String(cat).trim(),
+      priceText:String(priceText).trim(),
+      priceNumber:price,
+      qty:1
+    });
+    saveCart(c);
+    if(window.deluxRenderGroupedCart) window.deluxRenderGroupedCart(true);
+    else {
+      var bubble=document.getElementById('delux-cart-bubble');
+      if(bubble) bubble.classList.add('visible');
+    }
+  }
+
+  // Runs before target/inline handlers. Static "Comprar" can never open WhatsApp.
+  document.addEventListener('click',function(e){
+    var staticBtn=e.target.closest && e.target.closest('#page-makes .mk-add');
+    if(staticBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      addStaticMakes(staticBtn);
+      return false;
+    }
+
+    // Safety: any product-card link still labelled Comprar and pointing to WhatsApp
+    // is blocked. Existing cart-enabled product buttons continue normally.
+    var buyLink=e.target.closest && e.target.closest(
+      '.mk-card a, .delux-shop-card a, .delux-auto-card a'
+    );
+    if(buyLink && /comprar|adicionar/i.test((buyLink.textContent||'').trim()) &&
+       /wa\.me|whatsapp/i.test(buyLink.getAttribute('href')||'')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var card=buyLink.closest('.mk-card');
+      if(card){
+        var btn=card.querySelector('.mk-add');
+        if(btn) addStaticMakes(btn);
+      }
+      return false;
+    }
+  },true);
+
+  function normalizeBuyButtons(){
+    document.querySelectorAll('#page-makes .mk-add').forEach(function(btn){
+      btn.type='button';
+      btn.removeAttribute('onclick');
+      btn.removeAttribute('formaction');
+      btn.setAttribute('aria-label','Adicionar produto ao carrinho');
+      btn.title='Adicionar ao carrinho';
+    });
+    document.querySelectorAll('.mk-card a, .delux-shop-card a, .delux-auto-card a').forEach(function(a){
+      if(/comprar|adicionar/i.test((a.textContent||'').trim()) &&
+         /wa\.me|whatsapp/i.test(a.getAttribute('href')||'')){
+        a.setAttribute('href','#');
+        a.removeAttribute('target');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    normalizeBuyButtons();
+    setTimeout(normalizeBuyButtons,500);
+    setTimeout(normalizeBuyButtons,1600);
+    var obs=new MutationObserver(normalizeBuyButtons);
+    obs.observe(document.body,{childList:true,subtree:true});
   });
 })();
 </script>
