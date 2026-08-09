@@ -5763,6 +5763,7 @@ carregarFotosFirebase();
   };
   var shopCart=[];
   try{shopCart=JSON.parse(localStorage.getItem('deluxCartV2')||'[]')||[];}catch(e){shopCart=[];}
+  window.deluxShopCart = shopCart;
   function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function getWa(brand){try{if(window._contactConfig&&_contactConfig[brand]&&_contactConfig[brand].whatsappLink)return _contactConfig[brand].whatsappLink.split('?')[0];}catch(e){} var a=document.querySelector(brand==='by'?'.btn-by-whatsapp-new':'.btn-mk-whatsapp'); return a?a.href.split('?')[0]:'https://wa.me/5511999999999';}
   function itemMsg(brand,item){var lines=['Olá! Tenho interesse '+(brand==='by'?'nesta coleção/peça da Delux BY:':'neste produto da Delux Makes:'),'',item.name,'Categoria: '+(item.cat||'-'),'Valor: '+(item.price||'Consultar'),'','Pode confirmar disponibilidade, pagamento e entrega?'];return getWa(brand)+'?text='+encodeURIComponent(lines.join('\n'));}
@@ -5782,10 +5783,10 @@ carregarFotosFirebase();
     var b=document.getElementById('delux-cart-bubble'), c=document.getElementById('delux-cart'), close=document.getElementById('delux-cart-close'), clear=document.getElementById('delux-clear-cart');
     if(b)b.onclick=function(){c.classList.add('visible');b.classList.remove('visible');};
     if(close)close.onclick=function(){c.classList.remove('visible');if(shopCart.length)b.classList.add('visible');};
-    if(clear)clear.onclick=function(){shopCart=[];cartSave();renderCart(false);};
+    if(clear)clear.onclick=function(){shopCart.splice(0,shopCart.length);cartSave();renderCart(false);};
   }
   function renderCart(open){ensureUnifiedCart();var body=document.getElementById('delux-cart-body'), bubble=document.getElementById('delux-cart-bubble'), panel=document.getElementById('delux-cart'), count=document.getElementById('delux-cart-count'), total=document.getElementById('delux-cart-total'), checkout=document.getElementById('delux-checkout');if(!body)return;if(!shopCart.length){body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio. Adicione produtos da Delux BY ou Delux Makes para montar seu pedido.</p>';if(count)count.textContent='0';if(total)total.textContent='R$ 0,00';if(checkout)checkout.href='#';if(panel)panel.classList.remove('visible');if(bubble)bubble.classList.remove('visible');return;}body.innerHTML=shopCart.map(function(it,i){return '<div class="delux-cart-item"><div class="delux-cart-item-main"><strong>'+esc(it.name)+'</strong><small>'+esc(it.cat||'')+'</small><small class="delux-cart-brand">'+(it.brand==='by'?'Delux BY':'Delux Makes')+'</small></div><div class="delux-cart-side"><strong>'+esc(it.priceText||'Consultar')+'</strong><div class="delux-cart-qty"><button type="button" onclick="deluxCartQty('+i+',-1)">−</button><span>'+esc(it.qty||1)+'</span><button type="button" onclick="deluxCartQty('+i+',1)">+</button></div><button type="button" class="delux-cart-remove" onclick="deluxCartRemove('+i+')">remover</button></div></div>';}).join('');if(count)count.textContent=cartCount();if(total)total.textContent=cartTotal()?formatBRL(cartTotal()):'Consultar';if(checkout)checkout.href=cartCheckoutUrl();if(open&&panel){panel.classList.add('visible');if(bubble)bubble.classList.remove('visible');}else if(bubble&&!panel.classList.contains('visible')){bubble.classList.add('visible');}}
-  window.deluxAddToCart=function(brand,idx,btn){var item=state[brand]&&state[brand][idx];if(!item)return;var key=brand+'-'+(item.id||idx);var found=shopCart.find(function(x){return x.key===key;});if(found){found.qty=(Number(found.qty)||1)+1;}else{shopCart.push({key:key,brand:brand,name:item.name||'Item Delux',cat:item.cat||'',priceText:item.price||'Consultar',priceNumber:moneyToNumber(item.price),qty:1});}cartSave();renderCart(true);if(btn){var old=btn.textContent;btn.textContent='Adicionado';btn.classList.add('added');setTimeout(function(){btn.textContent=old||'Adicionar';btn.classList.remove('added');},900);}};
+  window.deluxAddToCart=function(brand,idx,btn){var item=state[brand]&&state[brand][idx];if(!item)return;var key=brand+'-'+(item.id||idx);var found=shopCart.find(function(x){return x.key===key;});if(found){found.qty=(Number(found.qty)||1)+1;}else{shopCart.push({key:key,id:item.id||key,brand:brand,store:brand==='by'?'Delux By':'Delux Makes',name:item.name||'Item Delux',cat:item.cat||'',priceText:item.price||'Consultar',priceNumber:moneyToNumber(item.price),qty:1});}cartSave();renderCart(true);if(btn){var old=btn.textContent;btn.textContent='Adicionado';btn.classList.add('added');setTimeout(function(){btn.textContent=old||'Adicionar';btn.classList.remove('added');},900);}};
   window.deluxCartQty=function(i,delta){if(!shopCart[i])return;shopCart[i].qty=(Number(shopCart[i].qty)||1)+delta;if(shopCart[i].qty<=0)shopCart.splice(i,1);cartSave();renderCart(true);};
   window.deluxCartRemove=function(i){shopCart.splice(i,1);cartSave();renderCart(true);};
   function renderPublic(){var byGrid=document.querySelector('#by-colecoes .by-col-grid');if(byGrid){byGrid.className='by-col-grid delux-online-grid';byGrid.innerHTML=state.by.map(function(it,i){return cardHtml('by',it,i);}).join('');}var mkGrid=document.querySelector('#mk-produtos .mk-prod-grid');if(mkGrid){mkGrid.className='mk-prod-grid delux-online-grid mk';mkGrid.innerHTML=state.mk.map(function(it,i){return cardHtml('mk',it,i);}).join('');}}
@@ -6202,5 +6203,166 @@ carregarFotosFirebase();
   }, true);
 })();
 </script>
+
+<style id="delux-online-checkout-css">
+.delux-checkout-modal{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:100000;display:none;align-items:center;justify-content:center;padding:18px}
+.delux-checkout-modal.open{display:flex}
+.delux-checkout-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;color:#24141c;border-radius:24px;padding:24px;box-shadow:0 28px 80px rgba(0,0,0,.35)}
+.delux-checkout-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.delux-checkout-head h2{margin:0;color:#d71968;font-family:'Cormorant Garamond',serif;font-size:2rem}
+.delux-checkout-x{border:0;background:#fff0f6;color:#d71968;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}
+.delux-checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.delux-checkout-grid .full{grid-column:1/-1}
+.delux-checkout-card label{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#8b5c70;margin-bottom:5px}
+.delux-checkout-card input,.delux-checkout-card select,.delux-checkout-card textarea{width:100%;border:1px solid #f0c9d9;background:#fffafd;color:#24141c;border-radius:12px;padding:12px;outline:none}
+.delux-delivery-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+.delux-delivery-option{border:1px solid #f0c9d9;border-radius:14px;padding:14px;cursor:pointer;background:#fffafd}
+.delux-delivery-option input{width:auto;margin-right:8px}
+.delux-checkout-summary{margin-top:14px;background:#fff5fa;border-radius:14px;padding:14px;line-height:1.6}
+.delux-freight-lock{margin-top:10px;padding:12px;border-radius:12px;background:#fff3cd;color:#725400;font-size:13px;font-weight:700}
+.delux-checkout-submit{width:100%;border:0;border-radius:999px;background:#e8317a;color:#fff;padding:14px 18px;font-size:15px;font-weight:900;cursor:pointer;margin-top:16px}
+.delux-checkout-submit:disabled{opacity:.55;cursor:not-allowed}
+.delux-order-success{padding:18px;background:#ecfff4;color:#145c37;border-radius:14px;margin-top:14px}
+.delux-order-whatsapp{display:inline-flex;margin-top:12px;background:#25D366;color:#fff;text-decoration:none;padding:12px 16px;border-radius:999px;font-weight:900}
+@media(max-width:650px){.delux-checkout-grid,.delux-delivery-options{grid-template-columns:1fr}}
+</style>
+
+
+<script id="delux-online-checkout-js">
+(function(){
+  function $(id){return document.getElementById(id)}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+  function money(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function cart(){return Array.isArray(window.deluxShopCart)?window.deluxShopCart:[]}
+  function subtotal(){return cart().reduce(function(s,i){return s+(Number(i.priceNumber)||0)*(Number(i.qty)||1)},0)}
+  function orderId(){return 'WEB-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,7).toUpperCase()}
+  function phoneDigits(v){return String(v||'').replace(/\D/g,'')}
+  function storePhone(){
+    try{
+      var c=window._contactConfig||{};
+      var link=(c.mk&&c.mk.whatsappLink)||(c.by&&c.by.whatsappLink)||'';
+      var m=String(link).match(/wa\.me\/(\d+)/);
+      if(m)return m[1];
+    }catch(e){}
+    return '';
+  }
+  function buildStoreWhatsapp(order){
+    var lines=['NOVO PEDIDO ONLINE - '+order.id,'',
+      'Cliente: '+order.customer.name,
+      'Telefone: '+order.customer.phone,
+      'E-mail: '+order.customer.email,
+      'Endereço: '+order.customer.address,
+      '',
+      'Forma: '+order.fulfillment
+    ];
+    if(order.fulfillment==='Retirada na loja') lines.push('Retirada: '+order.pickupStore,'Frete: R$ 0,00');
+    else lines.push('Frete: aguardando cotação da loja');
+    lines.push('', 'Itens:');
+    order.items.forEach(function(i){lines.push('- '+i.qty+'x '+i.name+' ['+i.store+'] - '+money(i.price*i.qty))});
+    lines.push('','Subtotal: '+money(order.subtotal));
+    if(order.fulfillment==='Entrega') lines.push('Total final será liberado após a cotação do frete.');
+    else lines.push('Total: '+money(order.subtotal),'Pagamento: alinhar diretamente com a loja.');
+    return lines.join('\n');
+  }
+  function ensureModal(){
+    if($('deluxCheckoutModal'))return;
+    document.body.insertAdjacentHTML('beforeend',`
+      <div class="delux-checkout-modal" id="deluxCheckoutModal">
+        <div class="delux-checkout-card">
+          <div class="delux-checkout-head"><h2>Finalizar pedido</h2><button class="delux-checkout-x" type="button" id="deluxCheckoutClose">×</button></div>
+          <div id="deluxCheckoutForm">
+            <div class="delux-checkout-grid">
+              <div class="full"><label>Nome completo</label><input id="dcName" autocomplete="name"></div>
+              <div><label>Telefone / WhatsApp</label><input id="dcPhone" inputmode="tel" autocomplete="tel"></div>
+              <div><label>E-mail</label><input id="dcEmail" type="email" autocomplete="email"></div>
+              <div class="full"><label>Endereço completo</label><textarea id="dcAddress" rows="3" autocomplete="street-address" placeholder="Rua, número, complemento, bairro, cidade e CEP"></textarea></div>
+            </div>
+            <div class="delux-delivery-options">
+              <label class="delux-delivery-option"><input type="radio" name="dcFulfillment" value="Retirada na loja" checked> <b>Retirar na loja</b><br><small>Sem custo de frete. O pagamento será alinhado com a loja.</small></label>
+              <label class="delux-delivery-option"><input type="radio" name="dcFulfillment" value="Entrega"> <b>Entrega</b><br><small>O pedido fica aguardando a cotação de frete pelo vendedor.</small></label>
+            </div>
+            <div id="dcPickupWrap"><label>Loja para retirada</label><select id="dcPickupStore"><option>Delux Makes</option><option>Delux By</option></select></div>
+            <div class="delux-checkout-summary" id="dcSummary"></div>
+            <div class="delux-freight-lock" id="dcFreightNotice" style="display:none">🔒 A entrega ficará travada até a loja calcular o frete. O estoque não será baixado neste momento.</div>
+            <button class="delux-checkout-submit" id="dcSubmit" type="button">Enviar pedido</button>
+            <div id="dcResult"></div>
+          </div>
+        </div>
+      </div>`);
+    $('deluxCheckoutClose').onclick=function(){$('deluxCheckoutModal').classList.remove('open')};
+    $('deluxCheckoutModal').onclick=function(e){if(e.target===this)this.classList.remove('open')};
+    document.querySelectorAll('input[name="dcFulfillment"]').forEach(function(r){r.onchange=updateMode});
+    $('dcSubmit').onclick=submitOrder;
+  }
+  function updateMode(){
+    var mode=(document.querySelector('input[name="dcFulfillment"]:checked')||{}).value||'Retirada na loja';
+    $('dcPickupWrap').style.display=mode==='Retirada na loja'?'block':'none';
+    $('dcFreightNotice').style.display=mode==='Entrega'?'block':'none';
+    $('dcSummary').innerHTML='<b>Produtos:</b> '+money(subtotal())+'<br><b>Frete:</b> '+(mode==='Retirada na loja'?'R$ 0,00':'Aguardando cotação')+'<br><b>Total:</b> '+(mode==='Retirada na loja'?money(subtotal()):'Será informado pela loja');
+  }
+  function openCheckout(){
+    if(!cart().length)return alert('Seu carrinho está vazio.');
+    ensureModal(); updateMode(); $('dcResult').innerHTML=''; $('deluxCheckoutModal').classList.add('open');
+  }
+  async function submitOrder(){
+    var name=$('dcName').value.trim(), phone=$('dcPhone').value.trim(), email=$('dcEmail').value.trim(), address=$('dcAddress').value.trim();
+    if(!name||!phone||!email||!address)return alert('Preencha nome completo, telefone, endereço e e-mail.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return alert('Informe um e-mail válido.');
+    if(phoneDigits(phone).length<10)return alert('Informe um telefone válido com DDD.');
+    var mode=(document.querySelector('input[name="dcFulfillment"]:checked')||{}).value||'Retirada na loja';
+    var order={
+      id:orderId(),
+      createdAt:new Date().toISOString(),
+      source:'Site Delux Group',
+      customer:{name:name,phone:phone,email:email,address:address},
+      items:cart().map(function(i){return {id:i.id||i.key,name:i.name,store:i.store||(i.brand==='by'?'Delux By':'Delux Makes'),category:i.cat||'',qty:Number(i.qty)||1,price:Number(i.priceNumber)||0}}),
+      subtotal:subtotal(),
+      fulfillment:mode,
+      pickupStore:mode==='Retirada na loja'?$('dcPickupStore').value:'',
+      shipping:mode==='Entrega'?{address:address}:{},
+      freightValue:mode==='Retirada na loja'?0:null,
+      total:mode==='Retirada na loja'?subtotal():null,
+      status:mode==='Retirada na loja'?'Aguardando pagamento':'Aguardando cálculo de frete',
+      paymentStatus:'Aguardando pagamento',
+      stockDeducted:false,
+      readByStore:false,
+      updatedAt:new Date().toISOString()
+    };
+    $('dcSubmit').disabled=true; $('dcSubmit').textContent='Enviando pedido...';
+    try{
+      if(!window._waitDeluxFirestore)throw new Error('Conexão com o sistema ainda não carregou.');
+      var fb=await window._waitDeluxFirestore();
+      var data=await fb.load()||{};
+      data.erpDB=data.erpDB||{};
+      data.erpDB.onlineOrders=Array.isArray(data.erpDB.onlineOrders)?data.erpDB.onlineOrders:[];
+      data.erpDB.onlineOrders.push(order);
+      await fb.save(data);
+      var wa=storePhone();
+      var waUrl=wa?'https://wa.me/'+wa+'?text='+encodeURIComponent(buildStoreWhatsapp(order)):'#';
+      $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br>'+(mode==='Entrega'?'A entrega está aguardando a cotação do frete.':'Retirada sem frete. Agora alinhe o pagamento com a loja.')+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
+      cart().splice(0,cart().length);
+      try{localStorage.setItem('deluxCartV2','[]')}catch(e){}
+      var count=$('delux-cart-count'), total=$('delux-cart-total'), body=$('delux-cart-body'), bubble=$('delux-cart-bubble');
+      if(count)count.textContent='0'; if(total)total.textContent='R$ 0,00'; if(body)body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio.</p>'; if(bubble)bubble.classList.remove('visible');
+    }catch(e){
+      console.error(e); alert('Não foi possível enviar o pedido. Verifique a internet e tente novamente.');
+    }finally{$('dcSubmit').disabled=false;$('dcSubmit').textContent='Enviar pedido'}
+  }
+  function bindCheckoutButton(){
+    var el=$('delux-checkout');
+    if(!el)return;
+    el.removeAttribute('target'); el.removeAttribute('href'); el.setAttribute('role','button'); el.style.cursor='pointer';
+    el.textContent='Finalizar pedido';
+    el.onclick=function(e){e.preventDefault();openCheckout();return false};
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    ensureModal();
+    setTimeout(bindCheckoutButton,500);
+    setTimeout(bindCheckoutButton,1600);
+    setInterval(bindCheckoutButton,2500);
+  });
+})();
+</script>
+
 </body>
 </html>
