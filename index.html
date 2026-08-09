@@ -5661,7 +5661,7 @@ carregarFotosFirebase();
     bindProducts();
     updateHeroCopy();
     renderCart(false);
-    setTimeout(bindProducts, 1200);
+    setInterval(bindProducts, 1200);
   });
 })();
 </script>
@@ -6008,11 +6008,11 @@ carregarFotosFirebase();
         var data=await fb.load();
         if(data && Array.isArray(data.erpProductsPublic)){
           try{localStorage.setItem('deluxPublicProductsCache',JSON.stringify(data.erpProductsPublic));}catch(x){}
-          window.DELUX_PUBLIC_PRODUCTS=data.erpProductsPublic.filter(function(p){return p.publicVisible!==false;}); return window.DELUX_PUBLIC_PRODUCTS;
+          return data.erpProductsPublic.filter(function(p){return p.publicVisible!==false;});
         }
       }
     }catch(e){console.warn('Catálogo unificado: Firebase indisponível, usando cache.',e);}
-    try{var cache=JSON.parse(localStorage.getItem('deluxPublicProductsCache')||'[]');if(cache&&cache.length){window.DELUX_PUBLIC_PRODUCTS=cache.filter(function(p){return p.publicVisible!==false;});return window.DELUX_PUBLIC_PRODUCTS;}}catch(e){}
+    try{var cache=JSON.parse(localStorage.getItem('deluxPublicProductsCache')||'[]');if(cache&&cache.length)return cache.filter(function(p){return p.publicVisible!==false;});}catch(e){}
     return [];
   }
   function grouped(products,kind){
@@ -6028,10 +6028,9 @@ carregarFotosFirebase();
     var img=p.image?'<img class="delux-auto-img" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'<div class="delux-auto-img delux-auto-placeholder">Delux</div>';
     var available=Number(p.stock||0)>0;
     var status=available?'Produto disponível para compra':'Estoque encerrado — entre em contato com a loja para consultar reposição';
-    var actionText=available?'Adicionar ao carrinho':'Consultar reposição';
-    var wa=encodeURIComponent('Olá, gostaria de consultar a reposição do produto '+(p.name||'')+' da '+(p.store||'Delux Group')+'.');
-    var action=available?'<button type="button" class="delux-online-add" onclick="deluxOnlineAddProduct(\''+esc(p.id||'')+'\')">'+actionText+'</button>':'<a target="_blank" rel="noopener" href="https://wa.me/?text='+wa+'">'+actionText+'</a>';
-    return '<article class="delux-auto-card '+kind+(available?'':' sold-out')+'">'+img+'<div class="delux-auto-body">'+(p.publicHighlight?'<span class="delux-auto-badge">Destaque</span>':'')+'<div class="delux-auto-name">'+esc(p.name||'Produto')+'</div><div class="delux-auto-status '+(available?'available':'ended')+'">'+status+'</div><div class="delux-auto-desc">'+esc(p.publicDescription||'')+'</div><div class="delux-auto-bottom"><strong>'+moneyBR(p.price)+'</strong>'+action+'</div></div></article>';
+    var actionText=available?'Comprar':'Consultar reposição';
+    var wa=available?whatsappText(p):encodeURIComponent('Olá, gostaria de consultar a reposição do produto '+(p.name||'')+' da '+(p.store||'Delux Group')+'.');
+    return '<article class="delux-auto-card '+kind+(available?'':' sold-out')+'">'+img+'<div class="delux-auto-body">'+(p.publicHighlight?'<span class="delux-auto-badge">Destaque</span>':'')+'<div class="delux-auto-name">'+esc(p.name||'Produto')+'</div><div class="delux-auto-status '+(available?'available':'ended')+'">'+status+'</div><div class="delux-auto-desc">'+esc(p.publicDescription||'')+'</div><div class="delux-auto-bottom"><strong>'+moneyBR(p.price)+'</strong><a target="_blank" rel="noopener" href="https://wa.me/?text='+wa+'">'+actionText+'</a></div></div></article>';
   }
   function renderInto(products,kind){
     var section=document.getElementById(kind==='by'?'by-colecoes':'mk-produtos');if(!section)return;
@@ -6048,7 +6047,7 @@ carregarFotosFirebase();
   window.deluxRenderPublicProducts=renderUnifiedCatalog;
   document.addEventListener('DOMContentLoaded',function(){setTimeout(renderUnifiedCatalog,2100);});
   window.addEventListener('storage',function(e){if(e.key==='deluxDB'||e.key==='deluxPublicProductsCache')renderUnifiedCatalog();});
-  // Atualização periódica removida: Firebase em tempo real já mantém o catálogo sincronizado.
+  setInterval(renderUnifiedCatalog,30000);
 })();
 </script>
 
@@ -6165,96 +6164,6 @@ carregarFotosFirebase();
   document.addEventListener('DOMContentLoaded', function(){
     var current=(location.hash||'').replace('#','') || (function(){try{return localStorage.getItem('deluxCurrentPage')||''}catch(e){return''}})();
     if(current==='by'||current==='makes') setTimeout(function(){ try{_deluxShowPageNow(current,false)}catch(e){} }, 500);
-  });
-})();
-</script>
-
-
-<style id="delux-online-order-style">
-.delux-online-add{border:0;border-radius:999px;padding:.72rem 1.15rem;background:#e8317a;color:#fff;font-weight:800;cursor:pointer}
-.delux-online-order-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99999;display:none;align-items:center;justify-content:center;padding:18px}
-.delux-online-order-backdrop.open{display:flex}.delux-online-order-modal{width:min(620px,100%);max-height:92vh;overflow:auto;background:#fff;color:#22131a;border-radius:22px;padding:22px;box-shadow:0 30px 90px rgba(0,0,0,.45);font-family:Arial,sans-serif}.delux-online-order-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.delux-online-order-head h2{margin:0;color:#e8317a}.delux-online-close{border:0;background:#f3e9ed;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:22px}.delux-online-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.delux-online-fields .full{grid-column:1/-1}.delux-online-fields input,.delux-online-fields select,.delux-online-fields textarea{width:100%;border:1px solid #ddd;border-radius:12px;padding:12px;background:#fff;color:#222;font:inherit}.delux-online-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.delux-online-mode label{border:1px solid #ead3dc;border-radius:14px;padding:12px;cursor:pointer;background:#fff7fa}.delux-online-summary{background:#fff5f9;border-radius:14px;padding:12px;margin:14px 0;font-size:13px;line-height:1.5}.delux-online-submit{width:100%;border:0;border-radius:14px;padding:14px;background:#e8317a;color:#fff;font-weight:900;cursor:pointer}.delux-online-submit:disabled{opacity:.55;cursor:not-allowed}.delux-online-note{font-size:12px;color:#777;line-height:1.5}.delux-online-success{padding:18px;background:#effaf3;border:1px solid #bde6ca;border-radius:14px;margin-top:14px;color:#185c31}.delux-online-hidden{display:none!important}
-@media(max-width:650px){.delux-online-fields,.delux-online-mode{grid-template-columns:1fr}.delux-online-fields .full{grid-column:auto}}
-</style>
-<div id="deluxOnlineOrderBackdrop" class="delux-online-order-backdrop" aria-hidden="true">
-  <div class="delux-online-order-modal">
-    <div class="delux-online-order-head"><div><h2>Finalizar pedido online</h2><div class="delux-online-note">O pedido será enviado diretamente para o sistema da loja.</div></div><button type="button" class="delux-online-close" onclick="deluxCloseOnlineCheckout()">×</button></div>
-    <div id="deluxOnlineOrderForm">
-      <div class="delux-online-summary" id="deluxOnlineOrderSummary"></div>
-      <div class="delux-online-fields">
-        <input id="deluxOrderName" class="full" placeholder="Nome completo">
-        <input id="deluxOrderPhone" placeholder="WhatsApp">
-        <input id="deluxOrderEmail" placeholder="E-mail (opcional)">
-      </div>
-      <div class="delux-online-mode">
-        <label><input type="radio" name="deluxFulfillment" value="retirada" checked onchange="deluxUpdateFulfillmentFields()"> <b>Retirada na loja</b><br><small>Sem cobrança de frete.</small></label>
-        <label><input type="radio" name="deluxFulfillment" value="frete" onchange="deluxUpdateFulfillmentFields()"> <b>Consultar frete</b><br><small>A loja informará o valor antes do pagamento.</small></label>
-      </div>
-      <div id="deluxPickupFields" class="delux-online-fields"><select id="deluxPickupStore" class="full"><option value="">Selecione a loja para retirada</option></select></div>
-      <div id="deluxFreightFields" class="delux-online-fields delux-online-hidden">
-        <input id="deluxOrderCep" placeholder="CEP">
-        <input id="deluxOrderCity" placeholder="Cidade">
-        <input id="deluxOrderAddress" class="full" placeholder="Endereço completo para consulta de frete">
-        <textarea id="deluxOrderReference" class="full" placeholder="Complemento / referência (opcional)"></textarea>
-      </div>
-      <p class="delux-online-note"><b>Pagamento:</b> Pix após a confirmação da loja. Para pedidos com frete, o Pix será solicitado somente depois que o valor do frete for informado.</p>
-      <button id="deluxOnlineSubmit" class="delux-online-submit" type="button" onclick="deluxSubmitOnlineOrder()">Enviar pedido para a loja</button>
-    </div>
-    <div id="deluxOnlineOrderSuccess" class="delux-online-success delux-online-hidden"></div>
-  </div>
-</div>
-
-<script type="module" id="delux-online-order-module">
-import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {getFirestore,doc,runTransaction} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-const cfg={apiKey:'AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg',authDomain:'delux-group.firebaseapp.com',projectId:'delux-group',storageBucket:'delux-group.firebasestorage.app',messagingSenderId:'971726312316',appId:'1:971726312316:web:ed515078f8aa4932018af9',measurementId:'G-ED9Q04M7NC'};
-const app=getApps().length?getApp():initializeApp(cfg), db=getFirestore(app), ref=doc(db,'site_config','admin');
-const CART_KEY='deluxCartV2';
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const brl=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function cart(){try{return JSON.parse(localStorage.getItem(CART_KEY)||'[]')||[]}catch(e){return[]}}
-function saveCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));}
-function productById(id){return (window.DELUX_PUBLIC_PRODUCTS||[]).find(p=>String(p.id)===String(id));}
-function normalizeCartItem(it){let p=productById(it.id)||productById(String(it.key||'').replace(/^auto-/,''));return {id:p?.id||it.id||'',name:p?.name||it.name||'Produto',store:p?.store||(it.brand==='by'?'Delux By':'Delux Makes'),category:p?.category||it.cat||'',price:Number(p?.price??it.priceNumber??0),qty:Number(it.qty||1),sku:p?.sku||'',barcode:p?.barcode||''};}
-window.deluxOnlineAddProduct=function(id){let p=productById(id);if(!p)return alert('Produto não encontrado. Atualize a página e tente novamente.');if(Number(p.stock||0)<=0)return alert('Estoque encerrado. Entre em contato com a loja para consultar reposição.');let c=cart(),key='auto-'+p.id,found=c.find(x=>x.key===key||String(x.id||'')===String(p.id));if(found)found.qty=(Number(found.qty)||1)+1;else c.push({key,id:p.id,brand:String(p.store||'').toLowerCase().includes('by')?'by':'mk',name:p.name,cat:p.category||'',priceText:brl(p.price),priceNumber:Number(p.price||0),qty:1,store:p.store});saveCart(c);window.deluxOpenOnlineCheckout();};
-function currentItems(){return cart().map(normalizeCartItem).filter(i=>i.id||i.name);}
-function fillStoreOptions(items){let sel=document.getElementById('deluxPickupStore');if(!sel)return;let stores=[...new Set(items.map(i=>i.store).filter(Boolean))];sel.innerHTML='<option value="">Selecione a loja para retirada</option>'+stores.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join('');if(stores.length===1)sel.value=stores[0];}
-function renderSummary(){let items=currentItems(),box=document.getElementById('deluxOnlineOrderSummary');if(!box)return;let total=items.reduce((s,i)=>s+i.price*i.qty,0);box.innerHTML='<b>'+items.length+' produto(s) no pedido</b><br>'+items.map(i=>esc(i.qty+'x '+i.name+' — '+i.store)).join('<br>')+'<hr style="border:0;border-top:1px solid #eadde2"><b>Total dos produtos: '+brl(total)+'</b>';fillStoreOptions(items);}
-window.deluxOpenOnlineCheckout=function(){let items=currentItems();if(!items.length)return alert('Seu carrinho está vazio.');renderSummary();document.getElementById('deluxOnlineOrderSuccess').classList.add('delux-online-hidden');document.getElementById('deluxOnlineOrderForm').classList.remove('delux-online-hidden');let b=document.getElementById('deluxOnlineOrderBackdrop');b.classList.add('open');b.setAttribute('aria-hidden','false');window.deluxUpdateFulfillmentFields();};
-window.deluxCloseOnlineCheckout=function(){let b=document.getElementById('deluxOnlineOrderBackdrop');b.classList.remove('open');b.setAttribute('aria-hidden','true');};
-window.deluxUpdateFulfillmentFields=function(){let mode=document.querySelector('input[name="deluxFulfillment"]:checked')?.value||'retirada';document.getElementById('deluxPickupFields').classList.toggle('delux-online-hidden',mode!=='retirada');document.getElementById('deluxFreightFields').classList.toggle('delux-online-hidden',mode!=='frete');};
-function orderId(){let d=new Date(),ymd=d.toISOString().slice(0,10).replaceAll('-',''),rnd=Math.random().toString(36).slice(2,6).toUpperCase();return 'WEB-'+ymd+'-'+rnd;}
-window.deluxSubmitOnlineOrder=async function(){let btn=document.getElementById('deluxOnlineSubmit'),items=currentItems();if(!items.length)return alert('Seu carrinho está vazio.');let name=document.getElementById('deluxOrderName').value.trim(),phone=document.getElementById('deluxOrderPhone').value.trim(),email=document.getElementById('deluxOrderEmail').value.trim(),mode=document.querySelector('input[name="deluxFulfillment"]:checked')?.value||'retirada';if(!name||!phone)return alert('Informe seu nome e WhatsApp.');let pickupStore=document.getElementById('deluxPickupStore').value,cep=document.getElementById('deluxOrderCep').value.trim(),city=document.getElementById('deluxOrderCity').value.trim(),address=document.getElementById('deluxOrderAddress').value.trim(),reference=document.getElementById('deluxOrderReference').value.trim();if(mode==='retirada'&&!pickupStore)return alert('Selecione a loja para retirada.');if(mode==='frete'&&(!cep||!city||!address))return alert('Informe CEP, cidade e endereço para consultar o frete.');btn.disabled=true;btn.textContent='Enviando pedido...';let id=orderId();try{await runTransaction(db,async tx=>{let snap=await tx.get(ref),root=snap.exists()?snap.data():{},erp=root.erpDB||{},products=Array.isArray(erp.products)?erp.products:[];for(let it of items){let p=products.find(x=>String(x.id)===String(it.id));if(!p||Number(p.stock||0)<Number(it.qty||1))throw new Error('O produto “'+it.name+'” não possui disponibilidade suficiente para este pedido.');it.price=Number(p.price||it.price);it.store=p.store||it.store;it.category=p.category||it.category;it.sku=p.sku||it.sku;it.barcode=p.barcode||it.barcode;}erp.onlineOrders=Array.isArray(erp.onlineOrders)?erp.onlineOrders:[];let subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),order={id,createdAt:new Date().toISOString(),customer:{name,phone,email},items,subtotal,freightValue:null,total:subtotal,fulfillment:mode==='retirada'?'Retirada na loja':'Consultar frete',pickupStore:mode==='retirada'?pickupStore:'',shipping:mode==='frete'?{cep,city,address,reference}:null,status:mode==='retirada'?'Aguardando confirmação':'Aguardando cálculo de frete',paymentMethod:'Pix após confirmação',paymentStatus:'Aguardando confirmação',source:'Site Delux Group',saleId:'',updatedAt:new Date().toISOString()};erp.onlineOrders.push(order);root.erpDB=erp;root.updatedAt=Date.now();root.updatedBy='site_order_'+Date.now();tx.set(ref,root,{merge:true});});saveCart([]);let legacy=document.getElementById('delux-cart');if(legacy)legacy.classList.remove('visible');let bubble=document.getElementById('delux-cart-bubble');if(bubble)bubble.classList.remove('visible');document.getElementById('deluxOnlineOrderForm').classList.add('delux-online-hidden');let success=document.getElementById('deluxOnlineOrderSuccess');success.classList.remove('delux-online-hidden');success.innerHTML='<b>Pedido '+esc(id)+' enviado com sucesso!</b><br>A loja recebeu seu pedido no sistema. '+(mode==='frete'?'Agora aguarde o cálculo do frete.':'Aguarde a confirmação para retirada.')+'<br><br>Pagamento via Pix será combinado após a confirmação.';}catch(e){alert(e.message||'Não foi possível enviar o pedido. Tente novamente.')}finally{btn.disabled=false;btn.textContent='Enviar pedido para a loja';}};
-function wireCheckout(){let a=document.getElementById('delux-checkout');if(a){a.removeAttribute('target');a.href='#';a.textContent='Finalizar pedido online';a.onclick=e=>{e.preventDefault();window.deluxOpenOnlineCheckout();};}}
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(wireCheckout,800);});
-new MutationObserver(()=>wireCheckout()).observe(document.body,{childList:true,subtree:true});
-</script>
-
-
-<script>
-/* ===== OTIMIZAÇÃO DE PERFORMANCE DO SITE PÚBLICO ===== */
-(function(){
-  function optimizePublicImages(root){
-    (root || document).querySelectorAll('img').forEach(function(img){
-      if(img.closest('.by-hero-slideshow,.mk-hero-slideshow,.brand-banner,.center-logo-wrap')) return;
-      if(!img.hasAttribute('loading')) img.loading='lazy';
-      if(!img.hasAttribute('decoding')) img.decoding='async';
-    });
-  }
-  document.addEventListener('DOMContentLoaded',function(){
-    optimizePublicImages(document);
-    var target=document.getElementById('page-by') || document.body;
-    if(window.MutationObserver && target){
-      var queued=false;
-      var mo=new MutationObserver(function(){
-        if(queued) return;
-        queued=true;
-        requestAnimationFrame(function(){queued=false;optimizePublicImages(document);});
-      });
-      mo.observe(target,{childList:true,subtree:true});
-      var mk=document.getElementById('page-makes');
-      if(mk && mk!==target) mo.observe(mk,{childList:true,subtree:true});
-    }
   });
 })();
 </script>
