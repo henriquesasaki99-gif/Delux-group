@@ -5605,7 +5605,7 @@ carregarFotosFirebase();
       }
     }
     if (!document.getElementById('delux-cart')) {
-      document.body.insertAdjacentHTML('beforeend', '<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu pedido</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" target="_blank" rel="noopener">Finalizar no WhatsApp</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');
+      document.body.insertAdjacentHTML('beforeend', '<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu pedido</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" role="button">Finalizar pedido</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');
       document.getElementById('delux-cart-bubble').onclick = function(){ document.getElementById('delux-cart').classList.add('visible'); this.classList.remove('visible'); };
       document.getElementById('delux-cart-close').onclick = function(){ document.getElementById('delux-cart').classList.remove('visible'); if(cart.length) document.getElementById('delux-cart-bubble').classList.add('visible'); };
       document.getElementById('delux-clear-cart').onclick = function(){ cart=[]; renderCart(); };
@@ -5779,7 +5779,7 @@ carregarFotosFirebase();
   function cartCheckoutUrl(){var base=cartWhatsBase().split('?')[0];return base+'?text='+encodeURIComponent(cartMsg());}
   function ensureUnifiedCart(){
     var old=document.getElementById('delux-cart');
-    if(!old){document.body.insertAdjacentHTML('beforeend','<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu carrinho</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-note">O valor é confirmado no atendimento antes do pagamento.</div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" target="_blank" rel="noopener">Finalizar no WhatsApp</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');}
+    if(!old){document.body.insertAdjacentHTML('beforeend','<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu carrinho</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-note">O valor é confirmado no atendimento antes do pagamento.</div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" role="button">Finalizar pedido</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>');}
     var b=document.getElementById('delux-cart-bubble'), c=document.getElementById('delux-cart'), close=document.getElementById('delux-cart-close'), clear=document.getElementById('delux-clear-cart');
     if(b)b.onclick=function(){c.classList.add('visible');b.classList.remove('visible');};
     if(close)close.onclick=function(){c.classList.remove('visible');if(shopCart.length)b.classList.add('visible');};
@@ -5965,10 +5965,11 @@ carregarFotosFirebase();
   function cartSave(c){try{localStorage.setItem(cartKey,JSON.stringify(c))}catch(e){}}
   function getWa(){try{if(window._contactConfig&&_contactConfig.mk&&_contactConfig.mk.whatsappLink)return _contactConfig.mk.whatsappLink.split('?')[0]}catch(e){}var a=document.querySelector('#page-makes a[href*="wa.me"], #page-makes a[href*="whatsapp"]');return a?a.href.split('?')[0]:'https://wa.me/5513978175033'}
   function cartMsg(cart){var lines=['Olá! Quero finalizar este pedido no site Delux Group:',''];cart.forEach(function(it,i){lines.push((i+1)+'. ['+(it.brand==='by'?'Delux BY':'Delux Makes')+'] '+it.name);lines.push('   Categoria: '+(it.cat||'-'));lines.push('   Qtd: '+(it.qty||1));lines.push('   Valor unit.: '+(it.priceText||'Consultar'));});var total=cart.reduce(function(s,it){return s+(Number(it.priceNumber)||0)*(Number(it.qty)||1)},0);lines.push('');lines.push('Total aproximado: '+(total?formatBRL(total):'Consultar'));lines.push('');lines.push('Pode confirmar disponibilidade, pagamento e entrega?');return lines.join('\n')}
-  function ensureCart(){if(!document.getElementById('delux-cart')){document.body.insertAdjacentHTML('beforeend','<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu carrinho</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-note">O valor é confirmado no atendimento antes do pagamento.</div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" target="_blank" rel="noopener">Finalizar no WhatsApp</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>')}var b=document.getElementById('delux-cart-bubble'),c=document.getElementById('delux-cart'),cl=document.getElementById('delux-cart-close'),clear=document.getElementById('delux-clear-cart');if(b)b.onclick=function(){c.classList.add('visible');b.classList.remove('visible')};if(cl)cl.onclick=function(){c.classList.remove('visible');if(cartLoad().length)b.classList.add('visible')};if(clear)clear.onclick=function(){cartSave([]);renderGroupedCart(false)}}
-  function renderGroupedCart(open){ensureCart();var cart=cartLoad(),body=document.getElementById('delux-cart-body'),bubble=document.getElementById('delux-cart-bubble'),panel=document.getElementById('delux-cart'),count=document.getElementById('delux-cart-count'),total=document.getElementById('delux-cart-total'),checkout=document.getElementById('delux-checkout');if(!body)return;var totalNum=cart.reduce(function(s,it){return s+(Number(it.priceNumber)||0)*(Number(it.qty)||1)},0);if(!cart.length){body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio. Adicione produtos da Delux BY ou Delux Makes para montar seu pedido.</p>';if(count)count.textContent='0';if(total)total.textContent='R$ 0,00';if(checkout)checkout.href='#';if(panel)panel.classList.remove('visible');if(bubble)bubble.classList.remove('visible');return}body.innerHTML=cart.map(function(it,i){return '<div class="delux-cart-item"><div class="delux-cart-item-main"><strong>'+esc(it.name)+'</strong><small>'+esc(it.cat||'')+'</small><small class="delux-cart-brand">'+(it.brand==='by'?'Delux BY':'Delux Makes')+'</small></div><div class="delux-cart-side"><strong>'+esc(it.priceText||'Consultar')+'</strong><div class="delux-cart-qty"><button type="button" onclick="deluxMkCartQty('+i+',-1)">−</button><span>'+esc(it.qty||1)+'</span><button type="button" onclick="deluxMkCartQty('+i+',1)">+</button></div><button type="button" class="delux-cart-remove" onclick="deluxMkCartRemove('+i+')">remover</button></div></div>'}).join('');if(count)count.textContent=cart.reduce(function(s,it){return s+(Number(it.qty)||1)},0);if(total)total.textContent=totalNum?formatBRL(totalNum):'Consultar';if(checkout)checkout.href=getWa()+'?text='+encodeURIComponent(cartMsg(cart));if(open&&panel){panel.classList.add('visible');if(bubble)bubble.classList.remove('visible')}else if(bubble&&!panel.classList.contains('visible'))bubble.classList.add('visible')}
+  function ensureCart(){if(!document.getElementById('delux-cart')){document.body.insertAdjacentHTML('beforeend','<button class="delux-cart-bubble" id="delux-cart-bubble">🛒 Carrinho <span id="delux-cart-count">0</span></button><div class="delux-cart-float" id="delux-cart"><div class="delux-cart-head"><span>Seu carrinho</span><button class="delux-cart-close" id="delux-cart-close">×</button></div><div class="delux-cart-body" id="delux-cart-body"></div><div class="delux-cart-total"><span>Total</span><span id="delux-cart-total">R$ 0,00</span></div><div class="delux-cart-note">O valor é confirmado no atendimento antes do pagamento.</div><div class="delux-cart-actions"><a class="delux-checkout" id="delux-checkout" href="#" role="button">Finalizar pedido</a><button class="delux-clear-cart" id="delux-clear-cart">Limpar carrinho</button></div></div>')}var b=document.getElementById('delux-cart-bubble'),c=document.getElementById('delux-cart'),cl=document.getElementById('delux-cart-close'),clear=document.getElementById('delux-clear-cart');if(b)b.onclick=function(){c.classList.add('visible');b.classList.remove('visible')};if(cl)cl.onclick=function(){c.classList.remove('visible');if(cartLoad().length)b.classList.add('visible')};if(clear)clear.onclick=function(){cartSave([]);renderGroupedCart(false)}}
+  function renderGroupedCart(open){ensureCart();var cart=cartLoad(),body=document.getElementById('delux-cart-body'),bubble=document.getElementById('delux-cart-bubble'),panel=document.getElementById('delux-cart'),count=document.getElementById('delux-cart-count'),total=document.getElementById('delux-cart-total'),checkout=document.getElementById('delux-checkout');if(!body)return;var totalNum=cart.reduce(function(s,it){return s+(Number(it.priceNumber)||0)*(Number(it.qty)||1)},0);if(!cart.length){body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio. Adicione produtos da Delux BY ou Delux Makes para montar seu pedido.</p>';if(count)count.textContent='0';if(total)total.textContent='R$ 0,00';if(checkout)checkout.href='#';if(panel)panel.classList.remove('visible');if(bubble)bubble.classList.remove('visible');return}body.innerHTML=cart.map(function(it,i){return '<div class="delux-cart-item"><div class="delux-cart-item-main"><strong>'+esc(it.name)+'</strong><small>'+esc(it.cat||'')+'</small><small class="delux-cart-brand">'+(it.brand==='by'?'Delux BY':'Delux Makes')+'</small></div><div class="delux-cart-side"><strong>'+esc(it.priceText||'Consultar')+'</strong><div class="delux-cart-qty"><button type="button" onclick="deluxMkCartQty('+i+',-1)">−</button><span>'+esc(it.qty||1)+'</span><button type="button" onclick="deluxMkCartQty('+i+',1)">+</button></div><button type="button" class="delux-cart-remove" onclick="deluxMkCartRemove('+i+')">remover</button></div></div>'}).join('');if(count)count.textContent=cart.reduce(function(s,it){return s+(Number(it.qty)||1)},0);if(total)total.textContent=totalNum?formatBRL(totalNum):'Consultar';if(checkout){checkout.href='#';checkout.removeAttribute('target');checkout.textContent='Finalizar pedido';}if(open&&panel){panel.classList.add('visible');if(bubble)bubble.classList.remove('visible')}else if(bubble&&!panel.classList.contains('visible'))bubble.classList.add('visible')}
   window.deluxMkCartQty=function(i,d){var c=cartLoad();if(!c[i])return;c[i].qty=(Number(c[i].qty)||1)+d;if(c[i].qty<=0)c.splice(i,1);cartSave(c);renderGroupedCart(true)};
   window.deluxMkCartRemove=function(i){var c=cartLoad();c.splice(i,1);cartSave(c);renderGroupedCart(true)};
+  window.deluxRenderGroupedCart=renderGroupedCart;
   function findProd(gid,pid){for(var g=0;g<mkGroups.length;g++){if(mkGroups[g].id===gid){for(var p=0;p<mkGroups[g].products.length;p++){if(mkGroups[g].products[p].id===pid)return {group:mkGroups[g],product:mkGroups[g].products[p]}}}}return null}
   window.deluxMkAddToCart=function(gid,pid,btn){var f=findProd(gid,pid);if(!f)return;var item=f.product,key='mk-'+gid+'-'+pid,c=cartLoad(),found=c.find(function(x){return x.key===key});if(found)found.qty=(Number(found.qty)||1)+1;else c.push({key:key,brand:'mk',name:item.name||'Produto Delux Makes',cat:(f.group.name||'Grupo')+(item.cat?' • '+item.cat:''),priceText:item.price||'Consultar',priceNumber:moneyToNumber(item.price),qty:1});cartSave(c);renderGroupedCart(true);if(btn){var old=btn.textContent;btn.textContent='Adicionado';btn.classList.add('added');setTimeout(function(){btn.textContent=old||'Adicionar';btn.classList.remove('added')},900)}};
   window.deluxMkImg=function(gid,pid,dir){var f=findProd(gid,pid);if(!f||!f.product.images||!f.product.images.length)return;var imgs=f.product.images;f.product.active=((f.product.active||0)+dir+imgs.length)%imgs.length;renderPublicMkGroups()};
@@ -6026,13 +6027,27 @@ carregarFotosFirebase();
     Object.keys(map).forEach(function(cat){map[cat].sort(function(a,b){var av=Number(b.stock||0)>0?1:0,bv=Number(a.stock||0)>0?1:0;return av-bv||(b.publicHighlight?1:0)-(a.publicHighlight?1:0)||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');});});
     return map;
   }
+  window.deluxUnifiedProducts=window.deluxUnifiedProducts||[];
+  window.deluxAutoAddToCart=function(productId){
+    var p=(window.deluxUnifiedProducts||[]).find(function(x){return String(x.id)===String(productId)});
+    if(!p)return alert('Produto não encontrado. Atualize a página e tente novamente.');
+    if(Number(p.stock||0)<=0)return alert('Produto com estoque encerrado. Entre em contato com a loja para consultar reposição.');
+    var c=[];try{c=JSON.parse(localStorage.getItem('deluxCartV2')||'[]')||[]}catch(e){}
+    var key='erp-'+String(p.id), found=c.find(function(x){return x.key===key});
+    if(found)found.qty=(Number(found.qty)||1)+1;
+    else c.push({key:key,id:p.id,brand:storeKind(p.store)==='by'?'by':'mk',store:p.store||'Delux Group',name:p.name||'Produto',cat:p.category||'Sem categoria',priceText:moneyBR(p.price),priceNumber:Number(p.price)||0,qty:1});
+    try{localStorage.setItem('deluxCartV2',JSON.stringify(c))}catch(e){}
+    if(window.deluxRenderGroupedCart)window.deluxRenderGroupedCart(true);
+    else { var bubble=document.getElementById('delux-cart-bubble'); if(bubble)bubble.classList.add('visible'); }
+  };
   function card(p,kind){
     var img=p.image?'<img class="delux-auto-img" src="'+esc(p.image)+'" alt="'+esc(p.name)+'">':'<div class="delux-auto-img delux-auto-placeholder">Delux</div>';
     var available=Number(p.stock||0)>0;
     var status=available?'Produto disponível para compra':'Estoque encerrado — entre em contato com a loja para consultar reposição';
-    var actionText=available?'Comprar':'Consultar reposição';
-    var wa=available?whatsappText(p):encodeURIComponent('Olá, gostaria de consultar a reposição do produto '+(p.name||'')+' da '+(p.store||'Delux Group')+'.');
-    return '<article class="delux-auto-card '+kind+(available?'':' sold-out')+'">'+img+'<div class="delux-auto-body">'+(p.publicHighlight?'<span class="delux-auto-badge">Destaque</span>':'')+'<div class="delux-auto-name">'+esc(p.name||'Produto')+'</div><div class="delux-auto-status '+(available?'available':'ended')+'">'+status+'</div><div class="delux-auto-desc">'+esc(p.publicDescription||'')+'</div><div class="delux-auto-bottom"><strong>'+moneyBR(p.price)+'</strong><a target="_blank" rel="noopener" href="https://wa.me/?text='+wa+'">'+actionText+'</a></div></div></article>';
+    var action=available
+      ? '<a href="#" onclick="event.preventDefault();event.stopPropagation();deluxAutoAddToCart(\''+esc(p.id)+'\');return false;">Comprar</a>'
+      : '<a target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Olá, gostaria de consultar a reposição do produto '+(p.name||'')+' da '+(p.store||'Delux Group')+'.')+'">Consultar reposição</a>';
+    return '<article class="delux-auto-card '+kind+(available?'':' sold-out')+'">'+img+'<div class="delux-auto-body">'+(p.publicHighlight?'<span class="delux-auto-badge">Destaque</span>':'')+'<div class="delux-auto-name">'+esc(p.name||'Produto')+'</div><div class="delux-auto-status '+(available?'available':'ended')+'">'+status+'</div><div class="delux-auto-desc">'+esc(p.publicDescription||'')+'</div><div class="delux-auto-bottom"><strong>'+moneyBR(p.price)+'</strong>'+action+'</div></div></article>';
   }
   function renderInto(products,kind){
     var section=document.getElementById(kind==='by'?'by-colecoes':'mk-produtos');if(!section)return;
@@ -6044,6 +6059,7 @@ carregarFotosFirebase();
   }
   async function renderUnifiedCatalog(){
     var products=await getProducts();
+    window.deluxUnifiedProducts=products;
     renderInto(products,'by');renderInto(products,'mk');
   }
   window.deluxRenderPublicProducts=renderUnifiedCatalog;
@@ -6233,7 +6249,7 @@ carregarFotosFirebase();
   function $(id){return document.getElementById(id)}
   function esc(v){return String(v??'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
   function money(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-  function cart(){return Array.isArray(window.deluxShopCart)?window.deluxShopCart:[]}
+  function cart(){try{return JSON.parse(localStorage.getItem('deluxCartV2')||'[]')||[]}catch(e){return[]}}
   function subtotal(){return cart().reduce(function(s,i){return s+(Number(i.priceNumber)||0)*(Number(i.qty)||1)},0)}
   function orderId(){return 'WEB-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,7).toUpperCase()}
   function phoneDigits(v){return String(v||'').replace(/\D/g,'')}
@@ -6340,7 +6356,6 @@ carregarFotosFirebase();
       var wa=storePhone();
       var waUrl=wa?'https://wa.me/'+wa+'?text='+encodeURIComponent(buildStoreWhatsapp(order)):'#';
       $('dcResult').innerHTML='<div class="delux-order-success"><b>✓ Pedido '+esc(order.id)+' enviado para a loja.</b><br>'+(mode==='Entrega'?'A entrega está aguardando a cotação do frete.':'Retirada sem frete. Agora alinhe o pagamento com a loja.')+(wa?'<br><a class="delux-order-whatsapp" href="'+waUrl+'" target="_blank" rel="noopener">Enviar também pelo WhatsApp</a>':'')+'</div>';
-      cart().splice(0,cart().length);
       try{localStorage.setItem('deluxCartV2','[]')}catch(e){}
       var count=$('delux-cart-count'), total=$('delux-cart-total'), body=$('delux-cart-body'), bubble=$('delux-cart-bubble');
       if(count)count.textContent='0'; if(total)total.textContent='R$ 0,00'; if(body)body.innerHTML='<p class="delux-cart-empty">Seu carrinho está vazio.</p>'; if(bubble)bubble.classList.remove('visible');
@@ -6355,6 +6370,13 @@ carregarFotosFirebase();
     el.textContent='Finalizar pedido';
     el.onclick=function(e){e.preventDefault();openCheckout();return false};
   }
+
+  document.addEventListener('click',function(e){
+    var el=e.target&&e.target.closest?e.target.closest('#delux-checkout'):null;
+    if(!el)return;
+    e.preventDefault();e.stopPropagation();openCheckout();
+  },true);
+
   document.addEventListener('DOMContentLoaded',function(){
     ensureModal();
     setTimeout(bindCheckoutButton,500);
