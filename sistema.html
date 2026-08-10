@@ -221,7 +221,7 @@
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';import{getFirestore,doc,getDoc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg',authDomain:'delux-group.firebaseapp.com',projectId:'delux-group',storageBucket:'delux-group.firebasestorage.app',messagingSenderId:'971726312316',appId:'1:971726312316:web:ed515078f8aa4932018af9',measurementId:'G-ED9Q04M7NC'};
-const appFB=initializeApp(firebaseConfig),db=getFirestore(appFB),ref=doc(db,'site_config','admin');const client='erp_'+Date.now();let root={},DB={products:[],sales:[],clients:[],stores:[],users:[],exchanges:[]},currentUser=null,cart=[],payments=[],lastSale=null,exchangeSaleId=null,exchangeReturns=[],exchangeOut=[],barcodeSelectedProductId=null;
+const appFB=initializeApp(firebaseConfig),db=getFirestore(appFB),ref=doc(db,'site_config','admin'),usersRef=doc(db,'site_config','erp_users'),employeesRef=doc(db,'site_config','erp_employees');const client='erp_'+Date.now();let root={},DB={products:[],sales:[],clients:[],stores:[],users:[],exchanges:[]},currentUser=null,cart=[],payments=[],lastSale=null,exchangeSaleId=null,exchangeReturns=[],exchangeOut=[],barcodeSelectedProductId=null,identityMirrorLoaded={users:false,employees:false};
 const $=id=>document.getElementById(id),money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),uid=p=>p+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
 const barcodeTimers={};
 const BARCODE_IDLE_MS=900;
@@ -257,11 +257,46 @@ function installUniversalBarcodeScanner(){
 }
 
 function defaults(){DB.stores ||= [{id:'s1',name:'Delux Makes',code:'MK',active:true},{id:'s2',name:'Delux By',code:'BY',active:true}];DB.users ||= [{id:'u1',name:'Administrador',login:'admin',pass:'1234',role:'admin',active:true,storeIds:['s1','s2']}];DB.products ||= [];DB.sales ||= [];DB.clients ||= [];DB.exchanges ||= [];DB.employees ||= [];DB.payrolls ||= [];DB.timeEntries ||= [];DB.reportArchive ||= [];DB.fbkImportLog ||= [];DB.onlineOrders ||= [];DB.branding ||= {logo:'',loginBackground:'',dashboardCover:''};DB.users.forEach(u=>{if(u.role==='admin')u.storeIds=DB.stores.map(s=>s.id);else if(!Array.isArray(u.storeIds))u.storeIds=DB.stores.map(s=>s.id);if(['funcionario','vendedor','gerente'].includes(u.role)){let e=DB.employees.find(x=>x.userId===u.id||x.id===u.employeeId);if(!e){let store=DB.stores.find(s=>(u.storeIds||[]).includes(s.id))||DB.stores[0],employeeId=uid('func');e={id:employeeId,name:u.name,document:'',roleName:u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário',storeId:store?.id||'',storeName:store?.name||'',admission:'',payType:'Mensal',baseSalary:0,dailyHours:8,pix:'',phone:'',status:u.active===false?'Inativo':'Ativo',notes:'Cadastro criado automaticamente pelo portal do vendedor. Complete os dados na folha de pagamento.',userId:u.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};DB.employees.push(e)}u.employeeId=e.id;e.userId=u.id;e.name=u.name;e.status=u.active===false?'Inativo':'Ativo'}})}
-async function loadDB(){const s=await getDoc(ref);root=s.exists()?s.data():{};DB=root.erpDB||{};defaults();DB.products.forEach(p=>{p.publicCategory=p.category||''});if(Array.isArray(root.erpProductsPublic)&&!DB.products.length){DB.products=root.erpProductsPublic.map(p=>({...p,publicVisible:p.publicVisible===false?'Não':'Sim',publicHighlight:p.publicHighlight?'Sim':'Não'}));}syncStatus('Conectado');renderBranding();renderAll();}
+async function loadDB(){
+  const [mainSnap,usersSnap,employeesSnap]=await Promise.all([getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null)]);
+  root=mainSnap.exists()?mainSnap.data():{};
+  DB=root.erpDB||{};
+  if(usersSnap?.exists()&&Array.isArray(usersSnap.data()?.items)){DB.users=usersSnap.data().items;identityMirrorLoaded.users=true}
+  if(employeesSnap?.exists()&&Array.isArray(employeesSnap.data()?.items)){DB.employees=employeesSnap.data().items;identityMirrorLoaded.employees=true}
+  defaults();
+  DB.products.forEach(p=>{p.publicCategory=p.category||''});
+  if(Array.isArray(root.erpProductsPublic)&&!DB.products.length){DB.products=root.erpProductsPublic.map(p=>({...p,publicVisible:p.publicVisible===false?'Não':'Sim',publicHighlight:p.publicHighlight?'Sim':'Não'}));}
+  syncStatus('Conectado • usuários persistentes');renderBranding();renderAll();
+}
 function publicProducts(){return DB.products.filter(p=>p.publicVisible==='Sim'||p.publicVisible===true).map(p=>({id:p.id,name:p.name,store:p.store,category:p.category,publicCategory:p.category||'',publicDescription:p.publicDescription||'',price:Number(p.price||0),stock:Number(p.stock||0),image:p.image||'',publicVisible:true,publicHighlight:p.publicHighlight==='Sim'||p.publicHighlight===true,sku:p.sku||'',barcode:p.barcode||''}))}
-async function saveDB(){root.erpDB=DB;root.erpProductsPublic=publicProducts();root.erpUpdatedAt=Date.now();root.updatedAt=Date.now();root.updatedBy=client;await setDoc(ref,root,{merge:true});syncStatus('Salvo e sincronizado')}
+async function saveIdentityMirror(strict=false){
+  const stamp={updatedAt:Date.now(),updatedBy:client};
+  try{
+    await Promise.all([
+      setDoc(usersRef,{items:Array.isArray(DB.users)?DB.users:[],...stamp},{merge:true}),
+      setDoc(employeesRef,{items:Array.isArray(DB.employees)?DB.employees:[],...stamp},{merge:true})
+    ]);
+    identityMirrorLoaded.users=true;identityMirrorLoaded.employees=true;
+    return true;
+  }catch(err){console.error('Falha ao salvar usuários/funcionários no banco persistente:',err);if(strict)throw err;return false}
+}
+async function verifyIdentityPersistence(userId='',employeeId=''){
+  const [uSnap,eSnap]=await Promise.all([getDoc(usersRef),getDoc(employeesRef)]);
+  const users=Array.isArray(uSnap.data()?.items)?uSnap.data().items:[],employees=Array.isArray(eSnap.data()?.items)?eSnap.data().items:[];
+  if(userId&&!users.some(u=>u.id===userId))throw new Error('O usuário não foi confirmado no banco de dados.');
+  if(employeeId&&!employees.some(e=>e.id===employeeId))throw new Error('O funcionário não foi confirmado no banco de dados.');
+  return true;
+}
+async function saveDB(options={}){
+  root.erpDB=DB;root.erpProductsPublic=publicProducts();root.erpUpdatedAt=Date.now();root.updatedAt=Date.now();root.updatedBy=client;
+  await setDoc(ref,root,{merge:true});
+  const ok=await saveIdentityMirror(Boolean(options.strictIdentity));
+  syncStatus(ok?'Salvo e confirmado no banco':'Salvo no banco principal');
+}
 function syncStatus(t){let e=$('syncStatus');if(e)e.textContent=t}
-onSnapshot(ref,s=>{if(!s.exists())return;let d=s.data();if(d.updatedBy===client)return;root=d;DB=d.erpDB||DB;defaults();renderAll();syncStatus('Atualizado em tempo real')});
+onSnapshot(ref,s=>{if(!s.exists())return;let d=s.data();if(d.updatedBy===client)return;root=d;let incoming=d.erpDB||DB;if(identityMirrorLoaded.users)incoming.users=DB.users;if(identityMirrorLoaded.employees)incoming.employees=DB.employees;DB=incoming;defaults();renderAll();syncStatus('Atualizado em tempo real')});
+onSnapshot(usersRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.users=items;identityMirrorLoaded.users=true;defaults();renderAll();syncStatus('Usuários atualizados do banco')}});
+onSnapshot(employeesRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.employees=items;identityMirrorLoaded.employees=true;defaults();renderAll();syncStatus('Funcionários atualizados do banco')}});
 window.login=async()=>{await loadDB();let u=DB.users.find(x=>x.login===$('loginUser').value&&x.pass===$('loginPass').value&&x.active!==false);if(!u){$('loginError').style.display='block';return}currentUser=u;$('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');buildNav();renderAll();let first=firstAllowedScreen(currentUser);if(first)showScreen(first);else{$('pageTitle').textContent='Sem acessos liberados';alert('Este usuário ainda não possui acessos liberados pelo administrador.')}};window.logout=()=>location.reload();window.toggleMenu=()=>$('sidebar').classList.toggle('open');
 const screens=[['dashboard','Dashboard'],['products','Produtos / Estoque'],['sale','Venda'],['priceCheck','Consulta de Preço'],['barcodeManager','Criar Código de Barras'],['returns','Trocas / Devoluções'],['freight','Frete'],['clients','Clientes'],['onlineOrders','Pedidos Online'],['reports','Relatórios'],['attendance','Ponto'],['payroll','Pagamento de Funcionários'],['siteEditor','Editar Site'],['accessControl','🔐 Controle de Acessos'],['settings','Configurações']];
 const permissionScreenIds=screens.map(x=>x[0]).filter(id=>!['siteEditor','accessControl','settings'].includes(id));
@@ -356,7 +391,8 @@ window.saveUser=async()=>{
     if(idx>=0)DB.users[idx]=u;else DB.users.push(u);
     renderUsers();
     try{
-      await saveDB();
+      await saveDB({strictIdentity:true});
+      await verifyIdentityPersistence(u.id,u.employeeId||'');
     }catch(err){
       console.error('Erro ao salvar usuário:',err);
       if(idx>=0)DB.users[idx]=previousUser;else DB.users=DB.users.filter(x=>x.id!==id);
@@ -365,7 +401,7 @@ window.saveUser=async()=>{
       return alert('Não foi possível salvar o usuário no banco de dados. Verifique sua conexão e tente novamente.');
     }
     clearUserForm();renderAll();
-    alert(existing?'Usuário atualizado com sucesso.':'Novo usuário cadastrado com sucesso.');
+    alert(existing?'Usuário atualizado e confirmado no banco de dados.':'Novo usuário cadastrado e confirmado no banco de dados.');
   }catch(err){console.error(err);alert('Ocorreu um erro ao cadastrar o usuário: '+(err?.message||err))}
 };
 function renderUsers(){$('usersTable').innerHTML=DB.users.map(u=>{let names=(u.role==='admin'?DB.stores:DB.stores.filter(s=>(u.storeIds||[]).includes(s.id))).map(s=>s.name).join(', ');return`<tr><td>${esc(u.name)}</td><td>${esc(u.login)}</td><td>${esc(u.role)}</td><td>${esc(names||'Nenhuma')}</td><td>${u.active!==false?'Ativo':'Inativo'}</td><td><button class="secondary" onclick="editUser('${u.id}')">Editar</button> <button class="danger" onclick="deleteUser('${u.id}')">Excluir</button></td></tr>`}).join('')}window.editUser=id=>{let u=DB.users.find(x=>x.id===id);$('editingUserId').value=u.id;$('uName').value=u.name;$('uLogin').value=u.login;$('uPass').value='';$('uRole').value=u.role;renderUserStoreCheckboxes(u.storeIds||[])};window.clearUserForm=()=>{['editingUserId','uName','uLogin','uPass'].forEach(id=>$(id).value='');$('uRole').value='funcionario';renderUserStoreCheckboxes([])};window.deleteUser=async id=>{if(currentUser?.id===id)return alert('Não é possível excluir o usuário conectado.');if(!confirm('Excluir usuário? O histórico de ponto e pagamento será preservado.'))return;let e=DB.employees.find(x=>x.userId===id);if(e){e.status='Inativo';e.notes=(e.notes?e.notes+' ':'')+'Acesso ao portal excluído em '+new Date().toLocaleDateString('pt-BR')+'.';e.updatedAt=new Date().toISOString()}DB.users=DB.users.filter(u=>u.id!==id);await saveDB();renderAll()};
@@ -612,9 +648,10 @@ window.saveEmployee=async()=>{
   try{
     let ui=DB.users.findIndex(u=>u.id===user.id);if(ui>=0)DB.users[ui]=user;else DB.users.push(user);
     let ei=DB.employees.findIndex(x=>x.id===id);if(ei>=0)DB.employees[ei]=e;else DB.employees.push(e);
-    await saveDB();
+    await saveDB({strictIdentity:true});
+    await verifyIdentityPersistence(user.id,e.id);
     clearEmployeeForm();renderAll();
-    alert('Funcionário cadastrado e acesso ao ponto criado com sucesso.');
+    alert('Funcionário cadastrado e confirmado no banco de dados. O acesso ao ponto também foi salvo.');
   }catch(err){
     DB.employees=oldEmployees;DB.users=oldUsers;
     console.error('Erro ao salvar funcionário:',err);
