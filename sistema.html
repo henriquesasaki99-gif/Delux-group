@@ -88,6 +88,46 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 .cash-in-panel{border:1px solid #e8317a99!important;background:linear-gradient(145deg,#ffe9f2,#f7bdd4)!important}.cash-out-panel{border:1px solid #c45c85aa!important;background:linear-gradient(145deg,#ffe2ed,#efb1c9)!important}.cash-in-value{color:#167a49!important;font-weight:900}.cash-balance-value{color:#7e2450!important;font-weight:900}.cash-summary{grid-template-columns:repeat(3,1fr)!important}.cash-money-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.cash-money-flow .report-card strong{font-size:20px}.cash-section-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#8d2b55;margin-bottom:8px}.cash-table-in td:nth-child(6){font-weight:900;color:#167a49}.cash-table-out td:nth-child(6){font-weight:900;color:#a92f5b}
 @media(max-width:850px){.cash-money-flow{grid-template-columns:1fr}.cash-summary{grid-template-columns:1fr!important}}
 
+
+
+/* ===== LEITOR DE CÓDIGO DE BARRAS PELA CÂMERA ===== */
+.barcode-camera-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch;width:100%}
+.barcode-camera-row>input{min-width:0}
+.barcode-camera-row .camera-scan-btn{width:auto!important;min-width:132px;margin:0!important;white-space:nowrap;background:linear-gradient(145deg,#ef4f8d,#c82566)!important;color:#fff!important}
+.barcode-camera-modal{position:fixed;inset:0;z-index:9999;background:#000c;display:flex;align-items:center;justify-content:center;padding:18px}
+.barcode-camera-card{width:min(560px,100%);max-height:92vh;overflow:auto;background:linear-gradient(145deg,#f7f8f9,#d7dade);border:1px solid #ffffffcc;border-radius:22px;padding:16px;box-shadow:0 24px 70px #0008;color:#2b2630}
+.barcode-camera-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.barcode-camera-head h3{margin:0 0 4px}.barcode-camera-head p{margin:0;color:#675f69;font-size:13px;line-height:1.45}
+.barcode-camera-head .camera-close-btn{width:auto!important;min-width:44px;height:44px;margin:0!important;padding:8px 12px!important;background:#777d84!important}
+.barcode-camera-frame{background:#16171a;border:3px solid #f08ab2;border-radius:18px;padding:8px;overflow:hidden;min-height:245px;display:flex;align-items:center;justify-content:center}
+#barcodeCameraReader{width:100%;min-height:225px;border-radius:12px;overflow:hidden;background:#111}
+#barcodeCameraReader video{width:100%!important;height:auto!important;max-height:58vh;object-fit:cover;border-radius:12px}
+#barcodeCameraReader img{max-width:100%}
+.barcode-camera-status{margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff0f6;border:1px solid #e68db2;color:#5a2038;font-weight:800;line-height:1.4}
+.barcode-camera-tip{margin-top:10px;font-size:12px;color:#675f69;line-height:1.45}
+@media(max-width:600px){.barcode-camera-row{grid-template-columns:1fr}.barcode-camera-row .camera-scan-btn{width:100%!important}.barcode-camera-modal{padding:8px;align-items:flex-start}.barcode-camera-card{border-radius:18px;padding:12px}.barcode-camera-frame{min-height:220px}#barcodeCameraReader{min-height:205px}}
+
+
+
+/* ===== CONTRASTE PRODUTOS / ESTOQUE: CINZA + TEXTO BRANCO ===== */
+#products input:not([type="file"]):not([type="hidden"]),
+#products select,
+#products textarea{background:#666c72!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#e68db2!important;opacity:1!important}
+#products input::placeholder,#products textarea::placeholder{color:#f2f2f2!important;-webkit-text-fill-color:#f2f2f2!important;opacity:.9!important}
+#products select option{background:#555b61!important;color:#fff!important}
+#products input[type="number"],#products input[type="text"],#products input[inputmode="numeric"]{color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important}
+#products input:disabled,#products select:disabled,#products textarea:disabled,#products input[readonly],#products .readonly-stock,#products .locked-field{background:#767c82!important;color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important}
+#products .size-badge{background:#666c72!important;color:#fff!important;border-color:#e68db2!important}
+#products .stock-store-card{background:linear-gradient(145deg,#6b7076,#595f65)!important;color:#fff!important}
+#products .stock-store-card b,#products .stock-store-card .stock-big,#products .stock-store-card .muted{color:#fff!important}
+#products .stock-entry-product>div,#products .stock-entry-calc,#products .stock-transfer-note{background:linear-gradient(145deg,#6b7076,#595f65)!important;color:#fff!important}
+#products .stock-entry-product small,#products .stock-entry-product b,#products .stock-entry-calc,#products .stock-transfer-note,#products .stock-entry-size-summary{color:#fff!important}
+#products .size-stock-panel{background:linear-gradient(145deg,#686e74,#575d63)!important;color:#fff!important}
+#products .size-stock-panel h4,#products .size-stock-panel .muted,#products .size-stock-total,#products .size-stock-total span{color:#fff!important}
+#products table td{color:#352b32!important}
+#products table td .size-badge{color:#fff!important}
+#products input[type="number"]::-webkit-inner-spin-button,#products input[type="number"]::-webkit-outer-spin-button{opacity:1}
+
 </style>
 </head>
 <body>
@@ -102,7 +142,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <span class="badge success stock-entry-badge">Reposição por loja</span>
   </div>
   <div class="stock-entry-search">
-    <div><label class="muted">Código de barras</label><input id="stockEntryBarcode" autocomplete="off" inputmode="numeric" placeholder="Bipe ou digite o código de barras" onkeydown="if(event.key==='Enter'){event.preventDefault();findStockEntryProduct()}"></div>
+    <div><label class="muted">Código de barras</label><div class="barcode-camera-row"><input id="stockEntryBarcode" autocomplete="off" inputmode="numeric" placeholder="Bipe, digite ou use a câmera" onkeydown="if(event.key==='Enter'){event.preventDefault();findStockEntryProduct()}"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('stockEntryBarcode')">📷 Câmera</button></div></div>
     <button type="button" onclick="findStockEntryProduct()">Identificar produto</button>
   </div>
   <div id="stockEntryResult" class="stock-entry-result hidden">
@@ -129,7 +169,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <span class="badge stock-entry-badge">Transferência interna</span>
   </div>
   <div class="stock-entry-search">
-    <div><label class="muted">Código de barras</label><input id="stockTransferBarcode" autocomplete="off" inputmode="numeric" placeholder="Bipe o código para transferir" onkeydown="if(event.key==='Enter'){event.preventDefault();findStockTransferProduct()}"></div>
+    <div><label class="muted">Código de barras</label><div class="barcode-camera-row"><input id="stockTransferBarcode" autocomplete="off" inputmode="numeric" placeholder="Bipe, digite ou use a câmera" onkeydown="if(event.key==='Enter'){event.preventDefault();findStockTransferProduct()}"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('stockTransferBarcode')">📷 Câmera</button></div></div>
     <button type="button" class="secondary" onclick="findStockTransferProduct()">Localizar para transferência</button>
   </div>
   <div id="stockTransferResult" class="stock-entry-result hidden">
@@ -154,7 +194,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
   <div id="stockTransferMessage" class="stock-entry-success hidden"></div>
 </div>
 <div class="panel"><h3>Cadastrar produto</h3><p class="muted"><b>Código de barras:</b> pode ser o mesmo em lojas diferentes; o estoque continua individual por loja. <b>Delux By:</b> o estoque é obrigatório por numeração/tamanho. <b>Delux Makes:</b> continua usando estoque total. Ao marcar “Publicar no site”, o produto aparece automaticamente na loja correta do site e é agrupado pela Categoria cadastrada neste produto.</p><div class="form-grid"><input id="pName" placeholder="Nome do produto"><select id="pStore" onchange="toggleProductSizeStock()"></select><input id="pCategory" placeholder="Categoria"><input id="pSku" placeholder="SKU"><input id="pBarcode" placeholder="Código de barras"><input id="pPrice" type="number" step="0.01" placeholder="Preço"><input id="pCost" type="number" step="0.01" placeholder="Custo"><input id="pExpenses" type="number" step="0.01" placeholder="Despesas"><input id="pProfit" type="number" step="0.01" placeholder="Lucro"><input id="pStock" type="number" min="0" placeholder="Estoque total (automático na Delux By)"><div id="bySizeStockPanel" class="size-stock-panel hidden"><h4>Estoque por numeração — Delux By</h4><p class="muted">Cadastre cada numeração/tamanho com sua quantidade individual. O estoque total será calculado automaticamente.</p><div id="pSizeStockRows"></div><div class="actions" style="margin-top:10px"><button type="button" class="secondary" onclick="addSizeStockRow()">+ Adicionar numeração</button></div><div class="size-stock-total">Total do produto: <span id="pSizeStockTotal">0</span> unidade(s)</div></div><input id="pMinStock" type="number" placeholder="Estoque mínimo"><input id="pWarningStock" type="number" placeholder="Prestes a acabar (vazio = 2x estoque mínimo)"><select id="pPublicVisible"><option value="Não">Não publicar no site</option><option value="Sim">Publicar no site</option></select><textarea id="pPublicDescription" placeholder="Descrição para o site"></textarea><select id="pPublicHighlight"><option value="Não">Produto normal</option><option value="Sim">Destaque</option></select><input id="pImage" type="hidden"><label class="upload-box">Foto do produto<input id="pImageFile" type="file" accept="image/*" onchange="handleProductImageUpload(event)"></label><div class="photo-preview" id="pImagePreview">Sem foto</div><button type="button" class="secondary" onclick="clearProductImage()">Limpar foto</button></div><input id="editingProductId" type="hidden"><button onclick="saveProduct()">Salvar produto</button><button class="secondary hidden" id="productCancelBtn" onclick="cancelEditProduct()">Cancelar edição</button></div><div class="panel"><div class="panel-title"><h3>Produtos cadastrados</h3><input id="productSearch" oninput="renderProducts()" placeholder="Buscar produto..."></div><div class="table-wrap"><table><thead><tr><th>Produto</th><th>Loja</th><th>Categoria</th><th>SKU</th><th>Preço</th><th>Estoque / Numerações</th><th>Prestes a acabar</th><th>Status</th><th>Site</th><th>Ações</th></tr></thead><tbody id="productsTable"></tbody></table></div></div></section>
-<section id="sale" class="screen"><div class="grid two"><div class="panel"><h3>Nova venda multiloja</h3><p class="muted">Escolha “Todas as lojas” para adicionar produtos de várias lojas no mesmo carrinho.</p><div class="form-grid one"><select id="saleStore" onchange="renderSaleProducts()"></select><input id="saleClient" placeholder="Cliente"><input id="saleBarcode" placeholder="Bipe o código de barras"><input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar produto"></div><div id="saleProductList" class="product-picks"></div></div><div class="panel"><h3>Carrinho e pagamentos</h3><div id="cartList" class="list"></div><div class="totals"><label>Desconto R$</label><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><label>Frete R$</label><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><h4>Resumo por loja</h4><div id="cartStoreSummary" class="list"></div><h4>Vários tipos de pagamento</h4><div class="payment-box"><select id="paymentMethod"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><button onclick="addSalePayment()">Adicionar pagamento</button></div><button class="secondary" onclick="addRemainingPayment()">Adicionar valor restante</button><div id="paymentList" class="list"></div><h2>Total: <span id="cartTotal">R$ 0,00</span></h2><p id="paymentStatus"></p><button onclick="finishSale()">Finalizar venda</button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div></div></div></section>
+<section id="sale" class="screen"><div class="grid two"><div class="panel"><h3>Nova venda multiloja</h3><p class="muted">Escolha “Todas as lojas” para adicionar produtos de várias lojas no mesmo carrinho.</p><div class="form-grid one"><select id="saleStore" onchange="renderSaleProducts()"></select><input id="saleClient" placeholder="Cliente"><div class="barcode-camera-row"><input id="saleBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('saleBarcode')">📷 Câmera</button></div><input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar produto"></div><div id="saleProductList" class="product-picks"></div></div><div class="panel"><h3>Carrinho e pagamentos</h3><div id="cartList" class="list"></div><div class="totals"><label>Desconto R$</label><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><label>Frete R$</label><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><h4>Resumo por loja</h4><div id="cartStoreSummary" class="list"></div><h4>Vários tipos de pagamento</h4><div class="payment-box"><select id="paymentMethod"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><button onclick="addSalePayment()">Adicionar pagamento</button></div><button class="secondary" onclick="addRemainingPayment()">Adicionar valor restante</button><div id="paymentList" class="list"></div><h2>Total: <span id="cartTotal">R$ 0,00</span></h2><p id="paymentStatus"></p><button onclick="finishSale()">Finalizar venda</button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div></div></div></section>
 
 <section id="cashOut" class="screen">
   <div class="panel">
@@ -249,7 +289,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
   </div>
 </section>
 
-<section id="priceCheck" class="screen"><div class="panel"><h3>Consulta rápida de preço</h3><input id="priceBarcode" placeholder="Bipe o código de barras"><input id="priceSearch" oninput="renderPriceCheck()" placeholder="Digite nome, SKU ou categoria"><div id="priceResults" class="price-results"></div></div></section><section id="barcodeManager" class="screen"><div class="grid two"><div class="panel"><div class="panel-title"><div><h3>Produtos sem código de barras</h3><p class="muted">Selecione um produto pendente para gerar ou salvar um código. O mesmo código pode ser compartilhado entre lojas diferentes.</p></div><input id="barcodeProductSearch" oninput="renderBarcodeManager()" placeholder="Buscar produto sem código..."></div><div id="barcodeMissingList" class="list"></div></div><div class="panel"><h3>Criar código de barras</h3><div id="barcodeSelectedInfo" class="list-item"><span class="muted">Selecione um produto da lista.</span></div><div class="form-grid one" style="margin-top:12px"><input id="generatedBarcode" inputmode="numeric" maxlength="13" placeholder="Código gerado ou digitado manualmente" oninput="previewGeneratedBarcode()"><button onclick="generateBarcodeForSelected()">Gerar código automático</button><button class="success" onclick="saveGeneratedBarcode()">Salvar no produto</button></div><div id="barcodePreview" class="barcode-preview" style="margin-top:12px"><span class="muted">A etiqueta aparecerá aqui.</span></div><div class="barcode-label-controls"><input id="barcodeLabelQty" type="number" min="1" max="100" value="1" placeholder="Quantidade de etiquetas"><select id="barcodeLabelSize"><option value="small">Pequena</option><option value="medium" selected>Média</option><option value="large">Grande</option></select><button class="secondary" onclick="printBarcodeLabels()">Imprimir etiquetas</button></div></div></div><div class="panel"><h3>Produtos que já possuem código</h3><p class="muted">Use esta lista para consultar ou reimprimir etiquetas já cadastradas.</p><div id="barcodeExistingList" class="list"></div></div></section>
+<section id="priceCheck" class="screen"><div class="panel"><h3>Consulta rápida de preço</h3><div class="barcode-camera-row"><input id="priceBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('priceBarcode')">📷 Câmera</button></div><input id="priceSearch" oninput="renderPriceCheck()" placeholder="Digite nome, SKU ou categoria"><div id="priceResults" class="price-results"></div></div></section><section id="barcodeManager" class="screen"><div class="grid two"><div class="panel"><div class="panel-title"><div><h3>Produtos sem código de barras</h3><p class="muted">Selecione um produto pendente para gerar ou salvar um código. O mesmo código pode ser compartilhado entre lojas diferentes.</p></div><input id="barcodeProductSearch" oninput="renderBarcodeManager()" placeholder="Buscar produto sem código..."></div><div id="barcodeMissingList" class="list"></div></div><div class="panel"><h3>Criar código de barras</h3><div id="barcodeSelectedInfo" class="list-item"><span class="muted">Selecione um produto da lista.</span></div><div class="form-grid one" style="margin-top:12px"><input id="generatedBarcode" inputmode="numeric" maxlength="13" placeholder="Código gerado ou digitado manualmente" oninput="previewGeneratedBarcode()"><button onclick="generateBarcodeForSelected()">Gerar código automático</button><button class="success" onclick="saveGeneratedBarcode()">Salvar no produto</button></div><div id="barcodePreview" class="barcode-preview" style="margin-top:12px"><span class="muted">A etiqueta aparecerá aqui.</span></div><div class="barcode-label-controls"><input id="barcodeLabelQty" type="number" min="1" max="100" value="1" placeholder="Quantidade de etiquetas"><select id="barcodeLabelSize"><option value="small">Pequena</option><option value="medium" selected>Média</option><option value="large">Grande</option></select><button class="secondary" onclick="printBarcodeLabels()">Imprimir etiquetas</button></div></div></div><div class="panel"><h3>Produtos que já possuem código</h3><p class="muted">Use esta lista para consultar ou reimprimir etiquetas já cadastradas.</p><div id="barcodeExistingList" class="list"></div></div></section>
 <section id="returns" class="screen">
 <div class="grid two">
   <div class="panel">
@@ -262,10 +302,10 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <h3>Troca parcial por código de barras</h3>
     <div id="exchangeSaleInfo" class="list-item"><span class="muted">Selecione uma venda para iniciar.</span></div>
     <h4>1. Produto devolvido</h4>
-    <input id="exchangeReturnBarcode" placeholder="Bipe o produto que está voltando">
+    <div class="barcode-camera-row"><input id="exchangeReturnBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeReturnBarcode')">📷 Câmera</button></div>
     <div id="exchangeReturnList" class="list"></div>
     <h4>2. Produto de saída</h4>
-    <input id="exchangeOutBarcode" placeholder="Bipe o novo produto que será entregue">
+    <div class="barcode-camera-row"><input id="exchangeOutBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeOutBarcode')">📷 Câmera</button></div>
     <div id="exchangeOutList" class="list"></div>
     <h4>3. Acerto da diferença</h4>
     <div id="exchangeTotals" class="list-item"></div>
@@ -515,7 +555,23 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 <section id="accessControl" class="screen"><div class="panel"><div class="panel-title"><div><h3><span class="access-icon">🔐</span>Controle de Acessos</h3><p class="muted">Exclusivo do administrador. Selecione um vendedor ou gerente e escolha exatamente quais áreas do sistema ele poderá acessar.</p></div><span class="badge danger">Somente Administrador</span></div><div class="access-control-grid"><div><h4>Vendedores e gerentes</h4><div id="accessUserListStandalone" class="access-user-list"></div></div><div><div id="accessSelectedInfoStandalone" class="list-item"><span class="muted">Selecione um usuário para configurar os acessos.</span></div><div id="accessPermissionGridStandalone" class="access-permission-grid" style="margin-top:12px"></div><div class="actions" style="margin-top:12px"><button class="success" onclick="saveUserPermissionsStandalone()">Salvar acessos</button><button class="secondary" onclick="selectAllUserPermissionsStandalone(true)">Liberar todos</button><button class="secondary" onclick="selectAllUserPermissionsStandalone(false)">Bloquear todos</button></div><p class="muted" style="margin-top:10px">Configurações e Editar Site continuam exclusivos do Administrador.</p></div></div></div></section>
 <section id="settings" class="screen"><div class="panel"><div class="panel-title"><div><h3><span class="access-icon">🔐</span>Controle de Acessos</h3><p class="muted">Exclusivo do administrador. Selecione um vendedor ou gerente e defina exatamente quais áreas do sistema ele poderá acessar.</p></div><span class="badge danger">Somente Administrador</span></div><div class="access-control-grid"><div><h4>Vendedores e gerentes</h4><div id="accessUserList" class="access-user-list"></div></div><div><div id="accessSelectedInfo" class="list-item"><span class="muted">Selecione um usuário para configurar os acessos.</span></div><div id="accessPermissionGrid" class="access-permission-grid" style="margin-top:12px"></div><div class="actions" style="margin-top:12px"><button class="success" onclick="saveUserPermissions()">Salvar acessos</button><button class="secondary" onclick="selectAllUserPermissions(true)">Liberar todos</button><button class="secondary" onclick="selectAllUserPermissions(false)">Bloquear todos</button></div><p class="muted" style="margin-top:10px">Configurações e Editar Site continuam exclusivos do Administrador e não podem ser liberados para outros perfis.</p></div></div></div><div class="panel"><div class="panel-title"><div><h3>Personalização da empresa</h3><p class="muted">Defina as imagens exibidas no login, dashboard, ponto e recibos.</p></div><span class="badge success">Identidade visual</span></div><div class="form-grid"><label class="upload-box">Logo da empresa<input id="brandLogoFile" type="file" accept="image/*" onchange="uploadBrandImage(event,'logo')"></label><label class="upload-box">Fundo da tela de login<input id="brandLoginFile" type="file" accept="image/*" onchange="uploadBrandImage(event,'loginBackground')"></label><label class="upload-box">Capa do dashboard<input id="brandDashboardFile" type="file" accept="image/*" onchange="uploadBrandImage(event,'dashboardCover')"></label></div><div class="form-grid" style="margin-top:12px"><img id="brandLogoPreview" class="brand-logo-preview" alt="Logo"><img id="brandLoginPreview" class="branding-preview" alt="Fundo do login"><img id="brandDashboardPreview" class="branding-preview" alt="Capa do dashboard"></div><div class="actions" style="margin-top:12px"><button onclick="saveBranding()">Salvar personalização</button><button class="secondary" onclick="clearBrandImage('logo')">Remover logo</button><button class="secondary" onclick="clearBrandImage('loginBackground')">Remover fundo do login</button><button class="secondary" onclick="clearBrandImage('dashboardCover')">Remover capa</button></div></div><div class="panel"><h3>Configurações de lojas</h3><p class="muted">Cadastre quantas lojas precisar. Elas ficam disponíveis nos produtos, vendas e permissões dos vendedores.</p><div class="form-grid"><input id="storeName" placeholder="Nome da loja"><input id="storeCode" placeholder="Código"><input id="storeCity" placeholder="Cidade"><input id="storePhone" placeholder="WhatsApp"><input id="storeEmail" placeholder="E-mail"><input id="storeAddress" placeholder="Endereço"><select id="storeStockMode"><option>Compartilhado</option><option>Individual</option></select><input id="storeColor" type="color" value="#e91e63"></div><input id="editingStoreId" type="hidden"><button onclick="saveStore()">Cadastrar loja</button><button class="secondary" onclick="clearStoreForm()">Limpar</button></div><div class="panel"><h3>Lojas cadastradas</h3><div class="table-wrap"><table><thead><tr><th>Status</th><th>Loja</th><th>Código</th><th>Cidade</th><th>Ações</th></tr></thead><tbody id="storesTable"></tbody></table></div></div><div class="panel"><h3>Configurações de usuários</h3><p class="muted">Ao cadastrar um vendedor/funcionário, o sistema cria automaticamente o vínculo com Ponto e Pagamento de Funcionários. O mesmo login será usado para acessar o ponto, vendas, consulta de preço e trocas/devoluções. Depois, complete salário e dados trabalhistas na aba Pagamento de Funcionários. Para recuperação de acesso, use o botão <b>Redefinir senha</b> na tabela de usuários; a senha anterior não é exibida.</p><div class="form-grid"><input id="uName" placeholder="Nome"><input id="uLogin" placeholder="Login"><input id="uPass" type="password" placeholder="Senha"><select id="uRole" onchange="renderUserStoreCheckboxes()"><option value="funcionario">Funcionário</option><option value="vendedor">Vendedor</option><option value="gerente">Gerente</option><option value="admin">Administrador</option></select></div><div style="margin:14px 0"><b>Lojas permitidas</b><div id="uStoreList" class="check-grid" style="margin-top:8px"></div></div><input id="editingUserId" type="hidden"><button onclick="saveUser()">Cadastrar usuário</button><button class="secondary" onclick="clearUserForm()">Limpar</button></div><div class="panel"><h3>Usuários cadastrados</h3><div class="table-wrap"><table><thead><tr><th>Nome</th><th>Login</th><th>Perfil</th><th>Lojas permitidas</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
 </main></div>
+
+
+<!-- LEITOR MOBILE DE CÓDIGO DE BARRAS -->
+<div id="barcodeCameraModal" class="barcode-camera-modal hidden" role="dialog" aria-modal="true" aria-labelledby="barcodeCameraTitle">
+  <div class="barcode-camera-card">
+    <div class="barcode-camera-head">
+      <div><h3 id="barcodeCameraTitle">📷 Ler código pela câmera</h3><p>Aponte a câmera traseira para o código de barras do produto.</p></div>
+      <button type="button" class="camera-close-btn" onclick="closeBarcodeCamera()" aria-label="Fechar câmera">✕</button>
+    </div>
+    <div class="barcode-camera-frame"><div id="barcodeCameraReader"></div></div>
+    <div id="barcodeCameraStatus" class="barcode-camera-status" aria-live="polite">Preparando câmera...</div>
+    <div class="barcode-camera-tip">Dica: mantenha o código inteiro dentro da imagem e evite reflexos. A leitura é automática; não é necessário tirar foto.</div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';import{getFirestore,doc,getDoc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg',authDomain:'delux-group.firebaseapp.com',projectId:'delux-group',storageBucket:'delux-group.firebasestorage.app',messagingSenderId:'971726312316',appId:'1:971726312316:web:ed515078f8aa4932018af9',measurementId:'G-ED9Q04M7NC'};
@@ -597,6 +653,92 @@ function installUniversalBarcodeScanner(){
     clearTimeout(globalTimer);globalTimer=setTimeout(()=>{let code=normalizeBarcode(globalBuffer);globalBuffer='';if(code.length>=BARCODE_MIN_LENGTH){el.value=code;processBarcodeField(id)}},BARCODE_IDLE_MS);
   },true)
 }
+
+/* ===== CÂMERA MOBILE PARA BIPAGEM DE PRODUTOS ===== */
+let barcodeCameraScanner=null,barcodeCameraTarget='',barcodeCameraStarted=false,barcodeCameraLocked=false;
+function barcodeCameraAction(id){
+  return {
+    stockEntryBarcode:()=>window.findStockEntryProduct?.(),
+    stockTransferBarcode:()=>window.findStockTransferProduct?.(),
+    saleBarcode:()=>processBarcodeField('saleBarcode'),
+    priceBarcode:()=>processBarcodeField('priceBarcode'),
+    exchangeReturnBarcode:()=>processBarcodeField('exchangeReturnBarcode'),
+    exchangeOutBarcode:()=>processBarcodeField('exchangeOutBarcode')
+  }[id]||null;
+}
+function setBarcodeCameraStatus(text,type='normal'){
+  let el=$('barcodeCameraStatus');if(!el)return;el.textContent=text;
+  if(type==='error'){el.style.background='#ffe0ea';el.style.borderColor='#c85179';el.style.color='#7b2143'}
+  else if(type==='success'){el.style.background='#dff4e7';el.style.borderColor='#72b58d';el.style.color='#235f3c'}
+  else{el.style.background='#fff0f6';el.style.borderColor='#e68db2';el.style.color='#5a2038'}
+}
+async function stopBarcodeCameraReader(){
+  let scanner=barcodeCameraScanner;barcodeCameraScanner=null;
+  if(!scanner)return;
+  try{if(barcodeCameraStarted)await scanner.stop()}catch(e){}
+  barcodeCameraStarted=false;
+  try{scanner.clear()}catch(e){}
+}
+window.closeBarcodeCamera=async()=>{
+  barcodeCameraLocked=true;
+  await stopBarcodeCameraReader();
+  $('barcodeCameraModal')?.classList.add('hidden');
+  let target=barcodeCameraTarget;barcodeCameraTarget='';barcodeCameraLocked=false;
+  if(target)focusBarcodeField(target);
+};
+async function barcodeCameraDecoded(decodedText){
+  if(barcodeCameraLocked)return;
+  let code=normalizeBarcode(decodedText);
+  if(code.length<BARCODE_MIN_LENGTH)return;
+  barcodeCameraLocked=true;
+  let target=barcodeCameraTarget;
+  setBarcodeCameraStatus(`Código encontrado: ${code}`,'success');
+  await stopBarcodeCameraReader();
+  $('barcodeCameraModal')?.classList.add('hidden');
+  barcodeCameraTarget='';
+  let input=$(target);if(input)input.value=code;
+  setTimeout(()=>{
+    try{let action=barcodeCameraAction(target);if(action)action();else input?.dispatchEvent(new Event('input',{bubbles:true}))}
+    finally{barcodeCameraLocked=false}
+  },120);
+}
+window.openBarcodeCamera=async targetId=>{
+  let input=$(targetId);if(!input)return alert('Campo de código de barras não encontrado.');
+  if(!window.isSecureContext&&!['localhost','127.0.0.1'].includes(location.hostname))return alert('Para usar a câmera, abra o sistema por HTTPS. Navegadores bloqueiam câmera em páginas HTTP.');
+  if(!navigator.mediaDevices?.getUserMedia)return alert('Este navegador não permite acesso à câmera. Atualize o navegador ou continue usando o leitor físico/digitação.');
+  if(typeof window.Html5Qrcode!=='function')return alert('O módulo de leitura por câmera não carregou. Verifique a internet e recarregue a página.');
+  barcodeCameraTarget=targetId;barcodeCameraLocked=false;
+  $('barcodeCameraModal')?.classList.remove('hidden');
+  setBarcodeCameraStatus('Solicitando acesso à câmera traseira...');
+  await stopBarcodeCameraReader();
+  try{
+    let formats=[];
+    let F=window.Html5QrcodeSupportedFormats;
+    if(F){['EAN_13','EAN_8','UPC_A','UPC_E','CODE_128','CODE_39','CODE_93','ITF','CODABAR'].forEach(k=>{if(F[k]!==undefined)formats.push(F[k])})}
+    let config=formats.length?{formatsToSupport:formats,verbose:false}:{verbose:false};
+    barcodeCameraScanner=new window.Html5Qrcode('barcodeCameraReader',config);
+    let scanConfig={fps:12,qrbox:{width:280,height:130},aspectRatio:1.777778,disableFlip:false};
+    try{
+      await barcodeCameraScanner.start({facingMode:'environment'},scanConfig,barcodeCameraDecoded,()=>{});
+    }catch(firstErr){
+      let cameras=await window.Html5Qrcode.getCameras();
+      if(!cameras?.length)throw firstErr;
+      let preferred=cameras.find(c=>/back|rear|environment|traseira/i.test(String(c.label||'')))||cameras[cameras.length-1];
+      await barcodeCameraScanner.start(preferred.id,scanConfig,barcodeCameraDecoded,()=>{});
+    }
+    barcodeCameraStarted=true;
+    setBarcodeCameraStatus('Câmera ativa. Aponte para o código de barras.');
+  }catch(err){
+    barcodeCameraStarted=false;
+    try{barcodeCameraScanner?.clear()}catch(e){}
+    barcodeCameraScanner=null;
+    let msg=String(err?.message||err||'');
+    let friendly=/permission|denied|notallowed/i.test(msg)?'Permissão da câmera negada. Libere a câmera nas configurações do navegador e tente novamente.':'Não foi possível iniciar a câmera. Feche outros aplicativos que estejam usando a câmera e tente novamente.';
+    setBarcodeCameraStatus(friendly,'error');
+  }
+};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&barcodeCameraStarted)window.closeBarcodeCamera?.()});
+
 
 
 /* ===== DELUX BY: ESTOQUE INDIVIDUAL POR NUMERAÇÃO ===== */
