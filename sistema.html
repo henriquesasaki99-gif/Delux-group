@@ -289,7 +289,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <div class="table-wrap"><table><thead><tr><th>Data</th><th>Loja</th><th>Status</th><th>Esperados</th><th>Encontrados</th><th>Divergências</th><th>Responsável</th><th>Ações</th></tr></thead><tbody id="inventoryHistoryTable"></tbody></table></div>
   </div>
 </section>
-<section id="sale" class="screen"><div id="saleMainGrid" class="grid two"><div id="saleIdentificationPanel" class="panel"><h3>Identificação do produto</h3><p class="muted">Selecione a loja, informe o cliente e bipe o produto. No celular você também pode usar a câmera.</p><div id="saleIdentificationFields" class="form-grid one"><select id="saleStore" onchange="renderSaleProducts()"></select><input id="saleClient" placeholder="Cliente"><div class="barcode-camera-row"><input id="saleBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('saleBarcode')">📷 Câmera</button></div></div><div id="saleProductsCatalog" class="sale-products-catalog"><div class="sale-products-heading"><h3>Produtos disponíveis</h3><p class="muted">Use a busca abaixo caso prefira selecionar o produto manualmente.</p></div><input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar produto"><div id="saleProductList" class="product-picks"></div></div></div><div id="saleCartPanel" class="panel"><h3>Carrinho e pagamentos</h3><div id="cartList" class="list"></div><div class="totals"><label>Desconto R$</label><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><label>Frete R$</label><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><h4>Resumo por loja</h4><div id="cartStoreSummary" class="list"></div><h4>Vários tipos de pagamento</h4><div class="payment-box"><select id="paymentMethod"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><button onclick="addSalePayment()">Adicionar pagamento</button></div><button class="secondary" onclick="addRemainingPayment()">Adicionar valor restante</button><div id="paymentList" class="list"></div><h2>Total: <span id="cartTotal">R$ 0,00</span></h2><p id="paymentStatus"></p><button onclick="finishSale()">Finalizar venda</button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div></div></div></section>
+<section id="sale" class="screen"><div id="saleMainGrid" class="grid two"><div id="saleIdentificationPanel" class="panel"><h3>Identificação do produto</h3><p class="muted">Selecione a loja, informe o cliente e bipe o produto. No celular você também pode usar a câmera.</p><div id="saleIdentificationFields" class="form-grid one"><select id="saleStore" onchange="renderSaleProducts()"></select><input id="saleClient" placeholder="Cliente"><div class="barcode-camera-row"><input id="saleBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('saleBarcode')">📷 Câmera</button></div></div><div id="saleProductsCatalog" class="sale-products-catalog"><div class="sale-products-heading"><h3>Produtos disponíveis</h3><p class="muted">Use a busca abaixo caso prefira selecionar o produto manualmente.</p></div><input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar produto"><div id="saleProductList" class="product-picks"></div></div></div><div id="saleCartPanel" class="panel"><h3>Carrinho e pagamentos</h3><div id="cartList" class="list"></div><div class="totals"><label>Desconto R$</label><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><label>Frete R$</label><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><h4>Resumo por loja</h4><div id="cartStoreSummary" class="list"></div><h4>Vários tipos de pagamento</h4><div class="payment-box"><select id="paymentMethod"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><button id="addPaymentBtn" onclick="addSalePayment()">Adicionar valor</button></div><button id="addRemainingPaymentBtn" class="secondary" onclick="addRemainingPayment()">Adicionar valor restante</button><div id="paymentList" class="list"></div><h2>Total: <span id="cartTotal">R$ 0,00</span></h2><p id="paymentStatus"></p><button id="finishSaleBtn" onclick="finishSale()">Finalizar venda</button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div></div></div></section>
 
 <section id="cashOut" class="screen">
   <div class="panel">
@@ -665,6 +665,19 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
   </div>
 </div>
 
+<style id="deluxKeyboardFkeysStyle">
+
+/* ===== MODO TECLADO F1–F12 ===== */
+.keyboard-fkeys-bar{position:fixed;left:0;right:0;bottom:0;z-index:12000;background:#1c1d24f2;border-top:1px solid #ffffff2b;box-shadow:0 -10px 35px #0005;padding:7px 10px;color:#fff;font-family:Arial,Helvetica,sans-serif;backdrop-filter:blur(10px);pointer-events:none}
+.keyboard-fkeys-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:6px;font-size:11px;color:#dedee6}.keyboard-fkeys-title{font-weight:900;color:#ffacd0}.keyboard-fkeys-hint{color:#bfc1ca;text-align:right}
+.keyboard-fkeys-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}.keyboard-fkey{min-width:0;background:#2a2c36;border:1px solid #ffffff1c;border-radius:8px;padding:6px 5px;display:flex;gap:5px;align-items:center}.keyboard-fkey.empty{opacity:.35}.keyboard-fkey kbd{flex:0 0 auto;background:#f2a3c3;color:#4f1930;border:1px solid #ffd4e5;border-radius:6px;padding:3px 5px;font-size:10px;font-weight:900;box-shadow:inset 0 -1px 0 #b85d82}.keyboard-fkey span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:#f3f3f6}
+.keyboard-focus-flash{outline:4px solid #e8317a!important;outline-offset:3px!important;box-shadow:0 0 0 7px #e8317a22!important}.keyboard-danger-armed{outline:4px solid #b62f5f!important;outline-offset:3px!important}
+.keyboard-toast{position:fixed;right:16px;bottom:112px;z-index:12001;background:#171821;color:#fff;border:1px solid #ffffff25;border-radius:12px;padding:10px 13px;box-shadow:0 14px 35px #0007;font-size:12px;font-weight:800;max-width:min(420px,calc(100vw - 32px));opacity:0;transform:translateY(8px);transition:.18s;pointer-events:none}.keyboard-toast.show{opacity:1;transform:none}
+.keyboard-help{position:fixed;inset:0;z-index:13000;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px}.keyboard-help.hidden{display:none!important}.keyboard-help-card{width:min(760px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#f7f8f9,#d7dade);color:#2b2630;border-radius:20px;border:1px solid #fff;padding:18px;box-shadow:0 25px 70px #0008}.keyboard-help-card h2{margin:0 0 8px}.keyboard-help-table{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;margin-top:14px}.keyboard-help-table b{color:#8d2b55}.keyboard-help-current{margin-top:14px;padding:12px;background:#fff0f6;border:1px solid #e68db2;border-radius:12px}.keyboard-help-current ol{margin:8px 0 0;padding-left:25px}.keyboard-help-current li{margin:4px 0}
+body.keyboard-only-ready{padding-bottom:102px}body.keyboard-only-ready .content{padding-bottom:120px}body.keyboard-only-ready button:focus-visible,body.keyboard-only-ready a:focus-visible,body.keyboard-only-ready input:focus-visible,body.keyboard-only-ready select:focus-visible,body.keyboard-only-ready textarea:focus-visible{outline:4px solid #e8317a!important;outline-offset:3px!important;box-shadow:0 0 0 6px #fff8!important}
+@media(max-width:1100px){.keyboard-fkeys-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.keyboard-fkeys-hint{display:none}body.keyboard-only-ready{padding-bottom:160px}.keyboard-toast{bottom:172px}}
+@media(max-width:650px){.keyboard-fkeys-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.keyboard-fkeys-bar{max-height:46vh;overflow:hidden}.keyboard-fkeys-head{display:block}.keyboard-fkeys-title{display:block;margin-bottom:3px}body.keyboard-only-ready{padding-bottom:228px}.keyboard-toast{bottom:238px}.keyboard-help-table{grid-template-columns:1fr}.keyboard-help-table b{margin-top:5px}}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script type="module">
@@ -2041,5 +2054,194 @@ window.renderAccessControlStandalone=()=>{if(!currentUser||currentUser.role!=='a
 window.editUserPermissionsStandalone=id=>{if(currentUser?.role!=='admin')return;let u=DB.users.find(x=>x.id===id);if(!u||!['funcionario','vendedor','gerente'].includes(u.role))return;accessEditingUserIdStandalone=id;let selected=userAllowedScreens(u);$('accessSelectedInfoStandalone').innerHTML=`<b>${esc(u.name)}</b><br><span class="muted">Perfil: ${esc(u.role)} • Login: ${esc(u.login)}</span>`;$('accessPermissionGridStandalone').innerHTML=permissionScreenIds.map(pid=>{let screen=screens.find(x=>x[0]===pid);return `<label><input type="checkbox" class="access-permission-check-standalone" value="${pid}" ${selected.includes(pid)?'checked':''}> <span>${esc(screen?.[1]||pid)}</span></label>`}).join('');renderAccessControlStandalone()};
 window.selectAllUserPermissionsStandalone=checked=>{if(!accessEditingUserIdStandalone)return alert('Selecione primeiro um vendedor ou gerente.');document.querySelectorAll('.access-permission-check-standalone').forEach(c=>c.checked=checked)};
 window.saveUserPermissionsStandalone=async()=>{if(currentUser?.role!=='admin')return alert('Somente o Administrador pode alterar acessos.');if(!accessEditingUserIdStandalone)return alert('Selecione um vendedor ou gerente.');let u=DB.users.find(x=>x.id===accessEditingUserIdStandalone);if(!u)return;u.permissions=Array.from(document.querySelectorAll('.access-permission-check-standalone:checked')).map(c=>c.value);await saveDB();renderUsers();renderAccessControl();renderAccessControlStandalone();alert('Acessos de '+u.name+' salvos com sucesso.');};
+
+
+/* =============================================================
+   ATALHOS FIXOS DO PVD — F1 A F11
+   F1  Desconto
+   F2  Frete
+   F3  Pix
+   F4  Dinheiro
+   F5  Débito
+   F6  Crédito
+   F7  Voucher
+   F8  Crédito em loja
+   F9  Adicionar valor
+   F10 Adicionar valor restante
+   F11 Finalizar venda
+
+   ENTER:
+   - Em campos comuns, avança para a próxima função/campo.
+   - Em selects, confirma a seleção e avança.
+   - Em textarea, Enter avança; Shift+Enter cria nova linha.
+   - Campos de bipagem mantêm o Enter para processar o código.
+   ============================================================= */
+let deluxKeyboardToastTimer=null;
+let deluxKeyboardRefreshTimer=null;
+
+const PVD_FKEYS=[
+  {key:'F1',label:'Desconto',run:()=>pvdFocus('saleDiscount',true)},
+  {key:'F2',label:'Frete',run:()=>pvdFocus('saleFreight',true)},
+  {key:'F3',label:'Pix',run:()=>pvdSelectPayment('Pix')},
+  {key:'F4',label:'Dinheiro',run:()=>pvdSelectPayment('Dinheiro')},
+  {key:'F5',label:'Débito',run:()=>pvdSelectPayment('Cartão Débito')},
+  {key:'F6',label:'Crédito',run:()=>pvdSelectPayment('Cartão Crédito')},
+  {key:'F7',label:'Voucher',run:()=>pvdSelectPayment('Voucher')},
+  {key:'F8',label:'Crédito em loja',run:()=>pvdSelectPayment('Crédito da Loja')},
+  {key:'F9',label:'Adicionar valor',run:()=>pvdAddPayment()},
+  {key:'F10',label:'Valor restante',run:()=>pvdAddRemaining()},
+  {key:'F11',label:'Finalizar venda',run:()=>pvdFinishSale()}
+];
+
+function deluxKeyboardVisible(el){
+  if(!el||el.disabled||el.getAttribute('aria-hidden')==='true')return false;
+  if(el.matches('input[type="hidden"]'))return false;
+  const cs=getComputedStyle(el);
+  if(cs.display==='none'||cs.visibility==='hidden')return false;
+  if(el.closest('.hidden'))return false;
+  return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);
+}
+function pvdIsActive(){return document.querySelector('.screen.active-screen')?.id==='sale'}
+function pvdFocus(id,selectText=false){
+  const el=document.getElementById(id);if(!el||!deluxKeyboardVisible(el))return;
+  el.focus();
+  if(selectText&&typeof el.select==='function')try{el.select()}catch(e){}
+  pvdKeyboardFlash(el);
+  try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'})}catch(e){}
+}
+function pvdSelectPayment(method){
+  const el=document.getElementById('paymentMethod');if(!el)return;
+  el.value=method;el.dispatchEvent(new Event('change',{bubbles:true}));
+  pvdKeyboardToast(method+' selecionado. Digite o valor e pressione Enter ou F9.');
+  pvdFocus('paymentAmount',true);
+}
+function pvdAddPayment(){
+  const amount=document.getElementById('paymentAmount');
+  if(!amount)return;
+  if(Number(amount.value||0)<=0){pvdKeyboardToast('Digite o valor recebido antes de adicionar.');pvdFocus('paymentAmount',true);return;}
+  window.addSalePayment?.();
+  setTimeout(()=>pvdFocus('paymentMethod'),50);
+}
+function pvdAddRemaining(){
+  window.addRemainingPayment?.();
+  setTimeout(()=>pvdFocus('finishSaleBtn'),50);
+}
+function pvdFinishSale(){
+  const btn=document.getElementById('finishSaleBtn');
+  if(btn){pvdKeyboardFlash(btn);btn.focus();}
+  window.finishSale?.();
+}
+function pvdKeyboardFlash(el){
+  if(!el)return;el.classList.add('keyboard-focus-flash');setTimeout(()=>el.classList.remove('keyboard-focus-flash'),650);
+}
+function pvdKeyboardToast(msg){
+  const el=document.getElementById('deluxKeyboardToast');if(!el)return;
+  el.textContent=msg;el.classList.add('show');clearTimeout(deluxKeyboardToastTimer);deluxKeyboardToastTimer=setTimeout(()=>el.classList.remove('show'),1800);
+}
+function pvdKeyboardBuildUi(){
+  if(!document.getElementById('deluxKeyboardBar')){
+    const bar=document.createElement('div');bar.id='deluxKeyboardBar';bar.className='keyboard-fkeys-bar';
+    bar.innerHTML='<div class="keyboard-fkeys-head"><span class="keyboard-fkeys-title">⌨ ATALHOS DO PVD</span><span class="keyboard-fkeys-hint">ENTER avança • Setas alteram seleção • SHIFT+ENTER nova linha • F1–F11 atalhos fixos</span></div><div id="deluxKeyboardGrid" class="keyboard-fkeys-grid"></div>';
+    document.body.appendChild(bar);
+    const toast=document.createElement('div');toast.id='deluxKeyboardToast';toast.className='keyboard-toast';document.body.appendChild(toast);
+  }
+  pvdKeyboardRenderBar();
+}
+function pvdKeyboardRenderBar(){
+  const bar=document.getElementById('deluxKeyboardBar'),grid=document.getElementById('deluxKeyboardGrid');if(!bar||!grid)return;
+  const active=pvdIsActive();bar.style.display=active?'block':'none';
+  document.body.classList.toggle('keyboard-only-ready',active);
+  if(!active)return;
+  grid.innerHTML=PVD_FKEYS.map(x=>`<div class="keyboard-fkey"><kbd>${x.key}</kbd><span>${x.label}</span></div>`).join('');
+}
+function pvdKeyboardRefreshSoon(){clearTimeout(deluxKeyboardRefreshTimer);deluxKeyboardRefreshTimer=setTimeout(pvdKeyboardRenderBar,40)}
+function pvdFocusableSequence(root){
+  if(!root)return[];
+  return Array.from(root.querySelectorAll('input:not([type="hidden"]),select,textarea,button,a[href],[tabindex]:not([tabindex="-1"])'))
+    .filter(el=>deluxKeyboardVisible(el)&&!el.closest('#deluxKeyboardBar'));
+}
+function pvdNextField(current,direction=1){
+  const root=document.querySelector('.screen.active-screen');if(!root)return;
+  const all=pvdFocusableSequence(root);if(!all.length)return;
+  let i=all.indexOf(current);if(i<0)i=direction>0?-1:0;
+  let next=i+direction;if(next>=all.length)next=0;if(next<0)next=all.length-1;
+  const el=all[next];el.focus();
+  if(el.matches('input:not([type="date"]):not([type="color"]),textarea'))try{el.select()}catch(e){}
+  pvdKeyboardFlash(el);
+}
+function deluxGlobalNextField(current,direction=1){
+  const root=document.querySelector('.screen.active-screen')||document.getElementById('loginScreen');if(!root)return;
+  const all=Array.from(root.querySelectorAll('input:not([type="hidden"]),select,textarea,button,a[href],[tabindex]:not([tabindex="-1"])'))
+    .filter(el=>deluxKeyboardVisible(el)&&!el.closest('#deluxKeyboardBar'));
+  if(!all.length)return;
+  let i=all.indexOf(current);if(i<0)i=direction>0?-1:0;
+  let next=i+direction;if(next>=all.length)next=0;if(next<0)next=all.length-1;
+  const el=all[next];el.focus();
+  if(el.matches('input:not([type="date"]):not([type="color"]),textarea'))try{el.select()}catch(e){}
+  pvdKeyboardFlash(el);
+}
+function pvdEnterFlow(e){
+  if(e.key!=='Enter'||e.ctrlKey||e.altKey||e.metaKey)return false;
+  const t=e.target;
+  if(!t||!t.matches('input,select,textarea'))return false;
+  if(t.tagName==='TEXTAREA'&&e.shiftKey)return false;
+
+  // No PVD, Enter com código processa a bipagem; com o campo vazio avança para Desconto.
+  if(t.id==='saleBarcode'&&pvdIsActive()){
+    if(normalizeBarcode(t.value).length>=BARCODE_MIN_LENGTH)return false;
+    e.preventDefault();e.stopPropagation();pvdFocus('saleDiscount',true);return true;
+  }
+
+  // Demais campos de bipagem mantêm o Enter para processar o código.
+  const barcodeIds=['priceBarcode','exchangeReturnBarcode','exchangeOutBarcode','inventoryBarcode','stockEntryBarcode','stockTransferBarcode'];
+  if(barcodeIds.includes(t.id))return false;
+  const ownKeydown=String(t.getAttribute('onkeydown')||'');
+  if(/Enter/.test(ownKeydown))return false;
+
+  e.preventDefault();e.stopPropagation();
+
+  // Fluxo especial do PVD.
+  if(pvdIsActive()){
+    if(t.id==='saleStore'){pvdFocus('saleClient',true);return true;}
+    if(t.id==='saleClient'){pvdFocus('saleBarcode',true);return true;}
+    if(t.id==='saleSearch'){pvdFocus('saleDiscount',true);return true;}
+    if(t.id==='saleDiscount'){pvdFocus('saleFreight',true);return true;}
+    if(t.id==='saleFreight'){pvdFocus('paymentMethod');return true;}
+    if(t.id==='paymentMethod'){pvdFocus('paymentAmount',true);return true;}
+    if(t.id==='paymentAmount'){
+      if(Number(t.value||0)>0){pvdAddPayment()}else{pvdKeyboardToast('Digite o valor recebido.');pvdFocus('paymentAmount',true)}
+      return true;
+    }
+    pvdNextField(t,e.shiftKey?-1:1);return true;
+  }
+
+  // Demais telas: Enter substitui Tab e avança pela estrutura do formulário.
+  deluxGlobalNextField(t,e.shiftKey?-1:1);return true;
+}
+function pvdKeyboardInstall(){
+  pvdKeyboardBuildUi();
+  const app=document.getElementById('app'),login=document.getElementById('loginScreen');
+  const observer=new MutationObserver(()=>pvdKeyboardRefreshSoon());
+  if(app)observer.observe(app,{subtree:true,childList:true,attributes:true,attributeFilter:['class','disabled','style']});
+  if(login)observer.observe(login,{subtree:true,childList:true,attributes:true,attributeFilter:['class','disabled','style']});
+
+  document.addEventListener('keydown',e=>{
+    const key=e.key;
+
+    // F1–F11 funcionam SOMENTE no PVD.
+    if(/^F([1-9]|1[01])$/.test(key)&&pvdIsActive()){
+      e.preventDefault();e.stopPropagation();
+      const item=PVD_FKEYS.find(x=>x.key===key);if(item)item.run();
+      return;
+    }
+    // F12 fica livre, pois não há função atribuída no PVD.
+
+    if(pvdEnterFlow(e))return;
+  },true);
+
+  setTimeout(()=>{pvdKeyboardRenderBar();},160);
+}
+window.addEventListener('DOMContentLoaded',pvdKeyboardInstall);
+
 </script>
 </body></html>
