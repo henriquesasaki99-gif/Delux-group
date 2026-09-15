@@ -161,6 +161,50 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 /* ===== VALES / VOUCHER DE FUNCIONÁRIOS ===== */
 .voucher-employee-box{display:grid;grid-template-columns:1fr;gap:6px;margin-top:8px;padding:10px;border:1px solid #d99ab3;border-radius:12px;background:#fff0f6}.voucher-employee-box.hidden{display:none!important}.voucher-employee-box label{font-size:12px;font-weight:900;color:#7e2450}.vale-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.vale-card{background:linear-gradient(145deg,#fff3f8,#f5bfd4);border:1px solid #df82a8;border-radius:14px;padding:13px}.vale-card span{display:block;font-size:11px;color:#675f69;text-transform:uppercase}.vale-card strong{display:block;font-size:21px;margin-top:5px}.vale-status-select{min-width:120px}.vale-readonly{opacity:.8}.vale-products{font-size:12px;line-height:1.45;color:#675f69}.legacy-voucher-panel{border:2px solid #d39a33!important;background:linear-gradient(145deg,#fff7df,#f8dfad)!important}.legacy-voucher-alert{padding:12px 14px;border-radius:12px;background:#fff0c9;border:1px solid #c39a3d;color:#6b4a00;line-height:1.5;margin:12px 0}.legacy-voucher-select{min-width:220px}.legacy-voucher-zero{padding:14px;border-radius:12px;background:#dff4e7;border:1px solid #72b58d;color:#235f3c;font-weight:800}.legacy-voucher-badge{display:inline-block;margin-left:6px;border-radius:999px;padding:3px 8px;background:#fff0c9;color:#6b4a00;border:1px solid #c39a3d;font-size:11px;font-weight:900}@media(max-width:850px){.vale-summary{grid-template-columns:1fr 1fr}.legacy-voucher-select{min-width:170px}}@media(max-width:520px){.vale-summary{grid-template-columns:1fr}}
 
+
+
+/* ===== TROCAS / DEVOLUÇÕES: BUSCA POR DATA + SELEÇÃO MANUAL ===== */
+.exchange-search-grid{display:grid;grid-template-columns:minmax(220px,1fr) 190px auto;gap:9px;align-items:end;margin-bottom:10px}
+.exchange-return-tools,.exchange-out-tools{display:grid;grid-template-columns:minmax(220px,1fr) minmax(260px,1fr);gap:10px;align-items:end}
+.exchange-sale-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px;margin:10px 0 14px}
+.exchange-sale-item{background:#ffffffb8;border:1px solid #d99ab3;border-radius:12px;padding:11px}
+.exchange-sale-item.selected{border-color:#e8317a;box-shadow:0 0 0 2px #e8317a22}
+.exchange-sale-item .exchange-item-meta{font-size:12px;color:#675f69;line-height:1.45;margin:5px 0}
+.exchange-out-catalog-wrap{margin-top:16px;padding-top:14px;border-top:1px solid #d99ab3}
+.exchange-out-catalog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:9px}
+.exchange-product-picks{max-height:520px;overflow:auto;padding-right:4px}
+.exchange-product-picks .pick{background:#ffffffb8!important;border-color:#d99ab3!important;color:#2b2630!important}
+.exchange-product-picks .sale-product-meta{color:#675f69!important}
+.exchange-sale-selected{border:2px solid #e8317a!important;background:linear-gradient(145deg,#fff7fa,#f7c0d6)!important}
+.exchange-value-reveal{display:inline-block;margin-top:7px;padding:7px 10px;border-radius:10px;background:#fff;border:1px solid #d99ab3;font-weight:900;color:#7e2450}
+@media(max-width:850px){.exchange-search-grid,.exchange-return-tools,.exchange-out-tools{grid-template-columns:1fr}.exchange-search-grid button{width:100%!important}.exchange-out-catalog-head{display:block}.exchange-product-picks{max-height:none}}
+
+/* ===== GRÁFICOS / INDICADORES ===== */
+.analytics-toolbar{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;align-items:end}
+.analytics-toolbar .analytics-wide{grid-column:span 2}
+.analytics-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.analytics-chart-card{background:linear-gradient(145deg,#fff3f8,#f5bfd4)!important;border:1px solid #df82a8!important;border-radius:16px;padding:15px;margin-bottom:16px;overflow:hidden}
+.analytics-chart-card h3{margin:0 0 4px}.analytics-chart-card .analytics-subtitle{margin:0 0 12px;color:#675f69;font-size:12px;line-height:1.5}
+.analytics-chart-scroll{overflow-x:auto;background:#ffffff9c;border:1px solid #d99ab3;border-radius:14px;padding:10px}
+.analytics-chart-scroll svg{display:block;min-height:280px}
+.analytics-chart-empty{padding:34px 16px;text-align:center;color:#675f69}
+.analytics-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:#675f69}
+.analytics-legend span{background:#fff;border:1px solid #d99ab3;border-radius:999px;padding:5px 9px}
+.analytics-seller-table{margin-top:12px}
+.analytics-filter-note{margin-top:10px;padding:10px;border-radius:12px;background:#fff0f6;border:1px solid #d99ab3;color:#675f69;font-size:12px;line-height:1.45}
+@media(max-width:1050px){.analytics-toolbar{grid-template-columns:repeat(2,1fr)}.analytics-toolbar .analytics-wide{grid-column:span 2}.analytics-summary{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.analytics-toolbar,.analytics-summary{grid-template-columns:1fr}.analytics-toolbar .analytics-wide{grid-column:auto}}
+
+
+
+/* ===== AJUSTE 15/09: VALORES DENTRO DAS BARRAS + PDV COMPACTO ===== */
+.analytics-chart-scroll svg .analytics-bar-label{fill:#fff;font-size:11px;font-weight:900;paint-order:stroke;stroke:#6f2447;stroke-width:2.4px;stroke-linejoin:round;pointer-events:none}
+.analytics-chart-scroll svg .analytics-zero-label{fill:#7e2450;font-size:10px;font-weight:800}
+.pdv-step-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.pdv-step-title h3{margin:0}.pdv-step-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:999px;background:#e8317a;color:#fff;font-weight:900;font-size:12px}
+.pdv-field{display:flex;flex-direction:column;gap:5px}.pdv-field-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:900;color:#5a2038}.pdv-key{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #d99ab3;border-radius:999px;padding:3px 7px;font-size:10px;font-weight:900;color:#7e2450;white-space:nowrap}.pdv-hint{font-size:11px;line-height:1.35;color:#675f69;margin-top:1px}.pdv-identification-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pdv-identification-grid .pdv-barcode-field{grid-column:1/-1}.pdv-catalog{margin-top:14px;padding-top:12px;border-top:1px solid #d99ab3}.pdv-catalog-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:8px}.pdv-catalog-head h4{margin:0}.pdv-product-list{max-height:430px;overflow:auto;padding-right:4px}.pdv-checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pdv-payment-block{margin-top:12px;padding-top:12px;border-top:1px solid #d99ab3}.pdv-payment-grid{display:grid;grid-template-columns:minmax(180px,1fr) minmax(150px,.8fr) auto;gap:8px;align-items:end}.pdv-total-box{margin:12px 0 8px;padding:13px 14px;border-radius:14px;background:linear-gradient(145deg,#e8317a,#b91f5f);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px}.pdv-total-box span{font-size:12px;font-weight:800;opacity:.9}.pdv-total-box strong{font-size:26px}.pdv-inline-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.pdv-store-summary{margin-top:10px}.pdv-store-summary summary{cursor:pointer;font-weight:900;color:#7e2450;padding:5px 0}.pdv-store-summary[open] summary{margin-bottom:7px}
+#deluxKeyboardBar{display:none!important}body.keyboard-only-ready{padding-bottom:0!important}body.keyboard-only-ready .content{padding-bottom:22px!important}.keyboard-toast{bottom:18px!important}
+@media(max-width:850px){.pdv-identification-grid,.pdv-checkout-grid,.pdv-payment-grid,.pdv-inline-actions{grid-template-columns:1fr}.pdv-identification-grid .pdv-barcode-field{grid-column:auto}.pdv-product-list{max-height:none}.pdv-catalog-head{display:block}.pdv-catalog-head .pdv-hint{margin-top:4px}}
+
 </style>
 </head>
 <body>
@@ -293,7 +337,66 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <div class="table-wrap"><table><thead><tr><th>Data</th><th>Loja</th><th>Status</th><th>Esperados</th><th>Encontrados</th><th>Divergências</th><th>Responsável</th><th>Ações</th></tr></thead><tbody id="inventoryHistoryTable"></tbody></table></div>
   </div>
 </section>
-<section id="sale" class="screen"><div id="saleMainGrid" class="grid two"><div id="saleIdentificationPanel" class="panel"><h3>Identificação do produto</h3><p class="muted">Selecione a loja, informe o cliente e bipe o produto. No celular você também pode usar a câmera.</p><div id="saleIdentificationFields" class="form-grid one"><select id="saleStore" onchange="renderSaleProducts()"></select><input id="saleClient" placeholder="Cliente"><div class="barcode-camera-row"><input id="saleBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('saleBarcode')">📷 Câmera</button></div></div><div id="saleProductsCatalog" class="sale-products-catalog"><div class="sale-products-heading"><h3>Produtos disponíveis</h3><p class="muted">Use a busca abaixo caso prefira selecionar o produto manualmente.</p></div><input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar produto"><div id="saleProductList" class="product-picks"></div></div></div><div id="saleCartPanel" class="panel"><h3>Carrinho e pagamentos</h3><div id="cartList" class="list"></div><div class="totals"><label>Desconto R$</label><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><label>Frete R$</label><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><h4>Resumo por loja</h4><div id="cartStoreSummary" class="list"></div><h4>Vários tipos de pagamento</h4><div class="payment-box"><select id="paymentMethod" onchange="toggleSaleVoucherEmployee()"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><button id="addPaymentBtn" onclick="addSalePayment()">Adicionar valor</button></div><div id="saleVoucherEmployeeBox" class="voucher-employee-box hidden"><label>Funcionário que receberá o vale</label><select id="saleVoucherEmployee"></select><small class="muted">O usuário conectado não pode lançar Voucher para ele mesmo.</small></div><button id="addRemainingPaymentBtn" class="secondary" onclick="addRemainingPayment()">Adicionar valor restante</button><div id="paymentList" class="list"></div><h2>Total: <span id="cartTotal">R$ 0,00</span></h2><p id="paymentStatus"></p><button id="finishSaleBtn" onclick="finishSale()">Finalizar venda</button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div></div></div></section>
+<section id="sale" class="screen">
+  <div id="saleMainGrid" class="grid two">
+    <div id="saleIdentificationPanel" class="panel">
+      <div class="pdv-step-title"><div><h3>Venda rápida</h3><p class="muted" style="margin:4px 0 0">Identifique o cliente e adicione os produtos.</p></div><span class="pdv-step-badge">1</span></div>
+      <div id="saleIdentificationFields" class="pdv-identification-grid">
+        <div class="pdv-field">
+          <div class="pdv-field-label"><span>Loja</span><span class="pdv-key">ENTER avança</span></div>
+          <select id="saleStore" onchange="renderSaleProducts()"></select>
+          <small class="pdv-hint">Escolha a loja responsável pela venda.</small>
+        </div>
+        <div class="pdv-field">
+          <div class="pdv-field-label"><span>Cliente</span><span class="pdv-key">ENTER avança</span></div>
+          <input id="saleClient" placeholder="Nome do cliente">
+          <small class="pdv-hint">Pode deixar em branco para venda de balcão.</small>
+        </div>
+        <div class="pdv-field pdv-barcode-field">
+          <div class="pdv-field-label"><span>Código de barras</span><span class="pdv-key">ENTER adiciona</span></div>
+          <div class="barcode-camera-row"><input id="saleBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('saleBarcode')">📷 Câmera</button></div>
+          <small class="pdv-hint">Bipe o produto e pressione Enter. No celular, use a câmera.</small>
+        </div>
+      </div>
+      <div id="saleProductsCatalog" class="sale-products-catalog pdv-catalog">
+        <div class="pdv-catalog-head"><div><h4>Ou pesquise o produto</h4><small class="pdv-hint">Busca manual quando não quiser usar o código de barras.</small></div></div>
+        <input id="saleSearch" oninput="renderSaleProducts()" placeholder="Buscar por nome, código ou produto">
+        <div id="saleProductList" class="product-picks pdv-product-list"></div>
+      </div>
+    </div>
+
+    <div id="saleCartPanel" class="panel">
+      <div class="pdv-step-title"><div><h3>Carrinho e fechamento</h3><p class="muted" style="margin:4px 0 0">Confira os itens e finalize o pagamento.</p></div><span class="pdv-step-badge">2</span></div>
+      <div id="cartList" class="list"></div>
+      <div class="totals">
+        <div class="pdv-checkout-grid">
+          <div class="pdv-field"><div class="pdv-field-label"><span>Desconto R$</span><span class="pdv-key">F1</span></div><input id="saleDiscount" type="number" step="0.01" value="0" oninput="renderCart()"><small class="pdv-hint">F1 leva o cursor direto para o desconto.</small></div>
+          <div class="pdv-field"><div class="pdv-field-label"><span>Frete R$</span><span class="pdv-key">F2</span></div><input id="saleFreight" type="number" step="0.01" value="0" oninput="renderCart()"><small class="pdv-hint">F2 leva o cursor direto para o frete.</small></div>
+        </div>
+
+        <details class="pdv-store-summary"><summary>Resumo por loja</summary><div id="cartStoreSummary" class="list"></div></details>
+
+        <div class="pdv-payment-block">
+          <div class="pdv-field-label" style="margin-bottom:7px"><span>Pagamento</span><span class="pdv-key">F3–F8 escolhem</span></div>
+          <div class="pdv-payment-grid">
+            <div class="pdv-field"><select id="paymentMethod" onchange="toggleSaleVoucherEmployee()"><option>Pix</option><option>Dinheiro</option><option>Cartão Débito</option><option>Cartão Crédito</option><option>Voucher</option><option>Crédito da Loja</option></select><small class="pdv-hint">F3 Pix • F4 Dinheiro • F5 Débito • F6 Crédito • F7 Voucher • F8 Crédito em loja</small></div>
+            <div class="pdv-field"><input id="paymentAmount" type="number" step="0.01" placeholder="Valor recebido"><small class="pdv-hint">Digite o valor e use F9 para adicionar.</small></div>
+            <button id="addPaymentBtn" onclick="addSalePayment()">Adicionar <span class="pdv-key" style="margin-left:6px">F9</span></button>
+          </div>
+        </div>
+
+        <div id="saleVoucherEmployeeBox" class="voucher-employee-box hidden"><label>Funcionário que receberá o vale</label><select id="saleVoucherEmployee"></select><small class="muted">O usuário conectado não pode lançar Voucher para ele mesmo.</small></div>
+
+        <div class="pdv-inline-actions"><button id="addRemainingPaymentBtn" class="secondary" onclick="addRemainingPayment()">Valor restante <span class="pdv-key" style="margin-left:6px">F10</span></button><button class="secondary" onclick="printLastReceipt()">Imprimir último recibo</button></div>
+        <div id="paymentList" class="list"></div>
+        <div class="pdv-total-box"><span>TOTAL DA VENDA</span><strong id="cartTotal">R$ 0,00</strong></div>
+        <p id="paymentStatus"></p>
+        <button id="finishSaleBtn" onclick="finishSale()" style="width:100%">Finalizar venda <span class="pdv-key" style="margin-left:8px">F11</span></button>
+        <small class="pdv-hint" style="display:block;margin-top:7px">Atalhos ficam indicados junto de cada campo. Enter continua avançando entre os campos.</small>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="cashOut" class="screen">
   <div class="panel">
@@ -408,19 +511,35 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 <div class="grid two">
   <div class="panel">
     <h3>Localizar venda</h3>
-    <p class="muted">Busque a venda e clique em “Troca parcial”. É possível devolver somente um dos itens comprados.</p>
-    <input id="returnSearch" oninput="renderReturns()" placeholder="Buscar por cliente, venda ou produto">
+    <p class="muted">Pesquise por cliente, venda, produto ou pelo dia exato da venda. Para preservar o fechamento diário, <b>o valor não fica exposto nesta lista</b>; ele aparece somente depois que a venda é selecionada.</p>
+    <div class="exchange-search-grid">
+      <div><label class="muted">Busca</label><input id="returnSearch" oninput="renderReturns()" placeholder="Cliente, venda ou produto"></div>
+      <div><label class="muted">Dia da venda</label><input id="returnDate" type="date" onchange="renderReturns()"></div>
+      <button type="button" class="secondary" onclick="clearReturnDateFilter()">Limpar data</button>
+    </div>
     <div id="returnsList" class="list"></div>
   </div>
   <div class="panel">
-    <h3>Troca parcial por código de barras</h3>
+    <h3>Troca parcial / Devolução</h3>
     <div id="exchangeSaleInfo" class="list-item"><span class="muted">Selecione uma venda para iniciar.</span></div>
-    <h4>1. Produto devolvido</h4>
-    <div class="barcode-camera-row"><input id="exchangeReturnBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeReturnBarcode')">📷 Câmera</button></div>
+
+    <h4>1. Produto devolvido / entrada na loja</h4>
+    <p class="muted">Ao selecionar a venda, os itens comprados aparecem abaixo. Você pode escolher pela lista, pesquisar ou continuar usando o código de barras.</p>
+    <div class="exchange-return-tools">
+      <div><label class="muted">Pesquisar dentro da venda</label><input id="exchangeReturnSearch" oninput="renderExchangePanel()" placeholder="Nome, SKU ou código do item vendido"></div>
+      <div><label class="muted">Código de barras (opcional)</label><div class="barcode-camera-row"><input id="exchangeReturnBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeReturnBarcode')">📷 Câmera</button></div></div>
+    </div>
+    <div id="exchangeSaleItemsList" class="exchange-sale-items"></div>
     <div id="exchangeReturnList" class="list"></div>
+
     <h4>2. Produto de saída</h4>
-    <div class="barcode-camera-row"><input id="exchangeOutBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeOutBarcode')">📷 Câmera</button></div>
-    <div id="exchangeOutList" class="list"></div>
+    <p class="muted">Pesquise o produto que o cliente levará ou bipe o código. A lista de produtos disponíveis fica abaixo dos botões de finalização.</p>
+    <div class="exchange-out-tools">
+      <div><label class="muted">Pesquisar produto para saída</label><input id="exchangeOutSearch" oninput="renderExchangePanel()" placeholder="Nome, SKU, categoria ou código"></div>
+      <div><label class="muted">Código de barras</label><div class="barcode-camera-row"><input id="exchangeOutBarcode" inputmode="numeric" placeholder="Bipe, digite ou use a câmera"><button type="button" class="camera-scan-btn" onclick="openBarcodeCamera('exchangeOutBarcode')">📷 Câmera</button></div></div>
+    </div>
+    <div id="exchangeOutList" class="list" style="margin-top:10px"></div>
+
     <h4>3. Acerto da diferença</h4>
     <div id="exchangeTotals" class="list-item"></div>
     <div class="payment-box">
@@ -429,6 +548,11 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
       <button onclick="fillExchangeDifference()">Preencher diferença</button>
     </div>
     <div class="actions" style="margin-top:12px"><button class="success" onclick="finishPartialExchange()">Finalizar troca parcial</button><button class="secondary" onclick="cancelPartialExchange()">Cancelar</button></div>
+
+    <div class="exchange-out-catalog-wrap">
+      <div class="exchange-out-catalog-head"><div><h4 style="margin:0">Produtos disponíveis para saída</h4><p class="muted" style="margin:4px 0 0">A busca acima filtra esta lista. Produtos sem estoque não aparecem.</p></div><span id="exchangeOutCatalogCount" class="badge">0 produto(s)</span></div>
+      <div id="exchangeOutCatalog" class="product-picks exchange-product-picks"></div>
+    </div>
   </div>
 </div>
 <div class="panel"><h3>Histórico de trocas e devoluções</h3><div id="exchangeHistory" class="list"></div></div>
@@ -443,12 +567,51 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
   </div>
   <div id="onlineOrdersList" class="list"></div>
 </section>
+
+<section id="analytics" class="screen">
+  <div class="panel">
+    <div class="panel-title"><div><h3>📈 Gráficos e indicadores</h3><p class="muted">Acompanhe evolução de caixa, ticket médio e quantidade de produtos vendidos. O filtro de loja do topo também é respeitado.</p></div><span class="badge success">Análise de vendas</span></div>
+    <div class="analytics-toolbar" style="margin-top:12px">
+      <div><label class="muted">Data inicial</label><input id="analyticsStartDate" type="date" onchange="renderAnalytics()"></div>
+      <div><label class="muted">Data final</label><input id="analyticsEndDate" type="date" onchange="renderAnalytics()"></div>
+      <div><label class="muted">Atalho</label><select id="analyticsShortcut" onchange="setAnalyticsPeriod(this.value)"><option value="">Selecionar período</option><option value="today">Hoje</option><option value="7days">7 dias</option><option value="30days">30 dias</option><option value="month">Este mês</option></select></div>
+      <div class="analytics-wide"><label class="muted">Vendedor — aplicado ao Ticket Médio</label><select id="analyticsSeller" onchange="renderAnalytics()"><option value="Todos">Todos os vendedores</option></select></div>
+    </div>
+    <div id="analyticsPeriodNote" class="analytics-filter-note">Os gráficos mostram <b>somente os dias escolhidos</b>. Cada barra representa um dia do período, inclusive dias sem movimento.</div>
+  </div>
+
+  <div class="analytics-summary">
+    <div class="report-card"><span>Caixa líquido no período</span><strong id="analyticsCashSummary">R$ 0,00</strong><small class="muted">Vendas + entradas − saídas</small></div>
+    <div class="report-card"><span>Ticket médio</span><strong id="analyticsTicketSummary">R$ 0,00</strong><small class="muted">Conforme vendedor selecionado</small></div>
+    <div class="report-card"><span>Produtos vendidos</span><strong id="analyticsQtySummary">0</strong><small class="muted">Quantidade de unidades</small></div>
+  </div>
+
+  <div class="analytics-chart-card">
+    <h3>1. Evolução de caixa</h3>
+    <p class="analytics-subtitle">Gráfico diário em barras. Cada barra corresponde a um dia selecionado e mostra vendas + entradas manuais − saídas de caixa.</p>
+    <div id="analyticsCashChart" class="analytics-chart-scroll"></div>
+  </div>
+
+  <div class="analytics-chart-card">
+    <h3>2. Ticket médio</h3>
+    <p class="analytics-subtitle">Ticket médio diário em barras, limitado ao período selecionado e com filtro por vendedor.</p>
+    <div id="analyticsTicketChart" class="analytics-chart-scroll"></div>
+    <div class="analytics-seller-table table-wrap"><table class="report-table"><thead><tr><th>Vendedor</th><th>Vendas</th><th>Total vendido</th><th>Ticket médio</th></tr></thead><tbody id="analyticsSellerTable"></tbody></table></div>
+  </div>
+
+  <div class="analytics-chart-card">
+    <h3>3. Quantidade de produtos vendidos</h3>
+    <p class="analytics-subtitle">Quantidade de unidades vendidas por dia. Todos os dias selecionados aparecem separadamente no eixo horizontal.</p>
+    <div id="analyticsQtyChart" class="analytics-chart-scroll"></div>
+  </div>
+</section>
+
 <section id="reports" class="screen"><div class="panel"><h3>Relatórios</h3><p class="muted">O fechamento financeiro contabiliza automaticamente <b>Entradas e Saídas de Caixa</b>. Cada data selecionada considera exclusivamente o próprio dia, de <b>00:00 até 23:59 no horário de Brasília</b>. Aberturas/entradas de caixa de um dia <b>não são carregadas para o dia seguinte</b>: Total do dia/período = Total vendido + Entradas − Saídas. <b>Vendas canceladas são desconsideradas automaticamente</b> do relatório, do Dashboard, dos rankings e das exportações. <b>Regra corrigida a partir de 01/09/2026:</b> a data comercial da venda é calculada no fuso de Brasília (America/Sao_Paulo), impedindo que vendas de um dia sejam contabilizadas no dia seguinte.</p><div class="form-grid"><input id="reportStartDate" type="date" onchange="renderReports();renderSalesMaintenance()"><input id="reportEndDate" type="date" onchange="renderReports();renderSalesMaintenance()"><select id="reportShortcut" onchange="setReportPeriod(this.value)"><option value="">Período</option><option value="today">Hoje</option><option value="7days">7 dias</option><option value="30days">30 dias</option><option value="month">Este mês</option></select></div><div class="actions report-downloads"><button onclick="downloadReportByStore()">Baixar detalhado por loja</button><button onclick="downloadReportByPayment()">Baixar detalhado por pagamento</button><button onclick="downloadReportBySeller()">Baixar vendas por usuário</button><button class="secondary" onclick="downloadReportsExcel()">Baixar relatório completo</button><button class="secondary" onclick="exportData()">Exportar backup JSON</button></div><div id="reportsContent" class="reports"></div></div><div class="panel"><div class="panel-title"><div><h3>Arquivos FBK de relatórios</h3><p class="muted">Exporte ou importe históricos de vendas para os relatórios. A importação FBK não altera o estoque atual e não cria movimentações de entrada ou saída.</p></div><span class="badge success">Estoque protegido</span></div><div class="actions"><button onclick="exportReportsFBK()">Exportar período em FBK</button><label class="upload-box" style="flex:1 1 280px">Importar arquivo FBK<input id="fbkImportFile" type="file" accept=".fbk,application/json,text/plain" onchange="importReportsFBK(event)"></label><button class="secondary" onclick="clearImportedFBKHistory()">Limpar históricos FBK importados</button></div><div id="fbkImportStatus" class="list" style="margin-top:12px"></div></div><div id="salesMaintenancePanel" class="panel hidden"><div class="panel-title"><div><h3>Alteração de vendas por produto</h3><p class="muted">Disponível apenas para administradores. Cada venda mostra os produtos comprados, total dos produtos, desconto, frete, total final e tipo(s) de pagamento. Use “Alterar venda” para corrigir quantidade, valor unitário, desconto, frete e pagamento, ou <b>“Cancelar venda”</b> para estornar a operação. O cancelamento recompõe o estoque, preserva um registro interno de auditoria e remove a venda do Dashboard, dos relatórios, rankings e exportações. <b>Os filtros de período e de loja do topo também são aplicados nesta lista.</b></p></div><span class="badge warning">Área administrativa</span></div><div class="form-grid"><input id="salesMaintenanceSearch" oninput="renderSalesMaintenance()" onkeyup="renderSalesMaintenance()" autocomplete="off" placeholder="Buscar por venda, cliente, produto, código, usuário ou pagamento"><select id="salesMaintenanceStore" onchange="renderSalesMaintenance()"><option value="Todas">Todas as lojas</option></select><select id="salesMaintenanceLimit" onchange="renderSalesMaintenance()"><option value="20">20 vendas recentes</option><option value="50">50 vendas recentes</option><option value="100">100 vendas recentes</option><option value="all">Todas as vendas</option></select></div><div id="salesMaintenanceSearchStatus" class="muted" style="margin-top:10px"></div><div id="salesMaintenanceList" class="list" style="margin-top:12px"></div></div></section>
 
 
 <section id="attendance" class="screen">
   <div id="employeeClockPanel" class="panel">
-    <div class="panel-title"><div><h3>Ponto do funcionário</h3><p class="muted">Registre entrada, saída para intervalo, retorno e saída final. Os horários entram automaticamente na folha.</p></div><span class="badge success">Ponto online</span></div>
+    <div class="panel-title"><div><h3>Ponto do funcionário</h3><p class="muted">Registre somente a entrada e a saída final. Os horários entram automaticamente na folha.</p></div><span class="badge success">Ponto online</span></div>
     <div class="clock-profile"><img id="clockEmployeePhoto" class="employee-avatar" alt="Foto do funcionário"><div id="clockEmployeeInfo" class="list-item" style="flex:1"></div></div>
     <div id="clockNextAction" class="list-item"></div>
     <label for="employeeClockNote" style="display:block;margin-top:12px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#bbb">Observação opcional</label>
@@ -461,7 +624,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
     <div class="panel-title"><div><h3>Gerenciamento de ponto</h3><p class="muted">Administrador e gerente podem cadastrar ponto manual, corrigir e excluir registros das lojas permitidas.</p></div><span class="badge warning">Ajustes administrativos</span></div>
     <div class="time-entry-grid">
       <select id="attendanceEmployee"></select><input id="attendanceDate" type="date"><input id="attendanceTime" type="time">
-      <select id="attendanceType"><option value="entrada">Entrada</option><option value="intervalo_saida">Saída para intervalo</option><option value="intervalo_retorno">Retorno do intervalo</option><option value="saida">Saída final</option></select>
+      <select id="attendanceType"><option value="entrada">Entrada</option><option value="saida">Saída final</option></select>
     </div>
     <textarea id="attendanceNote" placeholder="Motivo ou observação do ajuste" style="margin-top:10px"></textarea>
     <input id="editingAttendanceId" type="hidden">
@@ -473,7 +636,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 
 <section id="payroll" class="screen">
   <div class="panel">
-    <div class="panel-title"><div><h3>Pagamento de funcionários</h3><p class="muted">Cadastre o colaborador com login de ponto. A jornada diária será calculada da primeira à última batida, descontando o intervalo e comparando com as Horas por dia cadastradas.</p></div><span class="badge success">Área restrita</span></div>
+    <div class="panel-title"><div><h3>Pagamento de funcionários</h3><p class="muted">Cadastre o colaborador com login de ponto. A jornada diária será calculada da entrada até a saída final e comparada com as Horas por dia cadastradas.</p></div><span class="badge success">Área restrita</span></div>
     <div class="form-grid">
       <input id="empName" placeholder="Nome do funcionário"><input id="empLogin" placeholder="Login do funcionário"><input id="empPassword" type="password" placeholder="Senha de acesso ao ponto">
       <input id="empDocument" placeholder="CPF / documento">
@@ -1312,7 +1475,7 @@ window.renderInventory=()=>{
 };
 window.printInventoryReport=()=>{let inv=inventoryById();if(!inv)return alert('Selecione um inventário.');let st=inventoryStats(inv),missing=(inv.snapshot||[]).filter(x=>Number(x.expectedStock||0)>0&&inventoryCount(inv,x.productId)===0),div=(inv.snapshot||[]).filter(x=>inventoryCount(inv,x.productId)!==Number(x.expectedStock||0)),unknown=Object.values(inv.unknown||{});let w=window.open('','_blank');if(!w)return alert('O navegador bloqueou a janela de impressão.');w.document.write(`<html><head><title>Inventário ${esc(inv.store)}</title><style>body{font-family:Arial;padding:24px;color:#222}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{padding:8px;border:1px solid #ccc;text-align:left}h1,h2{color:#9b3157}.bad{background:#ffe5ee}</style></head><body><h1>Inventário — ${esc(inv.store)}</h1><p>Início: ${new Date(inv.startedAt).toLocaleString('pt-BR')}<br>Finalização: ${inv.finishedAt?new Date(inv.finishedAt).toLocaleString('pt-BR'):'Em andamento'}<br>Responsável: ${esc(inv.userName||'-')}</p><p><b>Produtos esperados:</b> ${st.expectedProducts} • <b>Encontrados:</b> ${st.foundProducts} • <b>Unidades no sistema:</b> ${st.expectedUnits} • <b>Contadas:</b> ${st.countedUnits} • <b>Divergências:</b> ${st.divergent}</p><h2>Produtos não encontrados na loja</h2><table><tr><th>Produto</th><th>SKU</th><th>Código</th><th>Sistema</th><th>Contado</th></tr>${missing.map(x=>`<tr class="bad"><td>${esc(x.name)}</td><td>${esc(x.sku||'-')}</td><td>${esc(x.barcode||'-')}</td><td>${Number(x.expectedStock||0)}</td><td>0</td></tr>`).join('')||'<tr><td colspan="5">Nenhum</td></tr>'}</table><h2>Todas as divergências</h2><table><tr><th>Produto</th><th>Sistema</th><th>Contado</th><th>Diferença</th></tr>${div.map(x=>{let c=inventoryCount(inv,x.productId),d=c-Number(x.expectedStock||0);return`<tr><td>${esc(x.name)}</td><td>${Number(x.expectedStock||0)}</td><td>${c}</td><td>${d>0?'+':''}${d}</td></tr>`}).join('')||'<tr><td colspan="4">Nenhuma divergência</td></tr>'}</table><h2>Bipes incorretos</h2><table><tr><th>Código</th><th>Quantidade de bipes</th></tr>${unknown.map(u=>`<tr><td>${esc(u.barcode)}</td><td>${Number(u.count||0)}</td></tr>`).join('')||'<tr><td colspan="2">Nenhum</td></tr>'}</table></body></html>`);w.document.close();w.focus();setTimeout(()=>w.print(),250)};
 
-const screens=[['dashboard','Dashboard'],['products','Produtos / Estoque'],['inventory','📋 Inventário'],['sale','Venda'],['cashOut','💰 Entradas / Saídas de Caixa'],['vales','🧾 Vales'],['priceCheck','Consulta de Preço'],['barcodeManager','Criar Código de Barras'],['returns','Trocas / Devoluções'],['freight','Frete'],['clients','Clientes'],['onlineOrders','Pedidos Online'],['reports','Relatórios'],['attendance','Ponto'],['payroll','Pagamento de Funcionários'],['supportServices','💬 Suporte & Serviços'],['siteEditor','Editar Site'],['accessControl','🔐 Controle de Acessos'],['settings','Configurações']];
+const screens=[['dashboard','Dashboard'],['products','Produtos / Estoque'],['inventory','📋 Inventário'],['sale','Venda'],['cashOut','💰 Entradas / Saídas de Caixa'],['vales','🧾 Vales'],['priceCheck','Consulta de Preço'],['barcodeManager','Criar Código de Barras'],['returns','Trocas / Devoluções'],['freight','Frete'],['clients','Clientes'],['onlineOrders','Pedidos Online'],['reports','Relatórios'],['analytics','📈 Gráficos'],['attendance','Ponto'],['payroll','Pagamento de Funcionários'],['supportServices','💬 Suporte & Serviços'],['siteEditor','Editar Site'],['accessControl','🔐 Controle de Acessos'],['settings','Configurações']];
 const permissionScreenIds=screens.map(x=>x[0]).filter(id=>!['supportServices','siteEditor','accessControl','settings'].includes(id));
 const legacyRolePermissions={funcionario:['attendance'],vendedor:['attendance','sale','priceCheck','returns','onlineOrders'],gerente:permissionScreenIds.slice()};
 function userAllowedScreens(user=currentUser){if(!user)return[];let allowed;if(user.role==='admin')allowed=screens.map(x=>x[0]);else if(user.role==='funcionario')allowed=['attendance','vales'];else if(Array.isArray(user.permissions))allowed=user.permissions.filter(id=>permissionScreenIds.includes(id));else allowed=(legacyRolePermissions[user.role]||[]).slice();if(['funcionario','vendedor','gerente'].includes(user.role)&&!allowed.includes('vales'))allowed.push('vales');if(!allowed.includes('supportServices'))allowed.push('supportServices');return allowed}
@@ -1324,7 +1487,7 @@ function buildNav(){let allowed=userAllowedScreens();let navItems=allowed.map(id
 function showScreen(id){if(!currentUser)return;if(['siteEditor','accessControl','settings'].includes(id)&&currentUser.role!=='admin'){alert('Esta área é exclusiva do Administrador.');id=firstAllowedScreen()||'attendance'}else if(!hasScreenAccess(id)){alert('Seu usuário não possui acesso a esta área.');id=firstAllowedScreen();if(!id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));$('pageTitle').textContent='Sem acessos liberados';return}}document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));let target=$(id);if(!target)return;target.classList.add('active-screen');document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));$('pageTitle').textContent=screens.find(x=>x[0]===id)?.[1]||id;$('sidebar').classList.remove('open');renderAll();if(id==='products')setTimeout(()=>$('stockEntryBarcode')?.focus(),80);if(id==='inventory'){syncInventoryStoreOptions();renderInventory();focusBarcodeField('inventoryBarcode')}if(id==='sale'){arrangeSaleMobileLayout();focusBarcodeField('saleBarcode')}if(id==='priceCheck')focusBarcodeField('priceBarcode');if(id==='returns'&&exchangeSaleId)focusBarcodeField('exchangeReturnBarcode')}
 function allowedStores(){if(!currentUser||currentUser.role==='admin')return DB.stores.filter(s=>s.active!==false);let ids=currentUser.storeIds||[];return DB.stores.filter(s=>s.active!==false&&ids.includes(s.id))}function storeOptions(sel,all=false){let el=$(sel);if(!el)return;let previous=el.value;let opts=(all?['Todas']:[]).concat(allowedStores().map(s=>s.name));el.innerHTML=opts.map(x=>`<option>${esc(x)}</option>`).join('');if(opts.includes(previous))el.value=previous;if(sel==='pStore'){setTimeout(()=>{try{toggleProductSizeStock()}catch(e){console.error(e)}},0)}}
 function selectedStore(){return $('globalStore')?.value||'Todas'}function saleMatchesStore(s,st=selectedStore()){if(st==='Todas')return true;let stores=s.stores||Object.keys(s.storeSummary||{});if(stores.includes(st))return true;return (s.items||[]).some(i=>i.store===st)}function isSaleCanceled(s){let status=String(s?.status||'').toLowerCase();return status==='cancelada'||status==='cancelado'||s?.canceled===true||s?.cancelled===true||!!s?.canceledAt||!!s?.cancelledAt}function activeSales(source=DB.sales){return(source||[]).filter(s=>!isSaleCanceled(s))}function filteredSales(){return activeSales(DB.sales).filter(s=>saleMatchesStore(s))}function filteredProducts(){let st=selectedStore(),names=allowedStores().map(s=>s.name);return DB.products.filter(p=>names.includes(p.store)&&(st==='Todas'||p.store===st))}
-window.applyGlobalStoreFilter=()=>{let st=selectedStore();if($('selectedStoreLabel'))$('selectedStoreLabel').textContent=st==='Todas'?'Visão geral de todas as lojas':'Loja selecionada: '+st;localStorage.setItem('deluxGlobalStore',st);if(st!=='Todas'){if($('pStore'))$('pStore').value=st;if($('saleStore'))$('saleStore').value=st}renderDashboard();renderProducts();renderInventory();renderSaleProducts();renderCart();renderCashOut();renderVales();toggleSaleVoucherEmployee();toggleCashVoucherEmployee('in');toggleCashVoucherEmployee('out');renderPriceCheck();renderBarcodeManager();renderReturns();renderClients();renderOnlineOrders();renderReports();renderSalesMaintenance()};window.renderAll=()=>{if(!currentUser)return;storeOptions('globalStore',true);let saved=localStorage.getItem('deluxGlobalStore');if(saved&&Array.from($('globalStore').options).some(o=>o.value===saved))$('globalStore').value=saved;if($('selectedStoreLabel'))$('selectedStoreLabel').textContent=selectedStore()==='Todas'?'Visão geral de todas as lojas':'Loja selecionada: '+selectedStore();storeOptions('pStore');if(selectedStore()!=='Todas'&&$('pStore')&&Array.from($('pStore').options).some(o=>o.value===selectedStore()))$('pStore').value=selectedStore();toggleProductSizeStock();storeOptions('saleStore',true);storeOptions('empStore');renderCashOutStoreOptions();renderUserStoreCheckboxes();renderDashboard();renderProducts();syncInventoryStoreOptions();renderInventory();renderSaleProducts();renderCart();renderCashOut();renderVales();renderPriceCheck();renderBarcodeManager();renderReturns();renderClients();renderOnlineOrders();renderStores();renderUsers();renderAccessControl();renderAccessControlStandalone();renderBranding();renderSiteEditor();renderSupportServices();renderAttendance();renderPayroll();renderReports();renderSalesMaintenance();renderFBKStatus();toggleProductSizeStock();setTimeout(()=>{try{updateOnlineOrderNavBadge()}catch(e){}},0)};
+window.applyGlobalStoreFilter=()=>{let st=selectedStore();if($('selectedStoreLabel'))$('selectedStoreLabel').textContent=st==='Todas'?'Visão geral de todas as lojas':'Loja selecionada: '+st;localStorage.setItem('deluxGlobalStore',st);if(st!=='Todas'){if($('pStore'))$('pStore').value=st;if($('saleStore'))$('saleStore').value=st}renderDashboard();renderProducts();renderInventory();renderSaleProducts();renderCart();renderCashOut();renderVales();toggleSaleVoucherEmployee();toggleCashVoucherEmployee('in');toggleCashVoucherEmployee('out');renderPriceCheck();renderBarcodeManager();renderReturns();renderAnalytics();renderClients();renderOnlineOrders();renderReports();renderSalesMaintenance()};window.renderAll=()=>{if(!currentUser)return;storeOptions('globalStore',true);let saved=localStorage.getItem('deluxGlobalStore');if(saved&&Array.from($('globalStore').options).some(o=>o.value===saved))$('globalStore').value=saved;if($('selectedStoreLabel'))$('selectedStoreLabel').textContent=selectedStore()==='Todas'?'Visão geral de todas as lojas':'Loja selecionada: '+selectedStore();storeOptions('pStore');if(selectedStore()!=='Todas'&&$('pStore')&&Array.from($('pStore').options).some(o=>o.value===selectedStore()))$('pStore').value=selectedStore();toggleProductSizeStock();storeOptions('saleStore',true);storeOptions('empStore');renderCashOutStoreOptions();renderUserStoreCheckboxes();renderDashboard();renderProducts();syncInventoryStoreOptions();renderInventory();renderSaleProducts();renderCart();renderCashOut();renderVales();renderPriceCheck();renderBarcodeManager();renderReturns();renderAnalytics();renderClients();renderOnlineOrders();renderStores();renderUsers();renderAccessControl();renderAccessControlStandalone();renderBranding();renderSiteEditor();renderSupportServices();renderAttendance();renderPayroll();renderReports();renderSalesMaintenance();renderFBKStatus();toggleProductSizeStock();setTimeout(()=>{try{updateOnlineOrderNavBadge()}catch(e){}},0)};
 // Mantém o painel de numerações sincronizado mesmo quando a loja é alterada por código.
 document.addEventListener('change',e=>{if(e.target?.id==='pStore')toggleProductSizeStock()});
 
@@ -1481,16 +1644,63 @@ function returnedQtyForSaleItem(sale,itemId,size=''){return (DB.exchanges||[]).f
 function exchangeReturnCredit(){return exchangeReturns.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||0),0)}
 function exchangeOutTotal(){return exchangeOut.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||0),0)}
 function exchangeDifference(){return exchangeOutTotal()-exchangeReturnCredit()}
-window.renderReturns=()=>{let q=($('returnSearch')?.value||'').toLowerCase();let ss=filteredSales().filter(s=>!q||String((s.client||'')+(s.id||'')+JSON.stringify(s.items||[])).toLowerCase().includes(q));$('returnsList').innerHTML=ss.slice().reverse().map(s=>{let available=(s.items||[]).reduce((a,i)=>a+Math.max(Number(i.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0),0);return`<div class="list-item"><b>${esc(s.id)}</b> — ${esc(s.client||'Cliente')} — ${money(s.total)}<br><span class="muted">${(s.items||[]).map(i=>`${Number(i.qty||0)}x ${esc(i.name)}${i.size?' (Tam. '+esc(i.size)+')':''}`).join(', ')}</span><br><span class="badge ${available?'success':'warning'}">${available?available+' item(ns) disponível(is) para troca':'Venda totalmente devolvida/trocada'}</span><div class="actions"><button onclick="startPartialExchange('${s.id}')" ${available?'':'disabled'}>Troca parcial</button><button class="danger" onclick="returnSale('${s.id}')" ${available?'':'disabled'}>Devolução restante</button></div></div>`}).join('')||'<p class="muted">Nenhuma venda.</p>';renderExchangePanel();renderExchangeHistory()};
-window.startPartialExchange=id=>{let s=DB.sales.find(x=>x.id===id);if(!s)return;exchangeSaleId=id;exchangeReturns=[];exchangeOut=[];$('exchangePaymentAmount').value='';renderExchangePanel()};
-window.cancelPartialExchange=()=>{exchangeSaleId=null;exchangeReturns=[];exchangeOut=[];$('exchangePaymentAmount').value='';$('exchangeReturnBarcode').value='';$('exchangeOutBarcode').value='';renderExchangePanel()};
-function renderExchangePanel(){let s=DB.sales.find(x=>x.id===exchangeSaleId);if(!s){$('exchangeSaleInfo').innerHTML='<span class="muted">Selecione uma venda para iniciar.</span>';$('exchangeReturnList').innerHTML='<p class="muted">Nenhum produto devolvido.</p>';$('exchangeOutList').innerHTML='<p class="muted">Nenhum produto de saída.</p>';$('exchangeTotals').innerHTML='<span class="muted">Crédito da devolução: R$ 0,00 • Nova mercadoria: R$ 0,00</span>';return}$('exchangeSaleInfo').innerHTML=`<b>Venda ${esc(s.id)}</b><br>Cliente: ${esc(s.client||'Não informado')}<br><span class="muted">Data: ${new Date(s.date).toLocaleString('pt-BR')}</span>`;$('exchangeReturnList').innerHTML=exchangeReturns.map(i=>`<div class="list-item"><b>${esc(i.name)}</b>${i.size?` <span class="badge">Tam. ${esc(i.size)}</span>`:''}<br>${i.qty} x ${money(i.price)} = ${money(i.qty*i.price)}<div class="actions"><button class="secondary" onclick="changeExchangeReturnQty('${i.id}','${encodeURIComponent(i.size||'')}',1)">+</button><button class="secondary" onclick="changeExchangeReturnQty('${i.id}','${encodeURIComponent(i.size||'')}',-1)">-</button><button class="danger" onclick="removeExchangeReturn('${i.id}','${encodeURIComponent(i.size||'')}')">Remover</button></div></div>`).join('')||'<p class="muted">Bipe um item pertencente à venda.</p>';$('exchangeOutList').innerHTML=exchangeOut.map(i=>`<div class="list-item"><b>${esc(i.name)}</b>${i.size?` <span class="badge">Tam. ${esc(i.size)}</span>`:''}<br><span class="badge">${esc(i.store)}</span> ${i.qty} x ${money(i.price)} = ${money(i.qty*i.price)}<div class="actions"><button class="secondary" onclick="changeExchangeOutQty('${i.id}','${encodeURIComponent(i.size||'')}',1)">+</button><button class="secondary" onclick="changeExchangeOutQty('${i.id}','${encodeURIComponent(i.size||'')}',-1)">-</button><button class="danger" onclick="removeExchangeOut('${i.id}','${encodeURIComponent(i.size||'')}')">Remover</button></div></div>`).join('')||'<p class="muted">Bipe o produto que será entregue ao cliente.</p>';let credit=exchangeReturnCredit(),out=exchangeOutTotal(),diff=exchangeDifference(),msg=diff>0?`Cliente deve pagar <b>${money(diff)}</b>`:diff<0?`Loja deve devolver/gerar crédito de <b>${money(Math.abs(diff))}</b>`:'Troca sem diferença de valor';$('exchangeTotals').innerHTML=`Crédito dos produtos devolvidos: <b>${money(credit)}</b><br>Valor dos produtos de saída: <b>${money(out)}</b><br>${msg}`}
+function saleReturnRemaining(s,item){return Math.max(Number(item?.qty||0)-returnedQtyForSaleItem(s,item?.id,item?.size||''),0)}
+window.clearReturnDateFilter=()=>{if($('returnDate'))$('returnDate').value='';renderReturns()};
+window.renderReturns=()=>{
+  let q=String($('returnSearch')?.value||'').trim().toLowerCase(),day=$('returnDate')?.value||'';
+  let ss=filteredSales().filter(s=>{
+    let matchesText=!q||String((s.client||'')+' '+(s.id||'')+' '+(s.sellerName||'')+' '+JSON.stringify(s.items||[])).toLowerCase().includes(q);
+    let matchesDay=!day||saleBusinessDate(s)===day;
+    return matchesText&&matchesDay;
+  });
+  $('returnsList').innerHTML=ss.slice().reverse().map(s=>{
+    let available=(s.items||[]).reduce((a,i)=>a+saleReturnRemaining(s,i),0),selected=s.id===exchangeSaleId,date=saleBusinessDate(s),dateLabel=date?new Date(date+'T12:00:00').toLocaleDateString('pt-BR'):new Date(s.date).toLocaleDateString('pt-BR');
+    return`<div class="list-item ${selected?'exchange-sale-selected':''}"><b>${esc(s.id)}</b> — ${esc(s.client||'Cliente')}<br><span class="muted">Data: ${esc(dateLabel)} • ${(s.items||[]).map(i=>`${Number(i.qty||0)}x ${esc(i.name)}${i.size?' (Tam. '+esc(i.size)+')':''}`).join(', ')}</span><br><span class="badge ${available?'success':'warning'}">${available?available+' item(ns) disponível(is) para troca':'Venda totalmente devolvida/trocada'}</span>${selected?'<span class="badge">Selecionada</span>':''}<div class="actions"><button onclick="startPartialExchange('${s.id}')" ${available?'':'disabled'}>${selected?'Venda selecionada':'Selecionar / Troca parcial'}</button><button class="danger" onclick="returnSale('${s.id}')" ${available?'':'disabled'}>Devolução restante</button></div></div>`
+  }).join('')||'<p class="muted">Nenhuma venda encontrada para os filtros informados.</p>';
+  renderExchangePanel();renderExchangeHistory();
+};
+window.startPartialExchange=id=>{let s=DB.sales.find(x=>x.id===id);if(!s)return;exchangeSaleId=id;exchangeReturns=[];exchangeOut=[];if($('exchangePaymentAmount'))$('exchangePaymentAmount').value='';if($('exchangeReturnSearch'))$('exchangeReturnSearch').value='';if($('exchangeOutSearch'))$('exchangeOutSearch').value='';renderExchangePanel()};
+window.cancelPartialExchange=()=>{exchangeSaleId=null;exchangeReturns=[];exchangeOut=[];['exchangePaymentAmount','exchangeReturnBarcode','exchangeOutBarcode','exchangeReturnSearch','exchangeOutSearch'].forEach(id=>{if($(id))$(id).value=''});renderExchangePanel();renderReturns()};
+window.addExchangeReturnItem=(id,sizeEncoded='')=>{
+  let s=DB.sales.find(x=>x.id===exchangeSaleId);if(!s)return alert('Selecione uma venda primeiro.');
+  let size=decodeURIComponent(String(sizeEncoded||'')),item=(s.items||[]).find(i=>String(i.id)===String(id)&&String(i.size||'')===String(size));if(!item)return alert('Item não encontrado nesta venda.');
+  let max=saleReturnRemaining(s,item),row=exchangeReturns.find(x=>String(x.id)===String(item.id)&&String(x.size||'')===String(size));if(!max)return alert('Este item já foi totalmente devolvido/trocado.');if(Number(row?.qty||0)>=max)return alert('Quantidade máxima disponível para devolução atingida.');
+  if(row)row.qty++;else exchangeReturns.push({id:item.id,name:item.name,price:Number(item.price||0),qty:1,store:item.store,barcode:item.barcode||'',sku:item.sku||'',size:item.size||''});renderExchangePanel();
+};
+function renderExchangeSaleItems(s){
+  let box=$('exchangeSaleItemsList');if(!box)return;if(!s){box.innerHTML='<p class="muted">Selecione uma venda para exibir os itens comprados.</p>';return}
+  let q=String($('exchangeReturnSearch')?.value||'').trim().toLowerCase();
+  let rows=(s.items||[]).filter(i=>!q||[i.name,i.sku,i.barcode,i.store,i.size].some(v=>String(v||'').toLowerCase().includes(q)));
+  box.innerHTML=rows.map(i=>{let max=saleReturnRemaining(s,i),picked=exchangeReturns.find(x=>String(x.id)===String(i.id)&&String(x.size||'')===String(i.size||'')),selected=Number(picked?.qty||0),left=Math.max(max-selected,0);return`<div class="exchange-sale-item ${selected?'selected':''}"><b>${esc(i.name)}</b>${i.size?` <span class="badge">Tam. ${esc(i.size)}</span>`:''}<div class="exchange-item-meta">${esc(i.store||'')} • Código ${esc(i.barcode||'sem código')}<br>Disponível para devolver: <b>${max}</b>${selected?` • Selecionado agora: <b>${selected}</b>`:''}</div><div>${money(Number(i.price||0))} por unidade</div><button type="button" onclick="addExchangeReturnItem('${i.id}','${encodeURIComponent(i.size||'')}')" ${left<=0?'disabled':''}>${left<=0?'Limite selecionado':'Adicionar devolução'}</button></div>`}).join('')||'<p class="muted">Nenhum item desta venda corresponde à pesquisa.</p>';
+}
+window.addExchangeOutProduct=(id,sizeEncoded='')=>{
+  let p=DB.products.find(x=>String(x.id)===String(id));if(!p)return alert('Produto não encontrado.');normalizeProductInventory(p);
+  let size=sizeEncoded?decodeURIComponent(String(sizeEncoded)):'';if(isSizedProduct(p)&&!size){size=chooseAvailableSize(p,'Selecione a numeração do produto que será entregue');if(size===null)return}
+  let row=exchangeOut.find(x=>String(x.id)===String(p.id)&&String(x.size||'')===String(size)),available=variantAvailable(p,size);if(available<=0)return alert('Produto sem estoque disponível.');if(Number(row?.qty||0)>=available)return alert('Quantidade máxima disponível em estoque atingida.');
+  if(row)row.qty++;else exchangeOut.push({id:p.id,name:p.name,price:Number(p.price||0),qty:1,store:p.store,barcode:p.barcode||'',sku:p.sku||'',size:size||''});renderExchangePanel();
+};
+function renderExchangeOutCatalog(){
+  let box=$('exchangeOutCatalog'),count=$('exchangeOutCatalogCount');if(!box)return;let names=allowedStores().map(s=>s.name),st=selectedStore(),q=String($('exchangeOutSearch')?.value||'').trim().toLowerCase();
+  let ps=(DB.products||[]).filter(p=>names.includes(p.store)&&(st==='Todas'||p.store===st)&&productStockTotal(p)>0&&(!q||[p.name,p.sku,p.category,p.barcode,p.store,productSizeSummary(p)].some(v=>String(v||'').toLowerCase().includes(q))));
+  if(count)count.textContent=`${ps.length} produto(s)`;
+  box.innerHTML=ps.map(p=>{normalizeProductInventory(p);let sizes='';if(isSizedProduct(p)){let rows=Object.entries(productSizeStock(p)).filter(([,qty])=>Number(qty)>0);sizes=rows.length?`<div class="size-choice-grid">${rows.map(([size,qty])=>`<button type="button" onclick="addExchangeOutProduct('${p.id}','${encodeURIComponent(size)}')">Tam. ${esc(size)} (${qty})</button>`).join('')}</div>`:'<span class="badge danger">Sem tamanho em estoque</span>'}else sizes=`<button type="button" onclick="addExchangeOutProduct('${p.id}')">Adicionar saída</button>`;return`<div class="pick"><div class="sale-product-photo">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`:'<span>Sem foto</span>'}</div><b class="sale-product-name">${esc(p.name)}</b><div class="sale-product-price">${money(p.price)}</div><p class="muted sale-product-meta">${esc(p.store)} • Código ${esc(p.barcode||'-')} • Estoque ${productStockTotal(p)}</p>${sizes}</div>`}).join('')||'<p class="muted">Nenhum produto com estoque corresponde à pesquisa.</p>';
+}
+function renderExchangePanel(){
+  let s=DB.sales.find(x=>x.id===exchangeSaleId);
+  if(!s){$('exchangeSaleInfo').innerHTML='<span class="muted">Selecione uma venda para iniciar.</span>';$('exchangeReturnList').innerHTML='<p class="muted">Nenhum produto devolvido.</p>';$('exchangeOutList').innerHTML='<p class="muted">Nenhum produto de saída.</p>';$('exchangeTotals').innerHTML='<span class="muted">Crédito da devolução: R$ 0,00 • Nova mercadoria: R$ 0,00</span>';renderExchangeSaleItems(null);renderExchangeOutCatalog();return}
+  let businessDate=saleBusinessDate(s),dateLabel=businessDate?new Date(businessDate+'T12:00:00').toLocaleDateString('pt-BR'):new Date(s.date).toLocaleDateString('pt-BR');
+  $('exchangeSaleInfo').innerHTML=`<b>Venda ${esc(s.id)}</b><br>Cliente: ${esc(s.client||'Não informado')}<br><span class="muted">Data: ${esc(dateLabel)} • Vendedor: ${esc(s.sellerName||'Não informado')}</span><br><span class="exchange-value-reveal">Valor da venda selecionada: ${money(Number(s.total||0))}</span>`;
+  renderExchangeSaleItems(s);
+  $('exchangeReturnList').innerHTML=exchangeReturns.map(i=>`<div class="list-item"><b>${esc(i.name)}</b>${i.size?` <span class="badge">Tam. ${esc(i.size)}</span>`:''}<br>${i.qty} x ${money(i.price)} = ${money(i.qty*i.price)}<div class="actions"><button class="secondary" onclick="changeExchangeReturnQty('${i.id}','${encodeURIComponent(i.size||'')}',1)">+</button><button class="secondary" onclick="changeExchangeReturnQty('${i.id}','${encodeURIComponent(i.size||'')}',-1)">-</button><button class="danger" onclick="removeExchangeReturn('${i.id}','${encodeURIComponent(i.size||'')}')">Remover</button></div></div>`).join('')||'<p class="muted">Selecione acima um item da venda para devolver.</p>';
+  $('exchangeOutList').innerHTML=exchangeOut.map(i=>`<div class="list-item"><b>${esc(i.name)}</b>${i.size?` <span class="badge">Tam. ${esc(i.size)}</span>`:''}<br><span class="badge">${esc(i.store)}</span> ${i.qty} x ${money(i.price)} = ${money(i.qty*i.price)}<div class="actions"><button class="secondary" onclick="changeExchangeOutQty('${i.id}','${encodeURIComponent(i.size||'')}',1)">+</button><button class="secondary" onclick="changeExchangeOutQty('${i.id}','${encodeURIComponent(i.size||'')}',-1)">-</button><button class="danger" onclick="removeExchangeOut('${i.id}','${encodeURIComponent(i.size||'')}')">Remover</button></div></div>`).join('')||'<p class="muted">Pesquise na lista abaixo ou bipe o produto que será entregue ao cliente.</p>';
+  let credit=exchangeReturnCredit(),out=exchangeOutTotal(),diff=exchangeDifference(),msg=diff>0?`Cliente deve pagar <b>${money(diff)}</b>`:diff<0?`Loja deve devolver/gerar crédito de <b>${money(Math.abs(diff))}</b>`:'Troca sem diferença de valor';$('exchangeTotals').innerHTML=`Crédito dos produtos devolvidos: <b>${money(credit)}</b><br>Valor dos produtos de saída: <b>${money(out)}</b><br>${msg}`;renderExchangeOutCatalog();
+}
 window.handleExchangeReturnBarcodeValue=code=>{code=normalizeBarcode(code);let s=DB.sales.find(x=>x.id===exchangeSaleId);if(!s)return alert('Selecione uma venda primeiro.');let candidates=(s.items||[]).filter(i=>{let p=DB.products.find(x=>x.id===i.id);return normalizeBarcode(i.barcode||p?.barcode||'')===code&&Math.max(Number(i.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0)>0});$('exchangeReturnBarcode').value='';if(!candidates.length){focusBarcodeField('exchangeReturnBarcode');return alert('O código '+code+' não pertence à venda selecionada ou já foi totalmente devolvido.')}let item=candidates[0];if(candidates.length>1){let opts=candidates.map(i=>`${i.size||'Sem tamanho'} (${Math.max(Number(i.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0)} un.)`).join(', '),ans=prompt(`Este produto foi vendido em mais de uma numeração.\nDisponíveis para devolução: ${opts}\nDigite a numeração:`,'');if(ans===null){focusBarcodeField('exchangeReturnBarcode');return}item=candidates.find(i=>String(i.size||'').toLowerCase()===String(ans).trim().toLowerCase());if(!item){focusBarcodeField('exchangeReturnBarcode');return alert('Numeração inválida.')}}let size=item.size||'',max=Math.max(Number(item.qty||0)-returnedQtyForSaleItem(s,item.id,size),0),row=exchangeReturns.find(x=>x.id===item.id&&String(x.size||'')===String(size)),current=Number(row?.qty||0);if(current>=max){focusBarcodeField('exchangeReturnBarcode');return alert('Quantidade máxima disponível para devolução atingida.')}if(row)row.qty++;else exchangeReturns.push({id:item.id,name:item.name,price:Number(item.price||0),qty:1,store:item.store,barcode:item.barcode||code,size});renderExchangePanel();focusBarcodeField('exchangeReturnBarcode')};window.handleExchangeReturnBarcode=e=>{if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();processBarcodeField('exchangeReturnBarcode')}};
 window.handleExchangeOutBarcodeValue=code=>{code=normalizeBarcode(code);let names=allowedStores().map(s=>s.name),st=selectedStore(),candidates=DB.products.filter(x=>normalizeBarcode(x.barcode)===code&&names.includes(x.store)&&(st==='Todas'||x.store===st));$('exchangeOutBarcode').value='';if(!candidates.length){focusBarcodeField('exchangeOutBarcode');return alert('Produto de saída com código '+code+' não encontrado nas lojas permitidas.')}let p=candidates[0];if(st==='Todas'&&candidates.length>1){let opts=candidates.map((x,i)=>`${i+1} - ${x.store} • estoque ${productStockTotal(x)}`).join('\n'),ans=prompt(`Este código existe em mais de uma loja.\nSelecione de qual loja sairá o produto:\n\n${opts}\n\nDigite o número da opção:`,'');if(ans===null){focusBarcodeField('exchangeOutBarcode');return}let idx=Number(ans)-1;if(!Number.isInteger(idx)||!candidates[idx]){focusBarcodeField('exchangeOutBarcode');return alert('Loja inválida.')}p=candidates[idx]}let size='';if(isSizedProduct(p)){size=chooseAvailableSize(p,'Selecione a numeração do produto que será entregue');if(size===null){focusBarcodeField('exchangeOutBarcode');return}}let row=exchangeOut.find(x=>x.id===p.id&&String(x.size||'')===String(size)),current=Number(row?.qty||0);if(current>=variantAvailable(p,size)){focusBarcodeField('exchangeOutBarcode');return alert('Quantidade maior que o estoque disponível desta numeração.')}if(row)row.qty++;else exchangeOut.push({id:p.id,name:p.name,price:Number(p.price||0),qty:1,store:p.store,barcode:p.barcode||'',size});renderExchangePanel();focusBarcodeField('exchangeOutBarcode')};window.handleExchangeOutBarcode=e=>{if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();processBarcodeField('exchangeOutBarcode')}};
 window.changeExchangeReturnQty=(id,sizeEncoded,delta)=>{let size=decodeURIComponent(String(sizeEncoded||'')),s=DB.sales.find(x=>x.id===exchangeSaleId),item=(s?.items||[]).find(i=>i.id===id&&String(i.size||'')===size),row=exchangeReturns.find(x=>x.id===id&&String(x.size||'')===size);if(!row||!item)return;let max=Math.max(Number(item.qty||0)-returnedQtyForSaleItem(s,id,size),0);if(delta>0&&row.qty>=max)return alert('Quantidade máxima disponível para devolução atingida.');row.qty+=delta;exchangeReturns=exchangeReturns.filter(x=>x.qty>0);renderExchangePanel()};window.removeExchangeReturn=(id,sizeEncoded='')=>{let size=decodeURIComponent(String(sizeEncoded||''));exchangeReturns=exchangeReturns.filter(x=>!(x.id===id&&String(x.size||'')===size));renderExchangePanel()};
 window.changeExchangeOutQty=(id,sizeEncoded,delta)=>{let size=decodeURIComponent(String(sizeEncoded||'')),p=DB.products.find(x=>x.id===id),row=exchangeOut.find(x=>x.id===id&&String(x.size||'')===size);if(!row)return;if(delta>0&&row.qty>=variantAvailable(p,size))return alert('Limite do estoque desta numeração atingido.');row.qty+=delta;exchangeOut=exchangeOut.filter(x=>x.qty>0);renderExchangePanel()};window.removeExchangeOut=(id,sizeEncoded='')=>{let size=decodeURIComponent(String(sizeEncoded||''));exchangeOut=exchangeOut.filter(x=>!(x.id===id&&String(x.size||'')===size));renderExchangePanel()};
 window.fillExchangeDifference=()=>{$('exchangePaymentAmount').value=Math.max(exchangeDifference(),0).toFixed(2)};
-window.finishPartialExchange=async()=>{let s=DB.sales.find(x=>x.id===exchangeSaleId);if(!s)return alert('Selecione uma venda.');if(!exchangeReturns.length)return alert('Bipe pelo menos um produto devolvido.');if(!exchangeOut.length)return alert('Bipe pelo menos um produto de saída.');for(let i of exchangeReturns){let original=(s.items||[]).find(x=>x.id===i.id&&String(x.size||'')===String(i.size||'')),available=Math.max(Number(original?.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0);if(!original||i.qty>available)return alert('A quantidade devolvida de '+i.name+(i.size?' • Tam. '+i.size:'')+' não está disponível nesta venda.')}for(let i of exchangeOut){let p=DB.products.find(x=>x.id===i.id);if(!p||variantAvailable(p,i.size)<i.qty)return alert('Estoque insuficiente para '+i.name+(i.size?' • Tam. '+i.size:''))}let diff=exchangeDifference(),paid=Number($('exchangePaymentAmount').value||0);if(diff>0&&paid+0.009<diff)return alert('O pagamento informado não cobre a diferença de '+money(diff)+'.');exchangeReturns.forEach(i=>{let p=DB.products.find(x=>x.id===i.id);if(p)adjustVariantStock(p,i.size,Number(i.qty||0))});exchangeOut.forEach(i=>{let p=DB.products.find(x=>x.id===i.id);if(p)adjustVariantStock(p,i.size,-Number(i.qty||0))});let transaction={id:uid('t'),saleId:s.id,date:new Date().toISOString(),client:s.client||'',returnItems:exchangeReturns.map(i=>({...i})),outItems:exchangeOut.map(i=>({...i})),returnCredit:exchangeReturnCredit(),outTotal:exchangeOutTotal(),difference:diff,payment:diff>0?{method:$('exchangePaymentMethod').value,amount:paid}:null,refundOrCredit:diff<0?Math.abs(diff):0,userId:currentUser?.id||'',userName:currentUser?.name||'',status:'concluida'};DB.exchanges.push(transaction);s.exchangeIds=[...(s.exchangeIds||[]),transaction.id];await saveDB();cancelPartialExchange();renderAll();alert(diff>0?'Troca parcial concluída. Diferença recebida: '+money(diff):diff<0?'Troca parcial concluída. Crédito/devolução ao cliente: '+money(Math.abs(diff)):'Troca parcial concluída sem diferença.')};
+window.finishPartialExchange=async()=>{let s=DB.sales.find(x=>x.id===exchangeSaleId);if(!s)return alert('Selecione uma venda.');if(!exchangeReturns.length)return alert('Selecione ou bipe pelo menos um produto devolvido.');if(!exchangeOut.length)return alert('Selecione ou bipe pelo menos um produto de saída.');for(let i of exchangeReturns){let original=(s.items||[]).find(x=>x.id===i.id&&String(x.size||'')===String(i.size||'')),available=Math.max(Number(original?.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0);if(!original||i.qty>available)return alert('A quantidade devolvida de '+i.name+(i.size?' • Tam. '+i.size:'')+' não está disponível nesta venda.')}for(let i of exchangeOut){let p=DB.products.find(x=>x.id===i.id);if(!p||variantAvailable(p,i.size)<i.qty)return alert('Estoque insuficiente para '+i.name+(i.size?' • Tam. '+i.size:''))}let diff=exchangeDifference(),paid=Number($('exchangePaymentAmount').value||0);if(diff>0&&paid+0.009<diff)return alert('O pagamento informado não cobre a diferença de '+money(diff)+'.');exchangeReturns.forEach(i=>{let p=DB.products.find(x=>x.id===i.id);if(p)adjustVariantStock(p,i.size,Number(i.qty||0))});exchangeOut.forEach(i=>{let p=DB.products.find(x=>x.id===i.id);if(p)adjustVariantStock(p,i.size,-Number(i.qty||0))});let transaction={id:uid('t'),saleId:s.id,date:new Date().toISOString(),client:s.client||'',returnItems:exchangeReturns.map(i=>({...i})),outItems:exchangeOut.map(i=>({...i})),returnCredit:exchangeReturnCredit(),outTotal:exchangeOutTotal(),difference:diff,payment:diff>0?{method:$('exchangePaymentMethod').value,amount:paid}:null,refundOrCredit:diff<0?Math.abs(diff):0,userId:currentUser?.id||'',userName:currentUser?.name||'',status:'concluida'};DB.exchanges.push(transaction);s.exchangeIds=[...(s.exchangeIds||[]),transaction.id];await saveDB();cancelPartialExchange();renderAll();alert(diff>0?'Troca parcial concluída. Diferença recebida: '+money(diff):diff<0?'Troca parcial concluída. Crédito/devolução ao cliente: '+money(Math.abs(diff)):'Troca parcial concluída sem diferença.')};
 window.returnSale=async id=>{let s=DB.sales.find(x=>x.id===id);if(!s)return;let remaining=(s.items||[]).map(i=>({...i,qty:Math.max(Number(i.qty||0)-returnedQtyForSaleItem(s,i.id,i.size||''),0)})).filter(i=>i.qty>0);if(!remaining.length)return alert('Não há itens restantes para devolver.');if(!confirm('Registrar devolução dos itens restantes e retornar ao estoque nas respectivas numerações?'))return;remaining.forEach(i=>{let p=DB.products.find(x=>x.id===i.id);if(p)adjustVariantStock(p,i.size,i.qty)});let credit=remaining.reduce((a,i)=>a+Number(i.price||0)*i.qty,0),transaction={id:uid('d'),saleId:s.id,date:new Date().toISOString(),client:s.client||'',returnItems:remaining,outItems:[],returnCredit:credit,outTotal:0,difference:-credit,payment:null,refundOrCredit:credit,userId:currentUser?.id||'',userName:currentUser?.name||'',status:'concluida',type:'devolucao'};DB.exchanges.push(transaction);s.exchangeIds=[...(s.exchangeIds||[]),transaction.id];s.returned=remaining.reduce((a,i)=>a+i.qty,0)===(s.items||[]).reduce((a,i)=>a+Number(i.qty||0),0);await saveDB();renderAll()};
 function renderExchangeHistory(){let st=selectedStore(),rows=(DB.exchanges||[]).filter(x=>{let sale=DB.sales.find(s=>s.id===x.saleId);return st==='Todas'||saleMatchesStore(sale||{},st)}).slice().reverse();$('exchangeHistory').innerHTML=rows.map(x=>`<div class="list-item"><b>${x.type==='devolucao'?'Devolução':'Troca'} ${esc(x.id)}</b> — venda ${esc(x.saleId)}<br>${new Date(x.date).toLocaleString('pt-BR')} • Cliente: ${esc(x.client||'Não informado')} • Usuário: ${esc(x.userName||'')}<br><span class="muted">Entrada: ${(x.returnItems||[]).map(i=>`${i.qty}x ${esc(i.name)}${i.size?' (Tam. '+esc(i.size)+')':''}`).join(', ')||'Nenhuma'}<br>Saída: ${(x.outItems||[]).map(i=>`${i.qty}x ${esc(i.name)}${i.size?' (Tam. '+esc(i.size)+')':''}`).join(', ')||'Nenhuma'}</span><br>Crédito: ${money(x.returnCredit)} • Saída: ${money(x.outTotal)} • Diferença: ${money(x.difference)}</div>`).join('')||'<p class="muted">Nenhuma troca ou devolução registrada.</p>'}
 window.calcFreight=()=>{$('freightResult').textContent='Frete: '+money(Number($('freightRegion').value)+Number($('freightExtra').value||0))};window.saveClient=async()=>{DB.clients.push({id:uid('c'),name:$('cName').value,phone:$('cPhone').value,address:$('cAddress').value});$('cName').value=$('cPhone').value=$('cAddress').value='';await saveDB();renderClients()};function renderClients(){$('clientsList').innerHTML=DB.clients.map(c=>`<div class="list-item"><b>${esc(c.name)}</b><br>${esc(c.phone)}<br>${esc(c.address)} <button class="danger" onclick="deleteClient('${c.id}')">Excluir</button></div>`).join('')||'<p class="muted">Nenhum cliente.</p>'}window.deleteClient=async id=>{DB.clients=DB.clients.filter(c=>c.id!==id);await saveDB();renderClients()};
@@ -1811,6 +2021,82 @@ function reportUsersWithSales(ss){
   });
   return Array.from(map.values()).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
 }
+
+/* ===== GRÁFICOS / INDICADORES ===== */
+function analyticsEnsureDates(){
+  let a=$('analyticsStartDate'),b=$('analyticsEndDate');if(!a||!b)return;
+  if(!b.value)b.value=localISODate();
+  if(!a.value){let d=new Date(b.value+'T12:00:00');d.setDate(1);a.value=localISODate(d)}
+  if(a.value&&b.value&&a.value>b.value){let t=a.value;a.value=b.value;b.value=t}
+}
+window.analyticsGroupChanged=()=>renderAnalytics();
+window.setAnalyticsPeriod=value=>{
+  let a=$('analyticsStartDate'),b=$('analyticsEndDate');if(!a||!b)return;let end=new Date(),start=new Date(end);
+  if(value==='today')start=new Date(end);else if(value==='7days')start.setDate(end.getDate()-6);else if(value==='30days')start.setDate(end.getDate()-29);else if(value==='month')start=new Date(end.getFullYear(),end.getMonth(),1);else return;
+  a.value=localISODate(start);b.value=localISODate(end);renderAnalytics();
+};
+function analyticsDateRange(){analyticsEnsureDates();return{start:$('analyticsStartDate')?.value||'',end:$('analyticsEndDate')?.value||''}}
+function analyticsInRange(date,range=analyticsDateRange()){return!!date&&(!range.start||date>=range.start)&&(!range.end||date<=range.end)}
+function analyticsWeekStartISO(dateIso){let d=new Date(dateIso+'T12:00:00'),day=d.getDay(),delta=day===0?-6:1-day;d.setDate(d.getDate()+delta);return localISODate(d)}
+function analyticsMonthLabel(key){let [y,m]=String(key).split('-');return `${m}/${y}`}
+function analyticsWeekLabel(key){let a=new Date(key+'T12:00:00'),b=new Date(a);b.setDate(a.getDate()+6);return `${String(a.getDate()).padStart(2,'0')}/${String(a.getMonth()+1).padStart(2,'0')}–${String(b.getDate()).padStart(2,'0')}/${String(b.getMonth()+1).padStart(2,'0')}`}
+function analyticsBucketInfo(dateIso){
+  if(!dateIso)return null;
+  return{key:dateIso,label:new Date(dateIso+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
+}
+function analyticsEmptyBuckets(range){
+  if(!range.start||!range.end)return[];let map=new Map(),d=new Date(range.start+'T12:00:00'),end=new Date(range.end+'T12:00:00'),guard=0;
+  while(d<=end&&guard<4000){let iso=localISODate(d),info=analyticsBucketInfo(iso);if(info&&!map.has(info.key))map.set(info.key,{key:info.key,label:info.label,value:0,count:0,total:0});d.setDate(d.getDate()+1);guard++}
+  return Array.from(map.values()).sort((a,b)=>a.key.localeCompare(b.key));
+}
+function analyticsSales(range=analyticsDateRange()){
+  return allReportSales().filter(s=>{let d=saleBusinessDate(s);return analyticsInRange(d,range)});
+}
+function analyticsCashRows(kind,range=analyticsDateRange()){
+  let names=allowedStores().map(s=>s.name),st=selectedStore(),source=kind==='in'?(DB.cashIns||[]):(DB.cashOuts||[]);
+  return source.filter(x=>names.includes(x.store)&&(st==='Todas'||x.store===st)&&analyticsInRange(String(x.date||'').slice(0,10),range));
+}
+function analyticsSellerOptions(sales){
+  let el=$('analyticsSeller');if(!el)return;let prev=el.value||'Todos',map=new Map();sales.forEach(s=>{let u=userLabelFromSale(s);map.set(u.key,u)});let opts=[['Todos','Todos os vendedores'],...Array.from(map.values()).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(u=>[u.key,u.name])];el.innerHTML=opts.map(([v,n])=>`<option value="${esc(v)}">${esc(n)}</option>`).join('');el.value=opts.some(x=>x[0]===prev)?prev:'Todos';
+}
+function analyticsAggregate(baseRows,entries,dateGetter,valueGetter){
+  let map=new Map(baseRows.map(r=>[r.key,{...r}]));entries.forEach(row=>{let date=dateGetter(row),info=analyticsBucketInfo(date);if(!info)return;if(!map.has(info.key))map.set(info.key,{key:info.key,label:info.label,value:0,count:0,total:0});let target=map.get(info.key),val=Number(valueGetter(row)||0);target.value+=val;target.total+=val;target.count++});return Array.from(map.values()).sort((a,b)=>a.key.localeCompare(b.key));
+}
+function analyticsChart(containerId,rows,formatter=money){
+  let el=$(containerId);if(!el)return;if(!rows.length){el.innerHTML='<div class="analytics-chart-empty">Sem dados no período selecionado.</div>';return}
+  let vals=rows.map(r=>Number(r.value||0)),min=Math.min(0,...vals),max=Math.max(0,...vals);if(max===min){max=min+1}
+  let step=72,barW=48,w=Math.max(760,rows.length*step+100),h=370,left=74,right=24,top=30,bottom=92,plotW=w-left-right,plotH=h-top-bottom,scale=max-min,y=v=>top+(max-v)/scale*plotH,zeroY=y(0),yTicks=Array.from({length:5},(_,i)=>max-(scale*i/4));
+  let bars=rows.map((r,i)=>{
+    let value=Number(r.value||0),cx=left+(i+.5)*(plotW/rows.length),yy=y(value),topY=Math.min(yy,zeroY),height=Math.max(Math.abs(zeroY-yy),value===0?1:0),x=cx-barW/2;
+    let fill=value<0?'#b44b72':'#d92f78',display=formatter(value),label='';
+    if(value!==0){
+      let labelY=topY+Math.max(14,Math.min(height/2+4,height-6));
+      if(height<24)labelY=value>=0?Math.max(top+12,topY-6):Math.min(h-bottom-4,topY+height+15);
+      label=`<text class="analytics-bar-label" x="${cx}" y="${labelY}" text-anchor="middle">${esc(display)}</text>`;
+    }else{
+      label=`<text class="analytics-zero-label" x="${cx}" y="${zeroY-7}" text-anchor="middle">${esc(display)}</text>`;
+    }
+    return`<rect x="${x}" y="${topY}" width="${barW}" height="${height}" rx="7" fill="${fill}" opacity=".94"><title>${esc(r.label)}: ${esc(display)}</title></rect>${label}<text x="${cx}" y="${h-52}" text-anchor="end" transform="rotate(-45 ${cx} ${h-52})" font-size="10" fill="#675f69">${esc(r.label)}</text>`
+  }).join('');
+  let svg=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Gráfico de barras diário"><line x1="${left}" y1="${zeroY}" x2="${w-right}" y2="${zeroY}" stroke="#b07b91" stroke-width="1.2"/>${yTicks.map(v=>{let yy=y(v);return`<line x1="${left}" y1="${yy}" x2="${w-right}" y2="${yy}" stroke="#ead2dc" stroke-width="1"/><text x="${left-8}" y="${yy+4}" text-anchor="end" font-size="10" fill="#675f69">${esc(formatter(v))}</text>`}).join('')}${bars}</svg>`;
+  let total=rows.reduce((a,r)=>a+Number(r.value||0),0),avg=rows.length?total/rows.length:0,dateRange=analyticsDateRange(),period=`${String(dateRange.start||'').split('-').reverse().join('/')} a ${String(dateRange.end||'').split('-').reverse().join('/')}`;
+  el.innerHTML=svg+`<div class="analytics-legend"><span>Período: <b>${esc(period)}</b></span><span>Dias exibidos: <b>${rows.length}</b></span><span>Média diária: <b>${esc(formatter(avg))}</b></span><span>Maior dia: <b>${esc(formatter(Math.max(...vals)))}</b></span><span>Menor dia: <b>${esc(formatter(Math.min(...vals)))}</b></span></div>`;
+}
+window.renderAnalytics=()=>{
+  if(!$('analyticsCashChart')||!currentUser)return;analyticsEnsureDates();let range=analyticsDateRange(),base=analyticsEmptyBuckets(range),allSales=analyticsSales(range);analyticsSellerOptions(allSales);let sellerKey=$('analyticsSeller')?.value||'Todos',ticketSales=sellerKey==='Todos'?allSales:allSales.filter(s=>userLabelFromSale(s).key===sellerKey);
+  let cashRows=analyticsAggregate(base,allSales,s=>saleBusinessDate(s),s=>Number(s.total||0));let cashMap=new Map(cashRows.map(r=>[r.key,r]));
+  for(let x of analyticsCashRows('in',range)){let info=analyticsBucketInfo(String(x.date||'').slice(0,10));if(info){let r=cashMap.get(info.key)||{key:info.key,label:info.label,value:0,count:0,total:0};r.value+=Number(x.amount||0);cashMap.set(info.key,r)}}
+  for(let x of analyticsCashRows('out',range)){let info=analyticsBucketInfo(String(x.date||'').slice(0,10));if(info){let r=cashMap.get(info.key)||{key:info.key,label:info.label,value:0,count:0,total:0};r.value-=Number(x.amount||0);cashMap.set(info.key,r)}}
+  cashRows=Array.from(cashMap.values()).sort((a,b)=>a.key.localeCompare(b.key));
+  let ticketBase=base.map(r=>({...r,value:0,count:0,total:0})),ticketMap=new Map(ticketBase.map(r=>[r.key,r]));ticketSales.forEach(s=>{let info=analyticsBucketInfo(saleBusinessDate(s));if(!info)return;let r=ticketMap.get(info.key)||{key:info.key,label:info.label,value:0,count:0,total:0};r.total+=Number(s.total||0);r.count++;r.value=r.count?r.total/r.count:0;ticketMap.set(info.key,r)});let ticketRows=Array.from(ticketMap.values()).sort((a,b)=>a.key.localeCompare(b.key));
+  let qtyRows=analyticsAggregate(base,allSales,s=>saleBusinessDate(s),s=>(s.items||[]).reduce((a,i)=>a+Number(i.qty||0),0));
+  let cashTotal=allSales.reduce((a,s)=>a+Number(s.total||0),0)+analyticsCashRows('in',range).reduce((a,x)=>a+Number(x.amount||0),0)-analyticsCashRows('out',range).reduce((a,x)=>a+Number(x.amount||0),0),ticketTotal=ticketSales.reduce((a,s)=>a+Number(s.total||0),0),ticketAvg=ticketSales.length?ticketTotal/ticketSales.length:0,qtyTotal=allSales.reduce((a,s)=>a+(s.items||[]).reduce((b,i)=>b+Number(i.qty||0),0),0);
+  $('analyticsCashSummary').textContent=money(cashTotal);$('analyticsTicketSummary').textContent=money(ticketAvg);$('analyticsQtySummary').textContent=String(qtyTotal);
+  analyticsChart('analyticsCashChart',cashRows,money);analyticsChart('analyticsTicketChart',ticketRows,money);analyticsChart('analyticsQtyChart',qtyRows,v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:1}));
+  let sellerMap=new Map();allSales.forEach(s=>{let u=userLabelFromSale(s),r=sellerMap.get(u.key)||{name:u.name,count:0,total:0};r.count++;r.total+=Number(s.total||0);sellerMap.set(u.key,r)});$('analyticsSellerTable').innerHTML=Array.from(sellerMap.values()).sort((a,b)=>b.total-a.total).map(r=>`<tr><td>${esc(r.name)}</td><td>${r.count}</td><td>${money(r.total)}</td><td><b>${money(r.count?r.total/r.count:0)}</b></td></tr>`).join('')||'<tr><td colspan="4" class="muted">Sem vendas no período.</td></tr>';
+  let note=$('analyticsPeriodNote');if(note){let a=String(range.start||'').split('-').reverse().join('/'),b=String(range.end||'').split('-').reverse().join('/');note.innerHTML=`Exibindo <b>somente ${esc(a)} até ${esc(b)}</b>. Cada barra representa um dia desse intervalo, inclusive dias com valor zero. Vendas canceladas são ignoradas.`}
+};
+
 window.renderReports=()=>{
   let financial=reportFinancialSummary(),ss=financial.sales,cashRows=financial.cashOuts,cashInRows=financial.cashIns,total=financial.gross,cashInTotal=financial.cashIn,cashTotal=financial.cashOut,netTotal=financial.net;
   let byStore={},byPayment={},items=0,consumption={};
@@ -1895,20 +2181,20 @@ function employeeStoreAllowed(e){return currentUser?.role==='admin'||(currentUse
 function payrollEmployees(){return (DB.employees||[]).filter(employeeStoreAllowed)}
 
 function currentEmployee(){return DB.employees.find(e=>e.id===currentUser?.employeeId||e.userId===currentUser?.id)||null}
-function entryLabel(t){return({entrada:'Entrada',intervalo_saida:'Saída para intervalo',intervalo_retorno:'Retorno do intervalo',saida:'Saída final'})[t]||t}
+function entryLabel(t){return({entrada:'Entrada',saida:'Saída final'})[t]||t}
 function localDateISO(d=new Date()){let z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)}
 function currentMonthISO(){return localDateISO().slice(0,7)}
 function timeEntryDateTime(x){let t=String(x.time||'00:00');if(/^\d{2}:\d{2}$/.test(t))t+=':00';return new Date(`${x.date}T${t}`).getTime()}
-function employeeEntries(employeeId,month=''){return(DB.timeEntries||[]).filter(x=>x.employeeId===employeeId&&(!month||x.date.startsWith(month))).sort((a,b)=>timeEntryDateTime(a)-timeEntryDateTime(b))}
-function nextPunchType(employeeId,date=localDateISO()){let today=employeeEntries(employeeId).filter(x=>x.date===date),seq=['entrada','intervalo_saida','intervalo_retorno','saida'];return seq[Math.min(today.length,3)]}
-window.clockPunch=async()=>{let e=currentEmployee();if(!e)return alert('Seu login não está vinculado a um funcionário. Peça ao gerente para revisar o cadastro.');let now=new Date(),date=localDateISO(now),today=employeeEntries(e.id).filter(x=>x.date===date);if(today.length>=4)return alert('Todos os pontos de hoje já foram registrados.');let type=nextPunchType(e.id,date),time=[now.getHours(),now.getMinutes(),now.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':'),note=String($('employeeClockNote')?.value||'').trim().slice(0,300),row={id:uid('ponto'),employeeId:e.id,employeeName:e.name,storeId:e.storeId,storeName:e.storeName,date,time,type,source:'Horário automático do computador',createdById:currentUser.id,createdByName:currentUser.name,createdAt:now.toISOString(),note};DB.timeEntries.push(row);await saveDB();if($('employeeClockNote'))$('employeeClockNote').value='';renderAttendance();alert(entryLabel(type)+' registrada automaticamente às '+row.time+'.')}
-window.renderMyAttendance=()=>{let box=$('myAttendanceList'),info=$('clockEmployeeInfo'),next=$('clockNextAction');if(!box)return;let e=currentEmployee();if(!e){if(info)info.innerHTML='<span class="badge danger">Cadastro não vinculado</span> Solicite ao gerente que vincule este usuário a um funcionário.';box.innerHTML='';return}if(info)info.innerHTML=`<b>${esc(e.name)}</b><br><span class="muted">${esc(e.roleName||'')} • ${esc(e.storeName||'')}</span>`;let photo=$('clockEmployeePhoto');if(photo){photo.src=e.photo||DB.branding?.logo||'';photo.style.display=(e.photo||DB.branding?.logo)?'block':'none'};let type=nextPunchType(e.id);let count=employeeEntries(e.id).filter(x=>x.date===localDateISO()).length;if(next)next.innerHTML=count>=4?'<span class="badge success">Jornada concluída hoje</span>':`Próximo registro: <b>${entryLabel(type)}</b>`;let rows=employeeEntries(e.id).slice(-30).reverse();box.innerHTML=rows.map(x=>`<div class="list-item"><b>${x.date.split('-').reverse().join('/')} • ${x.time}</b> — ${entryLabel(x.type)}<br><span class="muted">${esc(x.source||'Sistema')}${x.note?' • '+esc(x.note):''}</span></div>`).join('')||'<p class="muted">Nenhum ponto registrado.</p>'}
+function employeeEntries(employeeId,month=''){return(DB.timeEntries||[]).filter(x=>x.employeeId===employeeId&&['entrada','saida'].includes(x.type)&&(!month||x.date.startsWith(month))).sort((a,b)=>timeEntryDateTime(a)-timeEntryDateTime(b))}
+function nextPunchType(employeeId,date=localDateISO()){let today=employeeEntries(employeeId).filter(x=>x.date===date);return today.some(x=>x.type==='entrada')?'saida':'entrada'}
+window.clockPunch=async()=>{let e=currentEmployee();if(!e)return alert('Seu login não está vinculado a um funcionário. Peça ao gerente para revisar o cadastro.');let now=new Date(),date=localDateISO(now),today=employeeEntries(e.id).filter(x=>x.date===date);if(today.some(x=>x.type==='entrada')&&today.some(x=>x.type==='saida'))return alert('Entrada e saída final de hoje já foram registradas.');let type=nextPunchType(e.id,date),time=[now.getHours(),now.getMinutes(),now.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':'),note=String($('employeeClockNote')?.value||'').trim().slice(0,300),row={id:uid('ponto'),employeeId:e.id,employeeName:e.name,storeId:e.storeId,storeName:e.storeName,date,time,type,source:'Horário automático do computador',createdById:currentUser.id,createdByName:currentUser.name,createdAt:now.toISOString(),note};DB.timeEntries.push(row);await saveDB();if($('employeeClockNote'))$('employeeClockNote').value='';renderAttendance();alert(entryLabel(type)+' registrada automaticamente às '+row.time+'.')}
+window.renderMyAttendance=()=>{let box=$('myAttendanceList'),info=$('clockEmployeeInfo'),next=$('clockNextAction');if(!box)return;let e=currentEmployee();if(!e){if(info)info.innerHTML='<span class="badge danger">Cadastro não vinculado</span> Solicite ao gerente que vincule este usuário a um funcionário.';box.innerHTML='';return}if(info)info.innerHTML=`<b>${esc(e.name)}</b><br><span class="muted">${esc(e.roleName||'')} • ${esc(e.storeName||'')}</span>`;let photo=$('clockEmployeePhoto');if(photo){photo.src=e.photo||DB.branding?.logo||'';photo.style.display=(e.photo||DB.branding?.logo)?'block':'none'};let type=nextPunchType(e.id),today=employeeEntries(e.id).filter(x=>x.date===localDateISO()),done=today.some(x=>x.type==='entrada')&&today.some(x=>x.type==='saida');if(next)next.innerHTML=done?'<span class="badge success">Jornada concluída hoje</span>':`Próximo registro: <b>${entryLabel(type)}</b>`;let rows=employeeEntries(e.id).slice(-30).reverse();box.innerHTML=rows.map(x=>`<div class="list-item"><b>${x.date.split('-').reverse().join('/')} • ${x.time}</b> — ${entryLabel(x.type)}<br><span class="muted">${esc(x.source||'Sistema')}${x.note?' • '+esc(x.note):''}</span></div>`).join('')||'<p class="muted">Nenhum ponto registrado.</p>'}
 function attendanceAllowedEmployees(){return payrollEmployees().filter(e=>e.status!=='Desligado')}
 window.clearAttendanceForm=()=>{if($('editingAttendanceId'))$('editingAttendanceId').value='';$('attendanceEmployee').value='';$('attendanceDate').value=localDateISO();$('attendanceTime').value=new Date().toTimeString().slice(0,5);$('attendanceType').value='entrada';$('attendanceNote').value='';if($('attendanceSaveBtn'))$('attendanceSaveBtn').textContent='Cadastrar ponto'}
 window.saveManualAttendance=async()=>{if(!canManagePayroll())return;let e=employeeById($('attendanceEmployee').value),date=$('attendanceDate').value,time=$('attendanceTime').value;if(!e||!date||!time)return alert('Selecione funcionário, data e horário.');let editingId=$('editingAttendanceId')?.value||'',existing=DB.timeEntries.find(x=>x.id===editingId),row={id:editingId||uid('ponto'),employeeId:e.id,employeeName:e.name,storeId:e.storeId,storeName:e.storeName,date,time,type:$('attendanceType').value,source:existing?'Horário corrigido por administrador/gerente':'Cadastro administrativo',createdById:existing?.createdById||currentUser.id,createdByName:existing?.createdByName||currentUser.name,createdAt:existing?.createdAt||new Date().toISOString(),updatedById:currentUser.id,updatedByName:currentUser.name,updatedAt:new Date().toISOString(),note:$('attendanceNote').value.trim()};let i=DB.timeEntries.findIndex(x=>x.id===row.id);if(i>=0)DB.timeEntries[i]=row;else DB.timeEntries.push(row);await saveDB();clearAttendanceForm();renderAttendance();alert(existing?'Ponto corrigido. A folha usará o novo horário salvo.':'Ponto cadastrado.')}
 window.deleteAttendance=async id=>{if(!canManagePayroll()||!confirm('Excluir este registro de ponto?'))return;DB.timeEntries=DB.timeEntries.filter(x=>x.id!==id);await saveDB();renderAttendance()}
 window.editAttendance=id=>{if(!canManagePayroll())return;let x=DB.timeEntries.find(y=>y.id===id);if(!x)return;$('editingAttendanceId').value=x.id;$('attendanceEmployee').value=x.employeeId;$('attendanceDate').value=x.date;$('attendanceTime').value=String(x.time||'').slice(0,5);$('attendanceType').value=x.type;$('attendanceNote').value=x.note||'';if($('attendanceSaveBtn'))$('attendanceSaveBtn').textContent='Salvar correção';window.scrollTo({top:0,behavior:'smooth'})}
-window.renderAttendanceAdmin=()=>{let box=$('attendanceTable');if(!box||!canManagePayroll())return;let month=$('attendanceMonthFilter').value||currentMonthISO(),q=($('attendanceSearch').value||'').toLowerCase(),allowed=attendanceAllowedEmployees().map(e=>e.id),rows=(DB.timeEntries||[]).filter(x=>allowed.includes(x.employeeId)&&(!month||x.date.startsWith(month))&&(!q||String(x.employeeName||'').toLowerCase().includes(q))).sort((a,b)=>timeEntryDateTime(b)-timeEntryDateTime(a));box.innerHTML=rows.map(x=>`<tr><td>${x.date.split('-').reverse().join('/')}</td><td><b>${esc(x.employeeName)}</b><br><span class="muted">${esc(x.storeName||'')}</span></td><td>${entryLabel(x.type)}</td><td>${esc(x.time)}</td><td>${esc(x.source||'')}</td><td>${esc(x.createdByName||'')}</td><td><button class="secondary" onclick="editAttendance('${x.id}')">Corrigir</button> <button class="danger" onclick="deleteAttendance('${x.id}')">Excluir</button></td></tr>`).join('')||'<tr><td colspan="7">Nenhum ponto no período.</td></tr>'}
+window.renderAttendanceAdmin=()=>{let box=$('attendanceTable');if(!box||!canManagePayroll())return;let month=$('attendanceMonthFilter').value||currentMonthISO(),q=($('attendanceSearch').value||'').toLowerCase(),allowed=attendanceAllowedEmployees().map(e=>e.id),rows=(DB.timeEntries||[]).filter(x=>allowed.includes(x.employeeId)&&['entrada','saida'].includes(x.type)&&(!month||x.date.startsWith(month))&&(!q||String(x.employeeName||'').toLowerCase().includes(q))).sort((a,b)=>timeEntryDateTime(b)-timeEntryDateTime(a));box.innerHTML=rows.map(x=>`<tr><td>${x.date.split('-').reverse().join('/')}</td><td><b>${esc(x.employeeName)}</b><br><span class="muted">${esc(x.storeName||'')}</span></td><td>${entryLabel(x.type)}</td><td>${esc(x.time)}</td><td>${esc(x.source||'')}</td><td>${esc(x.createdByName||'')}</td><td><button class="secondary" onclick="editAttendance('${x.id}')">Corrigir</button> <button class="danger" onclick="deleteAttendance('${x.id}')">Excluir</button></td></tr>`).join('')||'<tr><td colspan="7">Nenhum ponto no período.</td></tr>'}
 function clockMinutes(t){let parts=String(t||'00:00').split(':').map(Number);return(Number(parts[0]||0)*60)+Number(parts[1]||0)+Number(parts[2]||0)/60}
 function attendanceSummary(employeeId,month){
   let rows=employeeEntries(employeeId,month),days={};
@@ -1917,24 +2203,11 @@ function attendanceSummary(employeeId,month){
   let workedDays=0,totalMinutes=0,lateMinutes=0,overtime50Minutes=0,completeDays=0,details=[];
   Object.entries(days).sort(([a],[b])=>a.localeCompare(b)).forEach(([date,day])=>{
     day.sort((a,b)=>clockMinutes(a.time)-clockMinutes(b.time));
-    let first=day[0],last=day[day.length-1],worked=0,intervalMinutes=0,dayLate=0,dayOvertime50=0;
+    let first=day.find(x=>x.type==='entrada')||null,last=[...day].reverse().find(x=>x.type==='saida')||null,worked=0,dayLate=0,dayOvertime50=0;
     if(first)workedDays++;
-    if(first&&last&&first.id!==last.id){
+    if(first&&last&&clockMinutes(last.time)>=clockMinutes(first.time)){
       completeDays++;
       worked=Math.max(clockMinutes(last.time)-clockMinutes(first.time),0);
-
-      let openInterval=null;
-      day.forEach(x=>{
-        if(x.type==='intervalo_saida'){
-          openInterval=clockMinutes(x.time);
-        }else if(x.type==='intervalo_retorno'&&openInterval!==null){
-          let ret=clockMinutes(x.time);
-          if(ret>=openInterval)intervalMinutes+=ret-openInterval;
-          openInterval=null;
-        }
-      });
-
-      worked=Math.max(worked-intervalMinutes,0);
       totalMinutes+=worked;
 
       if(expectedDailyMinutes>0){
@@ -1952,12 +2225,11 @@ function attendanceSummary(employeeId,month){
       date,
       entry:first?.time||'',
       exit:last?.time||'',
-      intervalMinutes:Math.round(intervalMinutes),
       lateMinutes:Math.round(dayLate),
       overtime50Hours:Math.round(dayOvertime50)/60,
       workedHours:Math.round(worked)/60,
       expectedHours:dailyHours,
-      complete:!!(first&&last&&first.id!==last.id)
+      complete:!!(first&&last&&clockMinutes(last.time)>=clockMinutes(first.time))
     });
   });
   return{
@@ -1983,7 +2255,7 @@ window.loadAttendanceIntoPayroll=(showAlert=true)=>{
   $('payOvertime50').value=Number(sum.overtime50Hours||0).toFixed(2);
   $('payLateMinutes').value=sum.lateMinutes;
   calculatePayroll(false);
-  if(showAlert)alert(`${sum.rows.length} registro(s) importado(s): ${sum.workedDays} dia(s), ${sum.totalHours.toFixed(2)} hora(s) trabalhada(s), ${sum.overtime50Hours.toFixed(2)} hora(s) extra(s) de 50% e ${sum.lateMinutes} minuto(s) negativo(s). A apuração usa a primeira e a última batida do dia, desconta o intervalo e compara o total com ${Number(e.dailyHours||8).toFixed(2)} hora(s) por dia cadastradas para o funcionário.`)
+  if(showAlert)alert(`${sum.rows.length} registro(s) importado(s): ${sum.workedDays} dia(s), ${sum.totalHours.toFixed(2)} hora(s) trabalhada(s), ${sum.overtime50Hours.toFixed(2)} hora(s) extra(s) de 50% e ${sum.lateMinutes} minuto(s) negativo(s). A apuração usa somente a entrada e a saída final do dia e compara o total com ${Number(e.dailyHours||8).toFixed(2)} hora(s) por dia cadastradas para o funcionário.`)
 }
 window.renderAttendance=()=>{let sec=$('attendance');if(!sec)return;let admin=$('attendanceAdminPanel'),employee=$('employeeClockPanel');if(canManagePayroll()){admin.classList.remove('hidden');employee.classList.add('hidden');let prev=$('attendanceEmployee').value;$('attendanceEmployee').innerHTML='<option value="">Selecione o funcionário</option>'+attendanceAllowedEmployees().map(e=>`<option value="${e.id}">${esc(e.name)} • ${esc(e.storeName)}</option>`).join('');if([...$('attendanceEmployee').options].some(o=>o.value===prev))$('attendanceEmployee').value=prev;if(!$('attendanceMonthFilter').value)$('attendanceMonthFilter').value=currentMonthISO();if(!$('attendanceDate').value)clearAttendanceForm();renderAttendanceAdmin()}else{admin.classList.add('hidden');employee.classList.remove('hidden');renderMyAttendance()}}
 function updateLiveClock(){let e=$('liveClock');if(e){let now=new Date();e.textContent=now.toLocaleDateString('pt-BR')+' • '+now.toLocaleTimeString('pt-BR')}}updateLiveClock();setInterval(updateLiveClock,1000)
@@ -2360,8 +2632,8 @@ function pvdKeyboardBuildUi(){
 }
 function pvdKeyboardRenderBar(){
   const bar=document.getElementById('deluxKeyboardBar'),grid=document.getElementById('deluxKeyboardGrid');if(!bar||!grid)return;
-  const active=pvdIsActive();bar.style.display=active?'block':'none';
-  document.body.classList.toggle('keyboard-only-ready',active);
+  const active=pvdIsActive();bar.style.display='none';
+  document.body.classList.remove('keyboard-only-ready');
   if(!active)return;
   grid.innerHTML=PVD_FKEYS.map(x=>`<div class="keyboard-fkey"><kbd>${x.key}</kbd><span>${x.label}</span></div>`).join('');
 }
