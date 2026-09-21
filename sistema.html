@@ -865,7 +865,7 @@ body.keyboard-only-ready{padding-bottom:102px}body.keyboard-only-ready .content{
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';import{getFirestore,doc,getDoc,onSnapshot,runTransaction}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyBYLW-be1_aOaHwM4f3nC76ZBmP-9kTCtg',authDomain:'delux-group.firebaseapp.com',projectId:'delux-group',storageBucket:'delux-group.firebasestorage.app',messagingSenderId:'971726312316',appId:'1:971726312316:web:ed515078f8aa4932018af9',measurementId:'G-ED9Q04M7NC'};
-const appFB=initializeApp(firebaseConfig),db=getFirestore(appFB),ref=doc(db,'site_config','admin'),usersRef=doc(db,'site_config','erp_users'),employeesRef=doc(db,'site_config','erp_employees');const client='erp_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);let root={},DB={products:[],sales:[],clients:[],stores:[],users:[],exchanges:[],inventories:[]},currentUser=null,cart=[],payments=[],lastSale=null,exchangeSaleId=null,exchangeReturns=[],exchangeOut=[],barcodeSelectedProductId=null,identityMirrorLoaded={users:false,employees:false};
+const appFB=initializeApp(firebaseConfig),db=getFirestore(appFB),ref=doc(db,'site_config','admin'),usersRef=doc(db,'site_config','erp_users'),employeesRef=doc(db,'site_config','erp_employees'),erpMetaRef=doc(db,'site_config','erp_db_meta');const erpChunkRef=i=>doc(db,'site_config','erp_db_chunk_'+String(i).padStart(4,'0'));const client='erp_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);let root={},DB={products:[],sales:[],clients:[],stores:[],users:[],exchanges:[],inventories:[]},currentUser=null,cart=[],payments=[],lastSale=null,exchangeSaleId=null,exchangeReturns=[],exchangeOut=[],barcodeSelectedProductId=null,identityMirrorLoaded={users:false,employees:false};
 
 /* ===== CAMADA ROBUSTA DE PERSISTÊNCIA / ANTI-SOBRESCRITA ===== */
 const DELUX_PENDING_DB_KEY='delux_pending_db_v3';
@@ -949,6 +949,185 @@ function persistPendingDB(local,base){try{localStorage.setItem(DELUX_PENDING_DB_
 function readPendingDB(){try{return JSON.parse(localStorage.getItem(DELUX_PENDING_DB_KEY)||'null')}catch(e){return null}}
 function clearPendingDB(){try{localStorage.removeItem(DELUX_PENDING_DB_KEY)}catch(e){}}
 function publicProductsFrom(dbState){return (dbState?.products||[]).filter(p=>p.publicVisible==='Sim'||p.publicVisible===true).map(original=>{let p=cloneData(original);normalizeProductInventory(p);let sizeStock=isSizedProduct(p)?productSizeStock(p):{};return{id:p.id,name:p.name,store:p.store,category:p.category,publicCategory:p.category||'',publicDescription:p.publicDescription||'',price:Number(p.price||0),stock:productStockTotal(p),sizeStock,sizes:Object.entries(sizeStock).map(([size,stock])=>({size,stock:Number(stock||0)})),hasSizes:isSizedProduct(p),image:p.image||'',publicVisible:true,publicHighlight:p.publicHighlight==='Sim'||p.publicHighlight===true,sku:p.sku||'',barcode:p.barcode||''}})}
+
+/* ===== FIRESTORE: ERP FRAGMENTADO EM DOCUMENTOS MENORES =====
+   O Firestore limita cada documento a 1 MiB. O ERP não é mais salvo inteiro
+   dentro de site_config/admin. Em vez disso, o JSON do ERP é dividido em
+   blocos pequenos (aprox. <= 750 KB UTF-8 no pior caso) e reconstruído ao ler.
+   O documento admin continua leve e compatível com o site público. */
+const ERP_STORAGE_FORMAT='json-chunks-v2-safe';
+const ERP_CHUNK_CHAR_LIMIT=220000;
+const ERP_MIGRATION_SAFETY_VERSION='blindada-v2';
+const ERP_LOCAL_MIGRATION_BACKUP_KEY='delux_erp_migration_backup_v2';
+const erpBackupMetaRef=id=>doc(db,'site_config','erp_backup_'+id+'_meta');
+const erpBackupChunkRef=(id,i)=>doc(db,'site_config','erp_backup_'+id+'_chunk_'+String(i).padStart(4,'0'));
+let erpRemoteReloadQueue=Promise.resolve();
+function splitERPSerialized(serialized){
+  const out=[];
+  for(let start=0;start<serialized.length;){
+    let end=Math.min(serialized.length,start+ERP_CHUNK_CHAR_LIMIT);
+    if(end<serialized.length){
+      const last=serialized.charCodeAt(end-1),next=serialized.charCodeAt(end);
+      if(last>=0xD800&&last<=0xDBFF&&next>=0xDC00&&next<=0xDFFF)end--;
+    }
+    out.push(serialized.slice(start,end));
+    start=end;
+  }
+  return out.length?out:['{}'];
+}
+function encodeERPState(dbState){
+  const serialized=JSON.stringify(dbState||{}),chunks=splitERPSerialized(serialized);
+  let bytes=0;try{bytes=new Blob([serialized]).size}catch(e){bytes=serialized.length}
+  return{serialized,chunks,bytes};
+}
+function decodeERPChunks(parts){
+  const raw=(parts||[]).join('');
+  return raw?JSON.parse(raw):{};
+}
+async function sha256Text(text){
+  try{
+    if(globalThis.crypto?.subtle){
+      const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  }catch(e){console.warn('SHA-256 indisponível; usando verificação alternativa.',e)}
+  let h1=2166136261,h2=0x9e3779b9;
+  for(let i=0;i<text.length;i++){const c=text.charCodeAt(i);h1^=c;h1=Math.imul(h1,16777619);h2^=(c+i);h2=Math.imul(h2,2246822519)}
+  return 'fallback-'+(h1>>>0).toString(16).padStart(8,'0')+(h2>>>0).toString(16).padStart(8,'0')+'-'+text.length;
+}
+function preserveLocalMigrationBackup(serialized,hash,revision,meta={}){
+  try{
+    let bytes=0;try{bytes=new Blob([serialized]).size}catch(e){bytes=serialized.length}
+    localStorage.setItem(ERP_LOCAL_MIGRATION_BACKUP_KEY,JSON.stringify({version:ERP_MIGRATION_SAFETY_VERSION,createdAt:new Date().toISOString(),hash,revision,bytes,meta,payload:serialized}));
+    return true;
+  }catch(e){console.warn('Não foi possível manter a cópia local extra da migração. A cópia remota verificada continua sendo obrigatória.',e);return false}
+}
+async function readERPChunksFrom(metaRef,chunkRefFn,{requireActive=false}={}){
+  const metaSnap=await getDoc(metaRef);
+  if(!metaSnap.exists())return null;
+  const meta=metaSnap.data()||{};
+  if(requireActive&&meta.active!==true)return null;
+  const count=Math.max(0,Math.min(1000,Number(meta.chunks||0)));
+  const snaps=await Promise.all(Array.from({length:count},(_,i)=>getDoc(chunkRefFn(i))));
+  const parts=snaps.map((snap,i)=>{if(!snap.exists())throw new Error('Bloco do banco ausente: '+i);return String(snap.data()?.payload??'')});
+  const serialized=parts.join(''),db=serialized?JSON.parse(serialized):{};
+  return{db,serialized,revision:Number(meta.revision||0),meta};
+}
+async function readShardedERP(){
+  return readERPChunksFrom(erpMetaRef,erpChunkRef,{requireActive:true});
+}
+async function readShardedERPInTransaction(tx,legacyRoot={}){
+  const metaSnap=await tx.get(erpMetaRef);
+  if(!metaSnap.exists()||metaSnap.data()?.active!==true){
+    return{db:cloneData(legacyRoot?.erpDB||{})||{},revision:Number(legacyRoot?.erpRevision||0),oldChunkCount:0,usingLegacy:true};
+  }
+  const meta=metaSnap.data()||{},count=Math.max(0,Math.min(1000,Number(meta.chunks||0))),parts=[];
+  for(let i=0;i<count;i++){
+    const snap=await tx.get(erpChunkRef(i));
+    if(!snap.exists())throw new Error('Bloco do banco ERP ausente durante a gravação: '+i);
+    parts.push(String(snap.data()?.payload??''));
+  }
+  return{db:decodeERPChunks(parts),revision:Number(meta.revision||0),oldChunkCount:count,usingLegacy:false};
+}
+function writeShardedERPInTransaction(tx,dbState,revision,stamp,oldChunkCount=0,metaExtra={}){
+  const encoded=encodeERPState(dbState),chunks=encoded.chunks;
+  for(let i=0;i<chunks.length;i++)tx.set(erpChunkRef(i),{payload:chunks[i],index:i,revision,updatedAt:stamp,updatedBy:client});
+  for(let i=chunks.length;i<oldChunkCount;i++)tx.delete(erpChunkRef(i));
+  tx.set(erpMetaRef,{active:metaExtra.active!==false,format:ERP_STORAGE_FORMAT,chunks:chunks.length,bytes:encoded.bytes,revision,updatedAt:stamp,updatedBy:client,...metaExtra});
+  return encoded;
+}
+async function createVerifiedRemoteLegacyBackup(sourceSnapshot,revision){
+  const fullSerialized=JSON.stringify(sourceSnapshot||{}),fullHash=await sha256Text(fullSerialized);
+  const sourceDB=cloneData(sourceSnapshot?.admin?.erpDB||{})||{},dbEncoded=encodeERPState(sourceDB),dbHash=await sha256Text(dbEncoded.serialized);
+  const backupId=fullHash.replace(/[^a-z0-9]/gi,'').slice(0,20)||('b'+Date.now());
+  preserveLocalMigrationBackup(fullSerialized,fullHash,revision,{scope:'site_config/admin + erp_users + erp_employees',dbHash});
+  const backupChunks=splitERPSerialized(fullSerialized),stamp=Date.now();
+  let fullBytes=0;try{fullBytes=new Blob([fullSerialized]).size}catch(e){fullBytes=fullSerialized.length}
+  syncStatus('Segurança 1/4 • criando cópia completa e intocável do banco atual...');
+  await runTransaction(db,async tx=>{
+    const mainSnap=await tx.get(ref),usersSnap=await tx.get(usersRef),employeesSnap=await tx.get(employeesRef);
+    const currentSnapshot={admin:mainSnap.exists()?mainSnap.data():{},users:usersSnap.exists()?usersSnap.data():null,employees:employeesSnap.exists()?employeesSnap.data():null};
+    if(JSON.stringify(currentSnapshot)!==fullSerialized)throw new Error('O banco mudou durante a preparação do backup. Nenhum dado original foi alterado. Recarregue e tente novamente.');
+    for(let i=0;i<backupChunks.length;i++)tx.set(erpBackupChunkRef(backupId,i),{payload:backupChunks[i],index:i,sourceRevision:revision,backupHash:fullHash,dbHash,createdAt:stamp,createdBy:client,immutableBackup:true});
+    tx.set(erpBackupMetaRef(backupId),{complete:true,immutableBackup:true,format:'full-site-config-backup-v1',chunks:backupChunks.length,bytes:fullBytes,sourceRevision:revision,hash:fullHash,dbHash,createdAt:stamp,createdBy:client,safetyVersion:ERP_MIGRATION_SAFETY_VERSION,includes:['site_config/admin','site_config/erp_users','site_config/erp_employees']});
+  });
+  const verify=await readERPChunksFrom(erpBackupMetaRef(backupId),i=>erpBackupChunkRef(backupId,i));
+  if(!verify)throw new Error('A cópia remota completa de segurança não pôde ser relida. O banco original foi mantido sem alterações.');
+  const verifyHash=await sha256Text(verify.serialized);
+  if(verify.serialized!==fullSerialized||verifyHash!==fullHash)throw new Error('A cópia remota completa não passou na verificação de integridade. O banco original foi mantido sem alterações.');
+  return{backupId,hash:dbHash,fullHash,encoded:dbEncoded,fullSerialized};
+}
+async function readVerifiedMigrationBackup(backupId,expectedFullHash=''){
+  if(!backupId)return null;
+  const backup=await readERPChunksFrom(erpBackupMetaRef(backupId),i=>erpBackupChunkRef(backupId,i));
+  if(!backup)return null;
+  const actualHash=await sha256Text(backup.serialized);
+  const metaHash=String(backup.meta?.hash||'');
+  if((expectedFullHash&&actualHash!==expectedFullHash)||(metaHash&&actualHash!==metaHash))throw new Error('A cópia de segurança remota falhou na verificação de integridade.');
+  const snapshot=backup.serialized?JSON.parse(backup.serialized):{};
+  return{snapshot,hash:actualHash,meta:backup.meta};
+}
+async function stageAndVerifyNewERPStorage(safety,revision){
+  const {backupId,hash,encoded}=safety,stamp=Date.now();
+  syncStatus('Segurança 2/4 • preparando a nova estrutura sem apagar a antiga...');
+  await runTransaction(db,async tx=>{
+    const mainSnap=await tx.get(ref),remoteRoot=mainSnap.exists()?mainSnap.data():{};
+    const currentSerialized=JSON.stringify(remoteRoot.erpDB||{});
+    if(currentSerialized!==encoded.serialized)throw new Error('O banco mudou antes da preparação da nova estrutura. Migração cancelada sem apagar o original.');
+    const metaSnap=await tx.get(erpMetaRef),oldCount=metaSnap.exists()?Math.max(0,Number(metaSnap.data()?.chunks||0)):0;
+    writeShardedERPInTransaction(tx,JSON.parse(encoded.serialized),revision,stamp,oldCount,{active:false,status:'staged',sourceHash:hash,backupId,safetyVersion:ERP_MIGRATION_SAFETY_VERSION});
+  });
+  const staged=await readERPChunksFrom(erpMetaRef,erpChunkRef,{requireActive:false});
+  if(!staged)throw new Error('A nova estrutura não pôde ser relida. O banco original continua intacto.');
+  const stagedHash=await sha256Text(staged.serialized);
+  if(staged.serialized!==encoded.serialized||stagedHash!==hash)throw new Error('A nova estrutura não passou na verificação de integridade. O banco original continua intacto.');
+  return staged;
+}
+async function activateVerifiedERPStorage(safety,revision){
+  const {backupId,hash,encoded}=safety,stamp=Date.now();
+  syncStatus('Segurança 3/4 • validação final antes da troca...');
+  await runTransaction(db,async tx=>{
+    const mainSnap=await tx.get(ref),remoteRoot=mainSnap.exists()?mainSnap.data():{};
+    const metaSnap=await tx.get(erpMetaRef),meta=metaSnap.exists()?metaSnap.data():{};
+    if(JSON.stringify(remoteRoot.erpDB||{})!==encoded.serialized)throw new Error('O banco original mudou antes da ativação. Nada foi apagado; refaça a migração.');
+    if(meta.status!=='staged'||meta.sourceHash!==hash||meta.backupId!==backupId||Number(meta.chunks||0)!==encoded.chunks.length)throw new Error('A estrutura preparada não corresponde ao backup validado. O banco original não foi alterado.');
+    tx.set(erpMetaRef,{active:true,status:'active',activatedAt:stamp,updatedAt:stamp,updatedBy:client},{merge:true});
+    // Só aqui, depois de duas cópias verificadas, o objeto antigo é retirado do admin.
+    // A cópia remota de segurança NÃO é apagada.
+    tx.set(ref,{erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpStorageMigratedAt:stamp,erpMigrationBackupId:backupId,erpMigrationHash:hash,erpMigrationFullBackupHash:safety.fullHash,erpMigrationSafety:ERP_MIGRATION_SAFETY_VERSION,erpUpdatedAt:remoteRoot.erpUpdatedAt||stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client},{merge:true});
+  });
+  syncStatus('Segurança 4/4 • conferindo o banco já ativado...');
+  const active=await readShardedERP();
+  if(!active)throw new Error('A nova estrutura foi ativada, mas não pôde ser relida. A cópia remota de segurança permanece preservada.');
+  const activeHash=await sha256Text(active.serialized);
+  if(active.serialized!==encoded.serialized||activeHash!==hash)throw new Error('A conferência final detectou divergência. A cópia remota de segurança permanece preservada para restauração.');
+  return true;
+}
+async function migrateLegacyERPStorage(legacyDB){
+  const currentMeta=await getDoc(erpMetaRef).catch(()=>null);
+  if(currentMeta?.exists()&&currentMeta.data()?.active===true)return false;
+  const [mainSnap,usersSnap,employeesSnap]=await Promise.all([getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null)]);
+  const remoteRoot=mainSnap.exists()?mainSnap.data():{};
+  const sourceSnapshot={admin:remoteRoot,users:usersSnap?.exists()?usersSnap.data():null,employees:employeesSnap?.exists()?employeesSnap.data():null};
+  const remoteDB=cloneData(remoteRoot.erpDB||legacyDB||{})||{},revision=Number(remoteRoot.erpRevision||0);
+  // Processo blindado: cópia COMPLETA do estado atual -> releitura + hash -> nova estrutura em estágio
+  // -> releitura + hash -> ativação atômica. O backup remoto completo permanece guardado.
+  const safety=await createVerifiedRemoteLegacyBackup(sourceSnapshot,revision);
+  // Confirma também que o ERP usado para migrar é exatamente o que estava no snapshot completo.
+  if(JSON.stringify(remoteDB)!==safety.encoded.serialized)throw new Error('A leitura do ERP divergiu do backup completo. Migração cancelada sem alterar o banco original.');
+  await stageAndVerifyNewERPStorage(safety,revision);
+  await activateVerifiedERPStorage(safety,revision);
+  console.info('Migração ERP blindada concluída.',{backupId:safety.backupId,dbHash:safety.hash,fullBackupHash:safety.fullHash,revision,bytes:safety.encoded.bytes});
+  return true;
+}
+async function loadRemoteERPState(){
+  const [mainSnap,sharded]=await Promise.all([getDoc(ref),readShardedERP().catch(e=>{console.error('Falha ao ler ERP fragmentado:',e);return null})]);
+  const remoteRoot=mainSnap.exists()?mainSnap.data():{};
+  if(sharded)return{root:remoteRoot,db:cloneData(sharded.db||{})||{},revision:Number(sharded.revision||remoteRoot.erpRevision||0)};
+  return{root:remoteRoot,db:cloneData(remoteRoot.erpDB||{})||{},revision:Number(remoteRoot.erpRevision||0)};
+}
+function isFirestoreSizeError(err){return /exceeds the maximum allowed size|maximum allowed size|1048576|1,048,576/i.test(String(err?.message||err||''))}
+
 
 const $=id=>document.getElementById(id),money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),uid=p=>p+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
 
@@ -1293,10 +1472,39 @@ function defaults(){DB.stores ||= [{id:'s1',name:'Delux Makes',code:'MK',active:
 function reconcileEmployeePortalRoles(){(DB.users||[]).forEach(u=>{if(!['funcionario','vendedor','gerente'].includes(u.role))return;let e=(DB.employees||[]).find(x=>x.userId===u.id||x.id===u.employeeId);if(!e)return;e.userId=u.id;u.employeeId=e.id;let label=u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário';if(!e.roleName||['Funcionário','Vendedor','Gerente'].includes(e.roleName))e.roleName=label})}
 async function loadDB(){
   syncStatus('Conectando ao banco...');
-  const [mainSnap,usersSnap,employeesSnap]=await Promise.all([getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null)]);
+  const [mainSnap,usersSnap,employeesSnap,shardedInitial]=await Promise.all([
+    getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null),readShardedERP().catch(e=>{console.error('Falha ao ler armazenamento fragmentado:',e);return null})
+  ]);
   root=mainSnap.exists()?mainSnap.data():{};
-  lastKnownRevision=Number(root.erpRevision||0);
-  DB=cloneData(root.erpDB||{})||{};
+  // Se a estrutura nova estiver temporariamente indisponível, nunca abre um banco vazio:
+  // tenta a cópia remota completa criada antes da migração.
+  if(!shardedInitial&&!root.erpDB&&root.erpMigrationBackupId){
+    try{
+      const backup=await readVerifiedMigrationBackup(root.erpMigrationBackupId,root.erpMigrationFullBackupHash||'');
+      const backupDB=cloneData(backup?.snapshot?.admin?.erpDB||{})||{};
+      shardedInitial={db:backupDB,revision:Number(root.erpRevision||0),meta:{recoveredFromVerifiedBackup:true,backupId:root.erpMigrationBackupId}};
+      syncStatus('Banco principal indisponível • cópia de segurança verificada carregada');
+      console.warn('ERP carregado a partir da cópia remota de segurança verificada.',root.erpMigrationBackupId);
+    }catch(backupErr){console.error('Falha ao carregar cópia remota de segurança:',backupErr)}
+  }
+  if(!shardedInitial&&!root.erpDB&&root.erpStorage){throw new Error('O armazenamento principal do ERP está indisponível e nenhuma cópia de segurança válida pôde ser carregada. Nenhum banco vazio será aberto por segurança.');}
+  lastKnownRevision=Math.max(Number(root.erpRevision||0),Number(shardedInitial?.revision||0));
+  DB=cloneData(shardedInitial?.db??root.erpDB??{})||{};
+
+  // Migração automática e segura do formato antigo (erpDB dentro de site_config/admin).
+  if(!shardedInitial&&root.erpDB&&typeof root.erpDB==='object'){
+    try{
+      syncStatus('Atualizando estrutura do banco para remover o limite de 1 MB...');
+      await migrateLegacyERPStorage(DB);
+      root={...root,erpDB:null,erpStorage:ERP_STORAGE_FORMAT};
+      syncStatus('Estrutura do banco atualizada');
+    }catch(migrationErr){
+      console.error('Falha na migração do armazenamento ERP:',migrationErr);
+      syncStatus('Falha ao atualizar a estrutura do banco');
+      throw migrationErr;
+    }
+  }
+
   if(usersSnap?.exists()&&Array.isArray(usersSnap.data()?.items)){DB.users=cloneData(usersSnap.data().items);identityMirrorLoaded.users=true}
   if(employeesSnap?.exists()&&Array.isArray(employeesSnap.data()?.items)){DB.employees=cloneData(employeesSnap.data().items);identityMirrorLoaded.employees=true}
   lastSyncedDB=cloneData(DB||{});
@@ -1334,18 +1542,21 @@ async function performDBSave(localSnapshot,options={}){
   const stamp=Date.now();let committedDB=null,committedRoot=null,revision=lastKnownRevision;
   try{
     await runTransaction(db,async tx=>{
-      const snap=await tx.get(ref),remoteRoot=snap.exists()?snap.data():{},remoteDB=cloneData(remoteRoot.erpDB||{})||{};
+      const snap=await tx.get(ref),remoteRoot=snap.exists()?snap.data():{};
+      const stored=await readShardedERPInTransaction(tx,remoteRoot),remoteDB=cloneData(stored.db||{})||{};
       committedDB=applyDBDelta(remoteDB,delta);
-      revision=Number(remoteRoot.erpRevision||0)+1;
-      committedRoot={...remoteRoot,erpDB:committedDB,erpProductsPublic:publicProductsFrom(committedDB),erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client};
-      tx.set(ref,committedRoot,{merge:true});
+      revision=Math.max(Number(remoteRoot.erpRevision||0),Number(stored.revision||0))+1;
+      writeShardedERPInTransaction(tx,committedDB,revision,stamp,stored.oldChunkCount||0);
+      // O documento admin fica leve: ERP completo vai para os blocos acima.
+      tx.set(ref,{erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProductsFrom(committedDB),erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client},{merge:true});
       tx.set(usersRef,{items:Array.isArray(committedDB.users)?committedDB.users:[],updatedAt:stamp,updatedBy:client,revision},{merge:true});
       tx.set(employeesRef,{items:Array.isArray(committedDB.employees)?committedDB.employees:[],updatedAt:stamp,updatedBy:client,revision},{merge:true});
+      committedRoot={...remoteRoot,erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProductsFrom(committedDB),erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client};
     });
     const newerDelta=buildDBDelta(localSnapshot,DB);
     lastSyncedDB=cloneData(committedDB||{});lastKnownRevision=revision;
     DB=applyDBDelta(committedDB||{},newerDelta);defaults();normalizeAllProductStocks();
-    root={...(committedRoot||{}),...root,erpDB:DB,erpProductsPublic:publicProductsFrom(DB),erpRevision:revision,erpUpdatedAt:stamp,updatedAt:stamp,updatedBy:client};
+    root={...root,...(committedRoot||{}),erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProductsFrom(DB),erpRevision:revision,erpUpdatedAt:stamp,updatedAt:stamp,updatedBy:client};
     identityMirrorLoaded.users=true;identityMirrorLoaded.employees=true;
     if(deltaIsEmpty(newerDelta))clearPendingDB();else persistPendingDB(DB,lastSyncedDB);
     syncStatus(options.recovery?'Recuperado e salvo no banco':'Salvo e confirmado no banco');
@@ -1353,13 +1564,18 @@ async function performDBSave(localSnapshot,options={}){
   }catch(err){
     if(err?.deluxStockConflict){
       clearPendingDB();syncStatus('CONFLITO DE ESTOQUE • venda não gravada');console.error(err);
-      try{const fresh=await getDoc(ref);if(fresh.exists()){root=fresh.data();lastKnownRevision=Number(root.erpRevision||lastKnownRevision);DB=cloneData(root.erpDB||{})||{};lastSyncedDB=cloneData(DB);defaults();normalizeAllProductStocks();renderAll()}}catch(refreshErr){console.error('Falha ao recarregar estoque após conflito:',refreshErr)}
+      try{const fresh=await loadRemoteERPState();root={...root,...fresh.root,erpDB:null};lastKnownRevision=Number(fresh.revision||lastKnownRevision);DB=cloneData(fresh.db||{})||{};lastSyncedDB=cloneData(DB);defaults();normalizeAllProductStocks();renderAll()}catch(refreshErr){console.error('Falha ao recarregar estoque após conflito:',refreshErr)}
       alert('O estoque deste produto foi alterado em outro dispositivo antes da sua gravação. Para evitar venda com estoque incorreto, esta operação NÃO foi salva. O estoque foi atualizado; refaça a operação com a quantidade disponível.');try{err.deluxSaveNotified=true}catch(e){}throw err;
     }
     persistPendingDB(localSnapshot,baseline);
     syncStatus('ERRO AO SALVAR • alteração preservada neste navegador');
     console.error('Falha crítica ao salvar no Firestore:',err);
-    if(!options.silentError){alert('Não foi possível confirmar o salvamento no banco de dados. A alteração foi preservada neste navegador e será tentada novamente quando houver conexão.');try{err.deluxSaveNotified=true}catch(e){}}
+    if(!options.silentError){
+      const message=isFirestoreSizeError(err)
+        ?'O Firestore recusou a gravação por limite de tamanho. O ERP já está configurado para armazenamento fragmentado; se esta mensagem continuar, um conteúdo individual do site ou catálogo público também ultrapassou o limite. A alteração ficou preservada neste navegador.'
+        :'Não foi possível confirmar o salvamento no banco de dados. A alteração foi preservada neste navegador. O sistema tentará novamente quando a conexão ou o serviço estiver disponível.';
+      alert(message);try{err.deluxSaveNotified=true}catch(e){}
+    }
     throw err;
   }
 }
@@ -1370,15 +1586,29 @@ async function saveDB(options={}){
 }
 function syncStatus(t){let e=$('syncStatus');if(e)e.textContent=t}
 function mergeIncomingMainSnapshot(d){
-  const incomingRevision=Number(d?.erpRevision||0),remote=cloneData(d?.erpDB||{})||{};
-  const localDelta=buildDBDelta(lastSyncedDB||{},DB||{});
-  if(incomingRevision>=lastKnownRevision){
-    lastKnownRevision=incomingRevision;lastSyncedDB=cloneData(remote);DB=applyDBDelta(remote,localDelta);defaults();normalizeAllProductStocks();
-  }
-  root={...root,...d,erpDB:DB,erpProductsPublic:publicProductsFrom(DB)};
+  const incomingRevision=Number(d?.erpRevision||0);
+  // No formato novo o ERP não vive mais no documento admin. Este listener trata
+  // principalmente dados do site e metadados. Mantém compatibilidade com bases antigas.
+  if(d?.erpDB&&typeof d.erpDB==='object'){
+    const remote=cloneData(d.erpDB||{})||{},localDelta=buildDBDelta(lastSyncedDB||{},DB||{});
+    if(incomingRevision>=lastKnownRevision){lastKnownRevision=incomingRevision;lastSyncedDB=cloneData(remote);DB=applyDBDelta(remote,localDelta);defaults();normalizeAllProductStocks()}
+  }else lastKnownRevision=Math.max(lastKnownRevision,incomingRevision);
+  root={...root,...d,erpDB:null,erpProductsPublic:Array.isArray(d?.erpProductsPublic)?d.erpProductsPublic:publicProductsFrom(DB)};
   lastSyncedSite=siteSnapshotFrom(d);
 }
+function queueRemoteERPReload(){
+  const run=async()=>{
+    const state=await readShardedERP();if(!state)return;
+    const incomingRevision=Number(state.revision||0);if(incomingRevision<lastKnownRevision)return;
+    const localDelta=buildDBDelta(lastSyncedDB||{},DB||{});
+    lastKnownRevision=incomingRevision;lastSyncedDB=cloneData(state.db||{});DB=applyDBDelta(state.db||{},localDelta);defaults();normalizeAllProductStocks();
+    root={...root,erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpRevision:incomingRevision,erpProductsPublic:publicProductsFrom(DB)};
+    renderAll();syncStatus('Atualizado em tempo real');
+  };
+  erpRemoteReloadQueue=erpRemoteReloadQueue.then(run,run).catch(err=>{console.error('Falha ao atualizar ERP fragmentado:',err);syncStatus('Falha ao atualizar dados em tempo real')});
+}
 onSnapshot(ref,s=>{if(!s.exists())return;let d=s.data();if(d.updatedBy===client){lastKnownRevision=Math.max(lastKnownRevision,Number(d.erpRevision||0));return}mergeIncomingMainSnapshot(d);renderAll();syncStatus('Atualizado em tempo real')},err=>{console.error('Listener principal:',err);syncStatus('Conexão em tempo real interrompida')});
+onSnapshot(erpMetaRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;queueRemoteERPReload()},err=>{console.error('Listener ERP fragmentado:',err);syncStatus('Sincronização do ERP interrompida')});
 onSnapshot(usersRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.users=cloneData(items);identityMirrorLoaded.users=true;lastSyncedDB={...(lastSyncedDB||{}),users:cloneData(items)};defaults();renderAll();syncStatus('Usuários atualizados do banco')}},err=>console.error('Listener usuários:',err));
 onSnapshot(employeesRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.employees=cloneData(items);identityMirrorLoaded.employees=true;lastSyncedDB={...(lastSyncedDB||{}),employees:cloneData(items)};defaults();renderAll();syncStatus('Funcionários atualizados do banco')}},err=>console.error('Listener funcionários:',err));
 window.addEventListener('online',()=>{let pending=readPendingDB();if(pending?.local){syncStatus('Internet restabelecida • sincronizando alterações pendentes...');saveDB({recovery:true,silentSuccess:true}).catch(()=>{})}});
