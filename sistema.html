@@ -1503,8 +1503,23 @@ async function loadDBCore(options={}){
     }
   }
 
-  if(usersSnap?.exists()&&Array.isArray(usersSnap.data()?.items)){DB.users=cloneData(usersSnap.data().items);identityMirrorLoaded.users=true}
-  if(employeesSnap?.exists()&&Array.isArray(employeesSnap.data()?.items)){DB.employees=cloneData(employeesSnap.data().items);identityMirrorLoaded.employees=true}
+  // Identidades: nunca deixa um espelho antigo sobrescrever uma lista mais nova do ERP.
+  // Isso protege o login após a migração e mantém compatibilidade com bancos antigos.
+  const loadedERPRevision=Math.max(Number(root.erpRevision||0),Number(shardedInitial?.revision||0));
+  const usersMirrorData=usersSnap?.exists()?usersSnap.data():null;
+  const employeesMirrorData=employeesSnap?.exists()?employeesSnap.data():null;
+  const usersMirrorRevision=Number(usersMirrorData?.revision||0);
+  const employeesMirrorRevision=Number(employeesMirrorData?.revision||0);
+  const erpUsers=Array.isArray(DB.users)?cloneData(DB.users):[];
+  const erpEmployees=Array.isArray(DB.employees)?cloneData(DB.employees):[];
+  if(Array.isArray(usersMirrorData?.items)){
+    if(!erpUsers.length||usersMirrorRevision>=loadedERPRevision){DB.users=cloneData(usersMirrorData.items);identityMirrorLoaded.users=true}
+    else{DB.users=erpUsers;console.warn('Espelho de usuários mais antigo ignorado para não substituir credenciais atuais.',{usersMirrorRevision,loadedERPRevision})}
+  }
+  if(Array.isArray(employeesMirrorData?.items)){
+    if(!erpEmployees.length||employeesMirrorRevision>=loadedERPRevision){DB.employees=cloneData(employeesMirrorData.items);identityMirrorLoaded.employees=true}
+    else{DB.employees=erpEmployees;console.warn('Espelho de funcionários mais antigo ignorado.',{employeesMirrorRevision,loadedERPRevision})}
+  }
   lastSyncedDB=cloneData(DB||{});
   lastSyncedSite=siteSnapshotFrom(root);
   defaults();
@@ -1651,7 +1666,7 @@ function queueRemoteERPReload(){
 }
 onSnapshot(ref,s=>{if(!s.exists())return;let d=s.data();if(d.updatedBy===client){lastKnownRevision=Math.max(lastKnownRevision,Number(d.erpRevision||0));return}mergeIncomingMainSnapshot(d);renderAll();syncStatus('Atualizado em tempo real')},err=>{console.error('Listener principal:',err);syncStatus('Conexão em tempo real interrompida')});
 onSnapshot(erpMetaRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;queueRemoteERPReload()},err=>{console.error('Listener ERP fragmentado:',err);syncStatus('Sincronização do ERP interrompida')});
-onSnapshot(usersRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.users=cloneData(items);identityMirrorLoaded.users=true;lastSyncedDB={...(lastSyncedDB||{}),users:cloneData(items)};defaults();renderAll();syncStatus('Usuários atualizados do banco')}},err=>console.error('Listener usuários:',err));
+onSnapshot(usersRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let d=s.data()||{},items=d.items,rev=Number(d.revision||0);if(Array.isArray(items)){if((DB.users||[]).length&&rev&&rev<lastKnownRevision){console.warn('Atualização antiga de usuários ignorada.',{usersRevision:rev,erpRevision:lastKnownRevision});return}DB.users=cloneData(items);identityMirrorLoaded.users=true;lastSyncedDB={...(lastSyncedDB||{}),users:cloneData(items)};defaults();renderAll();syncStatus('Usuários atualizados do banco')}},err=>console.error('Listener usuários:',err));
 onSnapshot(employeesRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.employees=cloneData(items);identityMirrorLoaded.employees=true;lastSyncedDB={...(lastSyncedDB||{}),employees:cloneData(items)};defaults();renderAll();syncStatus('Funcionários atualizados do banco')}},err=>console.error('Listener funcionários:',err));
 window.addEventListener('online',()=>{let pending=readPendingDB();if(pending?.local){syncStatus('Internet restabelecida • sincronizando alterações pendentes...');saveDB({recovery:true,silentSuccess:true}).catch(()=>{})}});
 
@@ -1687,9 +1702,61 @@ window.adminResetUserPassword=async id=>{
   alert('Senha de '+u.name+' redefinida com sucesso. Informe a nova senha ao usuário por um canal seguro.');
 };
 
+function loginMatchesUser(u,login,password){
+  if(!u||u.active===false)return false;
+  return normalizeLoginValue(u.login)===normalizeLoginValue(login)&&String(u.pass??'')===String(password??'');
+}
+function upsertSessionUser(user){
+  if(!user)return;
+  DB.users=Array.isArray(DB.users)?DB.users:[];
+  const idx=DB.users.findIndex(x=>String(x?.id||'')===String(user?.id||'')||(normalizeLoginValue(x?.login)&&normalizeLoginValue(x?.login)===normalizeLoginValue(user?.login)));
+  if(idx>=0)DB.users[idx]=cloneData(user);else DB.users.push(cloneData(user));
+}
+async function findLoginUserReadOnly(login,password){
+  // Recuperação SOMENTE por leitura. Nenhum documento é alterado durante esta busca.
+  const current=(DB.users||[]).filter(Boolean);
+  let found=current.find(u=>loginMatchesUser(u,login,password));
+  if(found)return found;
+  const currentSameLogin=current.find(u=>normalizeLoginValue(u.login)===normalizeLoginValue(login));
+
+  // Confere os dois armazenamentos atuais e o espelho de usuários.
+  const sources=[];
+  try{const us=await getDoc(usersRef);if(us.exists()&&Array.isArray(us.data()?.items))sources.push({name:'espelho atual de usuários',items:us.data().items,revision:Number(us.data()?.revision||0)});}catch(e){console.warn('Não foi possível reler o espelho de usuários.',e)}
+  try{const sh=await readShardedERP();if(sh&&Array.isArray(sh.db?.users))sources.push({name:'ERP fragmentado atual',items:sh.db.users,revision:Number(sh.revision||0)});}catch(e){console.warn('Não foi possível reler o ERP fragmentado para autenticação.',e)}
+  try{const ms=await getDoc(ref);if(ms.exists()&&Array.isArray(ms.data()?.erpDB?.users))sources.push({name:'ERP antigo ainda preservado',items:ms.data().erpDB.users,revision:Number(ms.data()?.erpRevision||0)});}catch(e){console.warn('Não foi possível reler o ERP antigo para autenticação.',e)}
+
+  // Primeiro procura a senha apenas nas fontes ATUAIS.
+  sources.sort((a,b)=>b.revision-a.revision);
+  for(const src of sources){const hit=(src.items||[]).find(u=>loginMatchesUser(u,login,password));if(hit){console.info('Login recuperado de '+src.name+'.');return cloneData(hit)}}
+
+  // Se uma fonte atual conhece esse login, uma senha diferente é tratada como senha incorreta.
+  // Assim um backup antigo nunca reativa uma senha que já foi trocada.
+  const sameLoginInCurrent=currentSameLogin||sources.some(src=>(src.items||[]).some(u=>normalizeLoginValue(u.login)===normalizeLoginValue(login)));
+  if(sameLoginInCurrent)return null;
+
+  // Último recurso: somente quando o login SUMIU das fontes atuais, consulta cópias de segurança.
+  const pending=readPendingDB();
+  if(Array.isArray(pending?.local?.users)){const hit=pending.local.users.find(u=>loginMatchesUser(u,login,password));if(hit){console.warn('Login recuperado da cópia local pendente, sem gravar nada.');return cloneData(hit)}}
+  try{
+    const ms=await getDoc(ref),rr=ms.exists()?ms.data():{};
+    if(rr.erpMigrationBackupId){
+      const backup=await readVerifiedMigrationBackup(rr.erpMigrationBackupId,rr.erpMigrationFullBackupHash||'');
+      const arrays=[backup?.snapshot?.users?.items,backup?.snapshot?.admin?.erpDB?.users];
+      for(const arr of arrays){if(Array.isArray(arr)){const hit=arr.find(u=>loginMatchesUser(u,login,password));if(hit){console.warn('Login recuperado da cópia remota verificada, sem gravar nada.');return cloneData(hit)}}}
+    }
+  }catch(e){console.warn('Cópia remota de segurança não pôde ser consultada para autenticação.',e)}
+  try{
+    const raw=localStorage.getItem(ERP_LOCAL_MIGRATION_BACKUP_KEY);
+    if(raw){const wrap=JSON.parse(raw),snap=JSON.parse(wrap?.payload||'{}'),arrays=[snap?.users?.items,snap?.admin?.erpDB?.users];for(const arr of arrays){if(Array.isArray(arr)){const hit=arr.find(u=>loginMatchesUser(u,login,password));if(hit){console.warn('Login recuperado da cópia local da migração, sem gravar nada.');return cloneData(hit)}}}}
+  }catch(e){console.warn('Cópia local da migração não pôde ser consultada.',e)}
+  return null;
+}
+
 window.login=async()=>{
   const errBox=$('loginError');
   if(errBox){errBox.style.display='none';errBox.textContent='Usuário ou senha incorretos.'}
+  const loginValue=String($('loginUser')?.value||'').trim();
+  const passValue=String($('loginPass')?.value||'');
   try{
     // LOGIN faz apenas leitura. A migração pesada e segura acontece depois da entrada.
     await loadDB({migrate:false});
@@ -1698,8 +1765,10 @@ window.login=async()=>{
     if(errBox){errBox.textContent='Não foi possível carregar o banco para entrar. Abra o Console e verifique o erro de conexão.';errBox.style.display='block'}
     return;
   }
-  let u=(DB.users||[]).find(x=>x.login===$('loginUser').value&&x.pass===$('loginPass').value&&x.active!==false);
+  let u=(DB.users||[]).find(x=>loginMatchesUser(x,loginValue,passValue));
+  if(!u)u=await findLoginUserReadOnly(loginValue,passValue);
   if(!u){if(errBox)errBox.style.display='block';return}
+  upsertSessionUser(u);
   currentUser=u;
   $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');buildNav();renderAll();
   let first=firstAllowedScreen(currentUser);if(first)showScreen(first);else{$('pageTitle').textContent='Sem acessos liberados';alert('Este usuário ainda não possui acessos liberados pelo administrador.')}
