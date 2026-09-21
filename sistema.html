@@ -956,6 +956,9 @@ const ERP_LOCAL_MIGRATION_BACKUP_KEY='delux_erp_migration_backup_v2';
 const erpBackupMetaRef=id=>doc(db,'site_config','erp_backup_'+id+'_meta');
 const erpBackupChunkRef=(id,i)=>doc(db,'site_config','erp_backup_'+id+'_chunk_'+String(i).padStart(4,'0'));
 let erpRemoteReloadQueue=Promise.resolve();
+// Controle de carregamento/migração: evita duas migrações simultâneas ao abrir a tela e clicar em Entrar.
+let dbLoadPromise=null,erpMigrationPromise=null,erpStorageReady=false;
+
 function splitERPSerialized(serialized){
   const out=[];
   for(let start=0;start<serialized.length;){
@@ -1464,7 +1467,7 @@ window.toggleProductSizeStock=()=>{
 
 function defaults(){DB.stores ||= [{id:'s1',name:'Delux Makes',code:'MK',active:true},{id:'s2',name:'Delux By',code:'BY',active:true}];DB.users ||= [{id:'u1',name:'Administrador',login:'admin',pass:'1234',role:'admin',active:true,storeIds:['s1','s2']}];DB.products ||= [];DB.sales ||= [];DB.clients ||= [];DB.exchanges ||= [];DB.employees ||= [];DB.payrolls ||= [];DB.timeEntries ||= [];DB.reportArchive ||= [];DB.fbkImportLog ||= [];DB.saleEditLog ||= [];DB.saleCancelLog ||= [];DB.onlineOrders ||= [];DB.cashOuts ||= [];DB.cashIns ||= [];DB.stockEntries ||= [];DB.stockTransfers ||= [];DB.inventories ||= [];DB.vales ||= [];DB.stockAudit ||= [];DB.branding ||= {logo:'',loginBackground:'',dashboardCover:''};DB.users.forEach(u=>{if(u.role==='admin')u.storeIds=DB.stores.map(s=>s.id);else if(!Array.isArray(u.storeIds))u.storeIds=DB.stores.map(s=>s.id);if(['funcionario','vendedor','gerente'].includes(u.role)){let e=DB.employees.find(x=>x.userId===u.id||x.id===u.employeeId);if(!e){let store=DB.stores.find(s=>(u.storeIds||[]).includes(s.id))||DB.stores[0],employeeId=uid('func');e={id:employeeId,name:u.name,document:'',roleName:u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário',storeId:store?.id||'',storeName:store?.name||'',admission:'',payType:'Mensal',baseSalary:0,dailyHours:8,pix:'',phone:'',status:u.active===false?'Inativo':'Ativo',notes:'Cadastro criado automaticamente pelo portal do vendedor. Complete os dados na folha de pagamento.',userId:u.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};DB.employees.push(e)}u.employeeId=e.id;e.userId=u.id;e.name=u.name;e.status=u.active===false?'Inativo':'Ativo'}});normalizeAllProductStocks();reconcileEmployeePortalRoles();}
 function reconcileEmployeePortalRoles(){(DB.users||[]).forEach(u=>{if(!['funcionario','vendedor','gerente'].includes(u.role))return;let e=(DB.employees||[]).find(x=>x.userId===u.id||x.id===u.employeeId);if(!e)return;e.userId=u.id;u.employeeId=e.id;let label=u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário';if(!e.roleName||['Funcionário','Vendedor','Gerente'].includes(e.roleName))e.roleName=label})}
-async function loadDB(){
+async function loadDBCore(options={}){
   syncStatus('Conectando ao banco...');
   const [mainSnap,usersSnap,employeesSnap,shardedInitial]=await Promise.all([
     getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null),readShardedERP().catch(e=>{console.error('Falha ao ler armazenamento fragmentado:',e);return null})
@@ -1484,9 +1487,10 @@ async function loadDB(){
   if(!shardedInitial&&!root.erpDB&&root.erpStorage){throw new Error('O armazenamento principal do ERP está indisponível e nenhuma cópia de segurança válida pôde ser carregada. Nenhum banco vazio será aberto por segurança.');}
   lastKnownRevision=Math.max(Number(root.erpRevision||0),Number(shardedInitial?.revision||0));
   DB=cloneData(shardedInitial?.db??root.erpDB??{})||{};
+  if(shardedInitial)erpStorageReady=true;
 
   // Migração automática e segura do formato antigo (erpDB dentro de site_config/admin).
-  if(!shardedInitial&&root.erpDB&&typeof root.erpDB==='object'){
+  if(options.migrate===true&&!shardedInitial&&root.erpDB&&typeof root.erpDB==='object'){
     try{
       syncStatus('Atualizando estrutura do banco para remover o limite de 1 MB...');
       await migrateLegacyERPStorage(DB);
@@ -1514,13 +1518,55 @@ async function loadDB(){
       const pendingDelta=buildDBDelta(pending.base,pending.local);
       if(!deltaIsEmpty(pendingDelta)){
         DB=applyDBDelta(DB,pendingDelta);defaults();normalizeAllProductStocks();
-        syncStatus('Alterações locais recuperadas • sincronizando...');
-        setTimeout(()=>saveDB({recovery:true,silentSuccess:true}).catch(()=>{}),0);
+        syncStatus('Alterações locais recuperadas • aguardando sincronização segura...');
       }else clearPendingDB();
     }catch(e){console.error('Falha ao recuperar alterações locais pendentes:',e)}
   }
   syncStatus('Conectado • banco carregado');renderBranding();renderAll();
 }
+
+// Carregamento único por vez. Se o usuário clicar em Entrar enquanto o banco ainda está sendo lido,
+// a mesma Promise é reutilizada em vez de iniciar uma segunda operação concorrente.
+function loadDB(options={}){
+  if(dbLoadPromise)return dbLoadPromise;
+  dbLoadPromise=loadDBCore(options).finally(()=>{dbLoadPromise=null});
+  return dbLoadPromise;
+}
+
+// Garante que o ERP antigo só seja retirado de site_config/admin depois do backup remoto,
+// releitura e validação da nova estrutura. A migração não bloqueia o LOGIN.
+async function ensureSafeERPStorage(){
+  if(erpStorageReady)return true;
+  if(erpMigrationPromise)return erpMigrationPromise;
+  erpMigrationPromise=(async()=>{
+    // Se já existe estrutura nova ativa, apenas valida e libera gravações.
+    const active=await readShardedERP().catch(e=>{console.warn('Estrutura ERP ativa ainda não disponível:',e);return null});
+    if(active){erpStorageReady=true;return true}
+
+    const mainSnap=await getDoc(ref),remoteRoot=mainSnap.exists()?mainSnap.data():{};
+    if(remoteRoot.erpDB&&typeof remoteRoot.erpDB==='object'){
+      syncStatus('Protegendo banco atual antes de liberar gravações...');
+      await migrateLegacyERPStorage(remoteRoot.erpDB);
+      erpStorageReady=true;
+      root={...root,...remoteRoot,erpDB:null,erpStorage:ERP_STORAGE_FORMAT};
+      syncStatus('Banco protegido e preparado para gravações');
+      return true;
+    }
+
+    // Caso o admin já indique formato novo, só libera se os blocos realmente puderem ser relidos.
+    if(remoteRoot.erpStorage){
+      const retry=await readShardedERP();
+      if(retry){erpStorageReady=true;return true}
+    }
+    throw new Error('Não foi possível validar uma estrutura segura do ERP. O banco original não foi alterado.');
+  })().catch(err=>{
+    erpStorageReady=false;
+    console.error('Migração segura pendente; gravações permanecem bloqueadas para proteger os dados:',err);
+    throw err;
+  }).finally(()=>{erpMigrationPromise=null});
+  return erpMigrationPromise;
+}
+
 function publicProducts(){return publicProductsFrom(DB)}
 async function verifyIdentityPersistence(userId='',employeeId=''){
   const [uSnap,eSnap]=await Promise.all([getDoc(usersRef),getDoc(employeesRef)]);
@@ -1530,6 +1576,8 @@ async function verifyIdentityPersistence(userId='',employeeId=''){
   return true;
 }
 async function performDBSave(localSnapshot,options={}){
+  // Nunca converte/grava o ERP sem primeiro confirmar a migração blindada.
+  await ensureSafeERPStorage();
   const baseline=cloneData(lastSyncedDB||{}),delta=buildDBDelta(baseline,localSnapshot);
   if(deltaIsEmpty(delta)&&!options.force){clearPendingDB();syncStatus('Sem alterações pendentes');return true}
   syncStatus(options.recovery?'Recuperando e salvando no banco...':'Salvando e confirmando no banco...');
@@ -1639,7 +1687,40 @@ window.adminResetUserPassword=async id=>{
   alert('Senha de '+u.name+' redefinida com sucesso. Informe a nova senha ao usuário por um canal seguro.');
 };
 
-window.login=async()=>{await loadDB();let u=DB.users.find(x=>x.login===$('loginUser').value&&x.pass===$('loginPass').value&&x.active!==false);if(!u){$('loginError').style.display='block';return}currentUser=u;$('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');buildNav();renderAll();let first=firstAllowedScreen(currentUser);if(first)showScreen(first);else{$('pageTitle').textContent='Sem acessos liberados';alert('Este usuário ainda não possui acessos liberados pelo administrador.')}};window.logout=()=>location.reload();window.toggleMenu=()=>$('sidebar').classList.toggle('open');
+window.login=async()=>{
+  const errBox=$('loginError');
+  if(errBox){errBox.style.display='none';errBox.textContent='Usuário ou senha incorretos.'}
+  try{
+    // LOGIN faz apenas leitura. A migração pesada e segura acontece depois da entrada.
+    await loadDB({migrate:false});
+  }catch(err){
+    console.error('Falha ao carregar banco para login:',err);
+    if(errBox){errBox.textContent='Não foi possível carregar o banco para entrar. Abra o Console e verifique o erro de conexão.';errBox.style.display='block'}
+    return;
+  }
+  let u=(DB.users||[]).find(x=>x.login===$('loginUser').value&&x.pass===$('loginPass').value&&x.active!==false);
+  if(!u){if(errBox)errBox.style.display='block';return}
+  currentUser=u;
+  $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');buildNav();renderAll();
+  let first=firstAllowedScreen(currentUser);if(first)showScreen(first);else{$('pageTitle').textContent='Sem acessos liberados';alert('Este usuário ainda não possui acessos liberados pelo administrador.')}
+
+  // Depois que o usuário já entrou, prepara a nova estrutura em segundo plano.
+  // Se falhar, o sistema continua acessível, mas saveDB permanece bloqueado para não arriscar o banco original.
+  setTimeout(async()=>{
+    try{
+      await ensureSafeERPStorage();
+      const pending=readPendingDB();
+      if(pending?.local){
+        syncStatus('Banco protegido • sincronizando alteração local pendente...');
+        await saveDB({recovery:true,silentSuccess:true});
+      }else syncStatus('Conectado • banco protegido para gravações');
+    }catch(err){
+      syncStatus('MODO PROTEGIDO • banco preservado • gravações bloqueadas');
+      console.error('Não foi possível concluir a preparação segura do banco:',err);
+      alert('Você entrou no sistema e seus dados foram carregados. Porém, a preparação segura do banco ainda não foi concluída. Para proteger todas as informações existentes, novas gravações permanecerão bloqueadas até corrigirmos este ponto. Nenhum dado original foi apagado.');
+    }
+  },0);
+};window.logout=()=>location.reload();window.toggleMenu=()=>$('sidebar').classList.toggle('open');
 /* ===== INVENTÁRIO FÍSICO POR LOJA ===== */
 const INVENTORY_DRAFT_KEY='delux_inventory_draft_v1';
 let activeInventoryId='',inventorySaveTimer=null;
@@ -2573,7 +2654,7 @@ function arrangeSaleMobileLayout(){
 }
 window.arrangeSaleMobileLayout=arrangeSaleMobileLayout;
 
-loadDB().catch(e=>syncStatus('Erro de conexão'));
+// O banco é carregado ao clicar em Entrar; evita migração concorrente antes do login.
 window.addEventListener('DOMContentLoaded',()=>{
   ['loginUser','loginPass'].forEach(id=>{const el=$(id);if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter')login()})});
   installUniversalBarcodeScanner();
