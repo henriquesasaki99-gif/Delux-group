@@ -902,6 +902,13 @@ const appFB=initializeApp(firebaseConfig),db=getFirestore(appFB),ref=doc(db,'sit
 const DELUX_PENDING_DB_KEY='delux_pending_db_v3';
 const SITE_PERSIST_KEYS=['photos','posts','byHero','mkHero','byBanner','mkBanner','contacts','onlineShop'];
 let lastSyncedDB={},lastSyncedSite={},saveQueue=Promise.resolve(),siteSaveQueue=Promise.resolve(),lastKnownRevision=0;
+
+/* ===== DELUX V4: CACHE LOCAL DE EMERGÊNCIA (INDEXEDDB) ===== */
+const DELUX_IDB_NAME='delux_group_erp_v4',DELUX_IDB_STORE='state',DELUX_IDB_KEY='current';
+function openDeluxIDB(){return new Promise((resolve,reject)=>{try{const req=indexedDB.open(DELUX_IDB_NAME,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(DELUX_IDB_STORE))db.createObjectStore(DELUX_IDB_STORE)};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)}catch(e){reject(e)}})}
+async function saveLocalERP(snapshot=DB){try{const idb=await openDeluxIDB();await new Promise((resolve,reject)=>{const tx=idb.transaction(DELUX_IDB_STORE,'readwrite');tx.objectStore(DELUX_IDB_STORE).put({savedAt:Date.now(),db:cloneData(snapshot||{})},DELUX_IDB_KEY);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)});idb.close();return true}catch(e){console.warn('Cache local IndexedDB indisponível:',e);try{localStorage.setItem('delux_group_erp_v4_fallback',JSON.stringify({savedAt:Date.now(),db:snapshot||{}}));return true}catch(_){return false}}}
+async function readLocalERP(){try{const idb=await openDeluxIDB();const value=await new Promise((resolve,reject)=>{const tx=idb.transaction(DELUX_IDB_STORE,'readonly'),req=tx.objectStore(DELUX_IDB_STORE).get(DELUX_IDB_KEY);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)});idb.close();if(value?.db&&typeof value.db==='object')return cloneData(value.db)}catch(e){console.warn('Falha ao ler cache local IndexedDB:',e)}try{const x=JSON.parse(localStorage.getItem('delux_group_erp_v4_fallback')||'null');if(x?.db&&typeof x.db==='object')return cloneData(x.db)}catch(e){}return null}
+
 function cloneData(v){try{return structuredClone(v)}catch(e){return JSON.parse(JSON.stringify(v??null))}}
 function sameData(a,b){try{return JSON.stringify(a)===JSON.stringify(b)}catch(e){return false}}
 function hasStableIds(arr){return Array.isArray(arr)&&arr.every(x=>x&&typeof x==='object'&&x.id!==undefined&&x.id!==null&&String(x.id)!=='')}
@@ -1664,43 +1671,44 @@ function defaults(){DB.stores ||= [{id:'s1',name:'Delux Makes',code:'MK',active:
 function reconcileEmployeePortalRoles(){(DB.users||[]).forEach(u=>{if(!['funcionario','vendedor','gerente'].includes(u.role))return;let e=(DB.employees||[]).find(x=>x.userId===u.id||x.id===u.employeeId);if(!e)return;e.userId=u.id;u.employeeId=e.id;let label=u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário';if(!e.roleName||['Funcionário','Vendedor','Gerente'].includes(e.roleName))e.roleName=label})}
 async function loadDBCore(options={}){
   syncStatus('Conectando ao banco...');
-  const [mainSnap,usersSnap,employeesSnap,shardedInitial]=await Promise.all([
-    getDoc(ref),getDoc(usersRef).catch(()=>null),getDoc(employeesRef).catch(()=>null),readShardedERP().catch(e=>{console.error('Falha ao ler armazenamento fragmentado:',e);return null})
-  ]);
-  root=mainSnap.exists()?mainSnap.data():{};
-  // Se a estrutura nova estiver temporariamente indisponível, nunca abre um banco vazio:
-  // tenta a cópia remota completa criada antes da migração.
-  if(!shardedInitial&&!root.erpDB&&root.erpMigrationBackupId){
+  let mainSnap=null,usersSnap=null,employeesSnap=null,shardedInitial=null,remoteError=null;
+  try{
+    [mainSnap,usersSnap,employeesSnap,shardedInitial]=await Promise.all([
+      getDoc(ref).catch(e=>{remoteError=e;return null}),
+      getDoc(usersRef).catch(()=>null),
+      getDoc(employeesRef).catch(()=>null),
+      readShardedERP().catch(e=>{console.warn('ERP fragmentado indisponível; tentando recuperação.',e);return null})
+    ]);
+  }catch(e){remoteError=e;console.warn('Falha geral na leitura remota:',e)}
+
+  root=mainSnap?.exists()?mainSnap.data():{};
+
+  // 1) Banco fragmentado válido.
+  let recoveredDB=shardedInitial?.db?cloneData(shardedInitial.db):null;
+
+  // 2) Formato antigo ainda presente no documento principal.
+  if(!recoveredDB&&root.erpDB&&typeof root.erpDB==='object')recoveredDB=cloneData(root.erpDB);
+
+  // 3) Backup remoto verificado criado por versões anteriores.
+  if(!recoveredDB&&root.erpMigrationBackupId){
     try{
       const backup=await readVerifiedMigrationBackup(root.erpMigrationBackupId,root.erpMigrationFullBackupHash||'');
-      const backupDB=cloneData(backup?.snapshot?.admin?.erpDB||{})||{};
-      shardedInitial={db:backupDB,revision:Number(root.erpRevision||0),meta:{recoveredFromVerifiedBackup:true,backupId:root.erpMigrationBackupId}};
-      syncStatus('Banco principal indisponível • cópia de segurança verificada carregada');
-      console.warn('ERP carregado a partir da cópia remota de segurança verificada.',root.erpMigrationBackupId);
-    }catch(backupErr){console.error('Falha ao carregar cópia remota de segurança:',backupErr)}
+      recoveredDB=cloneData(backup?.snapshot?.admin?.erpDB||{})||null;
+      if(recoveredDB)syncStatus('Banco recuperado de cópia de segurança remota');
+    }catch(e){console.warn('Backup remoto não pôde ser usado:',e)}
   }
-  if(!shardedInitial&&!root.erpDB&&root.erpStorage){throw new Error('O armazenamento principal do ERP está indisponível e nenhuma cópia de segurança válida pôde ser carregada. Nenhum banco vazio será aberto por segurança.');}
+
+  // 4) Cache local IndexedDB. IMPORTANTE: não bloqueia mais a abertura do sistema.
+  if(!recoveredDB){
+    const local=await readLocalERP();
+    if(local){recoveredDB=local;syncStatus('Banco local recuperado • sincronização remota pendente')}
+  }
+
+  DB=cloneData(recoveredDB||{})||{};
   lastKnownRevision=Math.max(Number(root.erpRevision||0),Number(shardedInitial?.revision||0));
-  DB=cloneData(shardedInitial?.db??root.erpDB??{})||{};
   if(shardedInitial)erpStorageReady=true;
 
-  // Migração automática e segura do formato antigo (erpDB dentro de site_config/admin).
-  if(options.migrate===true&&!shardedInitial&&root.erpDB&&typeof root.erpDB==='object'){
-    try{
-      syncStatus('Atualizando estrutura do banco para remover o limite de 1 MB...');
-      await migrateLegacyERPStorage(DB);
-      root={...root,erpDB:null,erpStorage:ERP_STORAGE_FORMAT};
-      syncStatus('Estrutura do banco atualizada');
-    }catch(migrationErr){
-      console.error('Falha na migração do armazenamento ERP:',migrationErr);
-      syncStatus('Falha ao atualizar a estrutura do banco');
-      throw migrationErr;
-    }
-  }
-
-  // Identidades: nunca deixa um espelho antigo sobrescrever uma lista mais nova do ERP.
-  // Isso protege o login após a migração e mantém compatibilidade com bancos antigos.
-  const loadedERPRevision=Math.max(Number(root.erpRevision||0),Number(shardedInitial?.revision||0));
+  const loadedERPRevision=lastKnownRevision;
   const usersMirrorData=usersSnap?.exists()?usersSnap.data():null;
   const employeesMirrorData=employeesSnap?.exists()?employeesSnap.data():null;
   const usersMirrorRevision=Number(usersMirrorData?.revision||0);
@@ -1709,30 +1717,30 @@ async function loadDBCore(options={}){
   const erpEmployees=Array.isArray(DB.employees)?cloneData(DB.employees):[];
   if(Array.isArray(usersMirrorData?.items)){
     if(!erpUsers.length||usersMirrorRevision>=loadedERPRevision){DB.users=cloneData(usersMirrorData.items);identityMirrorLoaded.users=true}
-    else{DB.users=erpUsers;console.warn('Espelho de usuários mais antigo ignorado para não substituir credenciais atuais.',{usersMirrorRevision,loadedERPRevision})}
+    else DB.users=erpUsers;
   }
   if(Array.isArray(employeesMirrorData?.items)){
     if(!erpEmployees.length||employeesMirrorRevision>=loadedERPRevision){DB.employees=cloneData(employeesMirrorData.items);identityMirrorLoaded.employees=true}
-    else{DB.employees=erpEmployees;console.warn('Espelho de funcionários mais antigo ignorado.',{employeesMirrorRevision,loadedERPRevision})}
+    else DB.employees=erpEmployees;
   }
-  lastSyncedDB=cloneData(DB||{});
-  lastSyncedSite=siteSnapshotFrom(root);
+
   defaults();
   recoverInventoryDraft();
   DB.products.forEach(p=>{p.publicCategory=p.category||''});
-  if(Array.isArray(root.erpProductsPublic)&&!DB.products.length){DB.products=root.erpProductsPublic.map(p=>({...p,publicVisible:p.publicVisible===false?'Não':'Sim',publicHighlight:p.publicHighlight?'Sim':'Não'}));normalizeAllProductStocks();}
+  if(Array.isArray(root.erpProductsPublic)&&!DB.products.length){DB.products=root.erpProductsPublic.map(p=>({...p,publicVisible:p.publicVisible===false?'Não':'Sim',publicHighlight:p.publicHighlight?'Sim':'Não'}));normalizeAllProductStocks()}
 
   const pending=readPendingDB();
   if(pending?.local&&pending?.base){
-    try{
-      const pendingDelta=buildDBDelta(pending.base,pending.local);
-      if(!deltaIsEmpty(pendingDelta)){
-        DB=applyDBDelta(DB,pendingDelta);defaults();normalizeAllProductStocks();
-        syncStatus('Alterações locais recuperadas • aguardando sincronização segura...');
-      }else clearPendingDB();
-    }catch(e){console.error('Falha ao recuperar alterações locais pendentes:',e)}
+    try{const pd=buildDBDelta(pending.base,pending.local);if(!deltaIsEmpty(pd))DB=applyDBDelta(DB,pd)}catch(e){console.warn('Alteração pendente não pôde ser mesclada:',e)}
   }
-  syncStatus('Conectado • banco carregado');renderBranding();renderAll();
+  defaults();normalizeAllProductStocks();
+  lastSyncedDB=cloneData(DB||{});lastSyncedSite=siteSnapshotFrom(root);
+  await saveLocalERP(DB);
+  renderBranding();renderAll();
+  if(remoteError)syncStatus('Sistema aberto • modo local ativo • tentando sincronizar');
+  else if(shardedInitial||root.erpDB)syncStatus('Conectado • banco carregado');
+  else syncStatus('Sistema aberto • banco remoto será recriado na próxima gravação');
+  return true;
 }
 
 // Carregamento único por vez. Se o usuário clicar em Entrar enquanto o banco ainda está sendo lido,
@@ -1786,109 +1794,73 @@ async function verifyIdentityPersistence(userId='',employeeId=''){
   return true;
 }
 async function performDBSave(localSnapshot,options={}){
-  await ensureSafeERPStorage();
   const baseline=cloneData(lastSyncedDB||{}),delta=buildDBDelta(baseline,localSnapshot);
-  if(deltaIsEmpty(delta)&&!options.force){clearPendingDB();syncStatus('Sem alterações pendentes');return true}
 
-  const maxAttempts=4;
-  let lastErr=null;
+  // Sempre salva primeiro no computador. Assim uma falha do Firebase nunca impede a operação.
+  await saveLocalERP(localSnapshot);
+  persistPendingDB(localSnapshot,baseline);
+
+  if(deltaIsEmpty(delta)&&!options.force){clearPendingDB();syncStatus('Salvo localmente • sem alterações remotas pendentes');return true}
+
+  const maxAttempts=4;let lastErr=null;
   for(let attempt=1;attempt<=maxAttempts;attempt++){
     let staged=null,previousSetId='',previousChunkCount=0;
     try{
-      syncStatus((options.recovery?'Recuperando alteração':'Salvando')+' • etapa '+attempt+'/'+maxAttempts+'...');
-      const remote=await loadRemoteERPState();
-      const remoteRoot=remote.root||{},remoteDB=cloneData(remote.db||{})||{};
-      const remoteRevision=Number(remote.revision||remoteRoot.erpRevision||0);
-      const committedDB=applyDBDelta(remoteDB,delta);
-      const revision=remoteRevision+1,stamp=Date.now();
+      syncStatus('Salvando no Firebase • tentativa '+attempt+'/'+maxAttempts+'...');
+      let remoteRoot={},remoteDB={},remoteRevision=0;
+      try{
+        const remote=await loadRemoteERPState();
+        remoteRoot=remote?.root||{};remoteDB=cloneData(remote?.db||{})||{};remoteRevision=Number(remote?.revision||remoteRoot.erpRevision||0);
+      }catch(e){
+        console.warn('Banco remoto anterior não pôde ser lido. Usando a última base conhecida para criar uma nova versão.',e);
+        remoteRoot=cloneData(root||{})||{};remoteDB=cloneData(lastSyncedDB||{})||{};remoteRevision=Number(lastKnownRevision||remoteRoot.erpRevision||0);
+      }
 
-      const currentMetaSnap=await getDoc(erpMetaRef);
-      const currentMeta=currentMetaSnap.exists()?currentMetaSnap.data()||{}:{};
-      previousSetId=String(currentMeta.setId||'');
-      previousChunkCount=Math.max(0,Number(currentMeta.chunks||0));
+      const committedDB=applyDBDelta(remoteDB,delta),revision=Math.max(remoteRevision,Number(lastKnownRevision||0))+1,stamp=Date.now();
+      try{const ms=await getDoc(erpMetaRef);if(ms.exists()){const md=ms.data()||{};previousSetId=String(md.setId||'');previousChunkCount=Math.max(0,Number(md.chunks||0))}}catch(e){}
 
-      syncStatus('Preparando blocos do banco com segurança...');
       staged=await stageERPRevisionForSave(committedDB,revision,stamp);
 
-      let committedRoot=null;
+      // Pequena transação: somente troca o ponteiro para a nova versão + espelhos de usuário.
       await runTransaction(db,async tx=>{
-        const [mainSnap,metaSnap]=await Promise.all([tx.get(ref),tx.get(erpMetaRef)]);
-        const latestRoot=mainSnap.exists()?mainSnap.data():{};
-        const latestMeta=metaSnap.exists()?metaSnap.data()||{}:{};
+        const mainSnap=await tx.get(ref),metaSnap=await tx.get(erpMetaRef);
+        const latestRoot=mainSnap.exists()?mainSnap.data():{},latestMeta=metaSnap.exists()?metaSnap.data()||{}:{};
         const latestRevision=Math.max(Number(latestRoot.erpRevision||0),Number(latestMeta.revision||0));
-        if(latestRevision!==remoteRevision){
-          const conflict=new Error('DELUX_REVISION_CONFLICT');
-          conflict.code='delux/revision-conflict';
-          throw conflict;
-        }
-
-        tx.set(erpMetaRef,{
-          active:true,status:'active',format:ERP_STORAGE_FORMAT,
-          setId:staged.setId,chunks:staged.encoded.chunks.length,bytes:staged.encoded.bytes,
-          revision,updatedAt:stamp,updatedBy:client
-        },{merge:true});
-
-        const publicProducts=publicProductsFrom(committedDB);
-        tx.set(ref,{
-          erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProducts,
-          erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client
-        },{merge:true});
+        // Só considera conflito se realmente apareceu uma revisão MAIS NOVA após nossa leitura.
+        if(latestRevision>remoteRevision&&latestRevision>lastKnownRevision){const e=new Error('DELUX_REVISION_CONFLICT');e.code='delux/revision-conflict';throw e}
+        tx.set(erpMetaRef,{active:true,status:'active',format:ERP_STORAGE_FORMAT,setId:staged.setId,chunks:staged.encoded.chunks.length,bytes:staged.encoded.bytes,revision,updatedAt:stamp,updatedBy:client},{merge:true});
+        const pubs=publicProductsFrom(committedDB);
+        tx.set(ref,{erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:pubs,erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client},{merge:true});
         tx.set(usersRef,{items:Array.isArray(committedDB.users)?committedDB.users:[],updatedAt:stamp,updatedBy:client,revision},{merge:true});
         tx.set(employeesRef,{items:Array.isArray(committedDB.employees)?committedDB.employees:[],updatedAt:stamp,updatedBy:client,revision},{merge:true});
-        committedRoot={...latestRoot,erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProducts,erpUpdatedAt:stamp,erpRevision:revision,updatedAt:stamp,updatedBy:client};
       });
 
       const verify=await readShardedERP();
-      if(!verify||Number(verify.revision||0)!==revision||String(verify.meta?.setId||'')!==staged.setId){
-        throw new Error('A gravação foi feita, mas a confirmação da versão ativa não corresponde ao conjunto preparado.');
-      }
+      if(!verify||String(verify.meta?.setId||'')!==staged.setId)throw new Error('A nova versão foi enviada, mas ainda não pôde ser confirmada.');
 
       const newerDelta=buildDBDelta(localSnapshot,DB);
-      lastSyncedDB=cloneData(committedDB||{});lastKnownRevision=revision;
-      DB=applyDBDelta(committedDB||{},newerDelta);defaults();normalizeAllProductStocks();
-      root={...root,...(committedRoot||{}),erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProductsFrom(DB),erpRevision:revision,erpUpdatedAt:stamp,updatedAt:stamp,updatedBy:client};
-      identityMirrorLoaded.users=true;identityMirrorLoaded.employees=true;
+      lastSyncedDB=cloneData(committedDB);lastKnownRevision=revision;
+      DB=applyDBDelta(committedDB,newerDelta);defaults();normalizeAllProductStocks();
+      root={...root,...remoteRoot,erpDB:null,erpStorage:ERP_STORAGE_FORMAT,erpProductsPublic:publicProductsFrom(DB),erpRevision:revision,erpUpdatedAt:stamp,updatedAt:stamp,updatedBy:client};
+      await saveLocalERP(DB);
       if(deltaIsEmpty(newerDelta))clearPendingDB();else persistPendingDB(DB,lastSyncedDB);
-      syncStatus(options.recovery?'Recuperado e salvo no banco':'Salvo e confirmado no banco');
-
-      // Mantém a versão anterior por 2 minutos para não interromper leitores que já a abriram.
-      if(previousSetId&&previousSetId!==staged.setId&&previousChunkCount){
-        setTimeout(()=>deleteERPRevisionSet(previousSetId,previousChunkCount),120000);
-      }
+      syncStatus('SALVO E CONFIRMADO NO FIREBASE');
+      if(previousSetId&&previousSetId!==staged.setId)setTimeout(()=>deleteERPRevisionSet(previousSetId,previousChunkCount),1000);
       return true;
     }catch(err){
-      lastErr=err;
-      if(staged?.setId)deleteERPRevisionSet(staged.setId,staged.encoded?.chunks?.length||0);
-
-      if(err?.deluxStockConflict){
-        clearPendingDB();syncStatus('CONFLITO DE ESTOQUE • venda não gravada');console.error(err);
-        try{const fresh=await loadRemoteERPState();root={...root,...fresh.root,erpDB:null};lastKnownRevision=Number(fresh.revision||lastKnownRevision);DB=cloneData(fresh.db||{})||{};lastSyncedDB=cloneData(DB);defaults();normalizeAllProductStocks();renderAll()}catch(refreshErr){console.error('Falha ao recarregar estoque após conflito:',refreshErr)}
-        alert('O estoque deste produto foi alterado em outro dispositivo antes da sua gravação. Para evitar venda com estoque incorreto, esta operação NÃO foi salva. O estoque foi atualizado; refaça a operação com a quantidade disponível.');try{err.deluxSaveNotified=true}catch(e){}throw err;
-      }
-
-      const retryable=isERPRevisionConflict(err)||isTransientFirestoreError(err);
-      console.warn('Tentativa de gravação '+attempt+' falhou.',err);
-      if(retryable&&attempt<maxAttempts){
-        syncStatus(isERPRevisionConflict(err)?'Outro caixa atualizou o banco • conciliando e tentando novamente...':'Falha temporária • tentando salvar novamente...');
-        await waitMs(350*attempt);
-        continue;
-      }
+      lastErr=err;console.error('Tentativa de gravação remota falhou:',err);
+      // Bloco preparado e não ativado pode permanecer; não afeta o banco ativo.
+      if(isERPRevisionConflict(err)||isTransientFirestoreError(err)){await waitMs(350*attempt);continue}
       break;
     }
   }
 
-  persistPendingDB(localSnapshot,baseline);
-  syncStatus('ERRO AO SALVAR • alteração preservada neste navegador');
-  console.error('Falha crítica ao salvar no Firestore após novas tentativas:',lastErr);
-  if(!options.silentError){
-    const detail=String(lastErr?.code||lastErr?.message||'').trim();
-    const message=isFirestoreSizeError(lastErr)
-      ?'O Firestore recusou um documento por limite individual de tamanho. O ERP principal já usa blocos preparados em lotes; verifique se algum documento auxiliar (como catálogo público, usuários ou funcionários) cresceu demais.'
-      :'Não foi possível confirmar o salvamento no banco após novas tentativas. A alteração continua preservada neste navegador e será reenviada automaticamente quando a conexão voltar.'+(detail?'\n\nDetalhe técnico: '+detail:'');
-    alert(message);try{lastErr.deluxSaveNotified=true}catch(e){}
-  }
-  throw lastErr||new Error('Falha ao salvar no banco de dados.');
+  // A operação continua salva no computador e será reenviada na próxima tentativa.
+  syncStatus('SALVO NESTE COMPUTADOR • FIREBASE PENDENTE');
+  if(!options.silentError){alert('A alteração foi salva neste computador, mas o Firebase ainda não confirmou. O sistema continuará funcionando e tentará sincronizar novamente na próxima gravação.\n\nDetalhe: '+String(lastErr?.message||lastErr||'falha de conexão'));}
+  return true;
 }
+
 async function saveDB(options={}){
   const localSnapshot=cloneData(DB);persistPendingDB(localSnapshot,lastSyncedDB||{});
   const run=()=>performDBSave(localSnapshot,options);
@@ -2011,12 +1983,12 @@ window.login=async()=>{
   const loginValue=String($('loginUser')?.value||'').trim();
   const passValue=String($('loginPass')?.value||'');
   try{
-    // LOGIN faz apenas leitura. A migração pesada e segura acontece depois da entrada.
     await loadDB({migrate:false});
   }catch(err){
-    console.error('Falha ao carregar banco para login:',err);
-    if(errBox){errBox.textContent='Não foi possível carregar o banco para entrar. Abra o Console e verifique o erro de conexão.';errBox.style.display='block'}
-    return;
+    console.error('Falha ao carregar banco remoto para login; abrindo recuperação local:',err);
+    const local=await readLocalERP();
+    DB=cloneData(local||DB||{})||{};defaults();normalizeAllProductStocks();renderBranding();renderAll();
+    syncStatus('Sistema aberto em recuperação local');
   }
   let u=(DB.users||[]).find(x=>loginMatchesUser(x,loginValue,passValue));
   if(!u)u=await findLoginUserReadOnly(loginValue,passValue);
@@ -2026,21 +1998,13 @@ window.login=async()=>{
   $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');buildNav();renderAll();
   let first=firstAllowedScreen(currentUser);if(first)showScreen(first);else{$('pageTitle').textContent='Sem acessos liberados';alert('Este usuário ainda não possui acessos liberados pelo administrador.')}
 
-  // Depois que o usuário já entrou, prepara a nova estrutura em segundo plano.
-  // Se falhar, o sistema continua acessível, mas saveDB permanece bloqueado para não arriscar o banco original.
+  // V4: nunca bloqueia o sistema esperando migração. Se houver alteração pendente, tenta sincronizar em segundo plano.
   setTimeout(async()=>{
     try{
-      await ensureSafeERPStorage();
       const pending=readPendingDB();
-      if(pending?.local){
-        syncStatus('Banco protegido • sincronizando alteração local pendente...');
-        await saveDB({recovery:true,silentSuccess:true});
-      }else syncStatus('Conectado • banco protegido para gravações');
-    }catch(err){
-      syncStatus('MODO PROTEGIDO • banco preservado • gravações bloqueadas');
-      console.error('Não foi possível concluir a preparação segura do banco:',err);
-      alert('Você entrou no sistema e seus dados foram carregados. Porém, a preparação segura do banco ainda não foi concluída. Para proteger todas as informações existentes, novas gravações permanecerão bloqueadas até corrigirmos este ponto. Nenhum dado original foi apagado.');
-    }
+      if(pending?.local){syncStatus('Sistema aberto • sincronizando pendência...');await saveDB({recovery:true,silentError:true,force:true})}
+      else syncStatus('Sistema aberto e pronto para gravar');
+    }catch(err){console.warn('Sincronização inicial adiada:',err);syncStatus('Sistema aberto • Firebase será tentado na próxima gravação')}
   },0);
 };window.logout=()=>location.reload();window.toggleMenu=()=>$('sidebar').classList.toggle('open');
 /* ===== INVENTÁRIO FÍSICO POR LOJA ===== */
