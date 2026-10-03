@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Delux Group - Sistema Integrado V8 Login e Diagnóstico</title>
+<title>Delux Group - Sistema Integrado V9 Consulta e Recuperação</title>
 <link rel="icon" href="data:,">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0f1014;color:#f7f7fb}.hidden{display:none!important}button,input,select,textarea{font:inherit}.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at top,#e8317a33,transparent 38%),#0f1014}.login-card{width:min(420px,100%);background:#171821;border:1px solid #ffffff18;border-radius:22px;padding:26px;box-shadow:0 20px 60px #0008}.logo-circle{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:#e8317a;color:white;font-weight:900;margin:auto}.logo-circle.small{width:42px;height:42px;margin:0}.login-card h1{margin:14px 0 4px;text-align:center}.login-card p,.muted{color:#a9abb8;font-size:13px;line-height:1.5}.login-card label{display:block;margin-top:14px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#bbb}.login-card input,.content input,.content select,.content textarea{width:100%;background:#0f1014;color:#fff;border:1px solid #ffffff18;border-radius:12px;padding:12px;outline:none}.login-card button,.content button{background:#e8317a;color:white;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}.secondary{background:#2a2c36!important}.danger{background:#9d2148!important}.success{background:#24784b!important}.warning{background:#6f5318!important}.badge.warning{background:#f0a50022;color:#ffd36a}.badge.success{background:#24784b55;color:#8ff0b8}.badge.danger{background:#9d214855;color:#ff9bbb}.app{display:flex;min-height:100vh}.sidebar{width:260px;background:#171821;border-right:1px solid #ffffff12;padding:18px;display:flex;flex-direction:column;gap:16px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:12px;align-items:center}.brand h2{font-size:18px;margin:0}.brand span{font-size:11px;color:#a9abb8}.sidebar nav{display:flex;flex-direction:column;gap:7px}.nav{background:transparent!important;color:#d7d7de!important;text-align:left;border:1px solid transparent!important}.nav.active{background:#e8317a22!important;border-color:#e8317a55!important;color:#fff!important}.logout{margin-top:auto;background:#3a1621!important}.content{flex:1;padding:22px;overflow:auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.topbar h1{margin:0}.store-filter{display:flex;gap:8px;align-items:center}.screen{display:none}.active-screen{display:block}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}.card,.panel{background:#171821;border:1px solid #ffffff12;border-radius:18px;padding:16px}.card span{display:block;color:#a9abb8;font-size:12px}.card strong{font-size:24px}.card.danger{background:#301724!important}.grid.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.form-grid.one{grid-template-columns:1fr}.panel{margin-bottom:16px}.panel h3{margin:0 0 12px}.panel-title{display:flex;justify-content:space-between;gap:12px;align-items:center}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:10px;border-bottom:1px solid #ffffff12;text-align:left;font-size:13px}th{color:#a9abb8;font-size:11px;text-transform:uppercase;letter-spacing:.08em}.list{display:flex;flex-direction:column;gap:9px}.list-item{background:#0f1014;border:1px solid #ffffff10;border-radius:12px;padding:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}.photo-preview{min-height:80px;border:1px dashed #ffffff22;border-radius:12px;display:grid;place-items:center;color:#888;overflow:hidden}.photo-preview img{width:100%;height:160px;object-fit:cover}.upload-box{display:block;background:#0f1014;border:1px dashed #ffffff25;border-radius:12px;padding:12px;color:#a9abb8}.upload-box input{display:block;margin-top:8px}.product-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:12px}.pick{background:#0f1014;border:1px solid #ffffff12;border-radius:14px;padding:10px;overflow:hidden}.sale-product-photo{width:100%;aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:#20212a;border:1px solid #ffffff10;margin-bottom:10px;display:grid;place-items:center;color:#7f818c;font-size:12px}.sale-product-photo img{width:100%;height:100%;display:block;object-fit:cover}.sale-product-name{font-size:15px;line-height:1.3;display:block;margin:2px 0 5px}.sale-product-price{font-size:17px;font-weight:900;color:#ff9bc0;margin:4px 0}.sale-product-meta{min-height:34px}.price-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}.result-card{background:#0f1014;border:1px solid #ffffff12;border-radius:14px;padding:14px}.totals{display:flex;flex-direction:column;gap:10px}.payment-box{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}.check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}.check-grid label{background:#0f1014;border:1px solid #ffffff12;border-radius:12px;padding:10px}.badge{display:inline-block;border-radius:999px;padding:3px 8px;background:#e8317a22;color:#ff9bc0;font-size:11px;font-weight:800}.mobile-menu{display:none}.site-link{color:#fff;text-decoration:none;background:#2a2c36;border-radius:12px;padding:12px 16px;font-weight:800}.report-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.report-card{background:#0f1014;border:1px solid #ffffff12;border-radius:14px;padding:14px}.report-card span{display:block;color:#a9abb8;font-size:11px;text-transform:uppercase;letter-spacing:.08em}.report-card strong{display:block;font-size:22px;margin-top:6px}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.report-block{background:#0f1014;border:1px solid #ffffff12;border-radius:14px;padding:14px}.report-block h4{margin:0 0 10px}.report-table{min-width:0}.report-table th,.report-table td{padding:9px 6px}.report-detail{margin-top:14px}.report-period{color:#ff9bc0;font-weight:800}.report-downloads{margin:14px 0}.report-downloads button{flex:1 1 220px}.barcode-preview{background:#fff;color:#111;border-radius:14px;padding:16px;min-height:150px;display:flex;align-items:center;justify-content:center;overflow:auto}.barcode-preview svg{max-width:100%;height:auto}.barcode-product-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.barcode-label-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:12px}.time-clock{font-size:42px;font-weight:900;text-align:center;margin:14px 0}.time-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.time-entry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.locked-field{opacity:.72;background:#20212a!important}.attendance-day{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center}.receipt-paper{background:#fff;color:#111;padding:24px;border-radius:12px}.brand-banner{height:300px;border-radius:20px;margin-bottom:18px;background:linear-gradient(135deg,#e8317a55,#171821);background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#171821;display:flex;align-items:flex-end;padding:18px;overflow:hidden}.brand-banner>div{background:#0009;padding:12px 16px;border-radius:14px}.employee-avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid #e8317a;background:#2a2c36}.clock-profile{display:flex;align-items:center;gap:14px;margin-bottom:12px}.branding-preview{height:150px;border-radius:14px;object-fit:cover;width:100%;background:#0f1014}.brand-logo-preview{width:110px;height:110px;border-radius:18px;object-fit:contain;background:#fff;padding:8px}@media(max-width:850px){.time-actions,.time-entry-grid{grid-template-columns:1fr}.attendance-day{grid-template-columns:1fr}.brand-banner{height:170px;padding:10px}.brand-banner>div{padding:8px 10px}}@media(max-width:850px){.report-summary,.report-grid{grid-template-columns:1fr}.app{display:block}.sidebar{position:fixed;left:-280px;top:0;z-index:30;transition:.25s}.sidebar.open{left:0}.mobile-menu{display:inline-block}.content{padding:14px}.topbar{align-items:flex-start;flex-direction:column}.cards,.grid.two,.form-grid{grid-template-columns:1fr}.panel-title{align-items:stretch;flex-direction:column}.payment-box{grid-template-columns:1fr}.content button,.site-link{width:100%;margin-top:4px}.actions button{flex:1 1 100%}.store-filter{width:100%;display:block}.store-filter select{margin-top:7px}table{min-width:680px}.login-card{padding:20px}}
@@ -230,7 +230,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 </head>
 <body>
 <!-- DELUX: acesso por perfil corrigido -->
-<div id="loginScreen" class="login-screen"><div class="login-card"><div id="loginLogoCircle" class="logo-circle">DG</div><h1>Delux Group</h1><p>Sistema integrado de vendas, estoque, clientes e publicação no site.</p><label>Usuário</label><input id="loginUser" placeholder="admin" autocomplete="username"><label>Senha</label><input id="loginPass" type="password" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"><div class="login-actions"><button onclick="login()">Entrar</button><button type="button" class="forgot-link" onclick="showPasswordRecovery()">Esqueci minha senha</button></div><small class="muted">O administrador pode redefinir senhas na área Configurações &gt; Usuários.</small><p id="loginError" style="display:none;color:#ff91b7">Usuário ou senha incorretos.</p><button type="button" class="secondary" onclick="diagnoseLoginConnection()" style="margin-top:10px">Diagnosticar conexão do login</button><div id="passwordRecoveryBox" class="recovery-box hidden"><h3>Recuperação de senha</h3><p class="muted">Informe o login da conta. A solicitação de recuperação será encaminhada ao suporte. Por segurança, a senha atual nunca é exibida.</p><input id="recoveryLogin" placeholder="Login da conta" autocomplete="username"><div class="login-actions"><button type="button" onclick="requestPasswordRecovery()">Solicitar recuperação</button><button type="button" class="secondary" onclick="hidePasswordRecovery()">Cancelar</button></div><div id="recoveryMessage" class="recovery-message"></div></div></div></div>
+<div id="loginScreen" class="login-screen"><div class="login-card"><div id="loginLogoCircle" class="logo-circle">DG</div><h1>Delux Group</h1><p>Sistema integrado de vendas, estoque, clientes e publicação no site.</p><label>Usuário</label><input id="loginUser" placeholder="admin" autocomplete="username"><label>Senha</label><input id="loginPass" type="password" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"><div class="login-actions"><button onclick="login()">Entrar</button><button type="button" class="forgot-link" onclick="showPasswordRecovery()">Esqueci minha senha</button></div><small class="muted">O administrador pode redefinir senhas na área Configurações &gt; Usuários.</small><p id="loginError" style="display:none;color:#ff91b7">Usuário ou senha incorretos.</p><button type="button" class="secondary" onclick="diagnoseLoginConnection()" style="margin-top:10px">Diagnosticar conexão do login</button><button type="button" class="secondary" onclick="inspectPreservedERP()" style="margin-top:10px">Consultar usuários e vendas nas cópias</button><pre id="erpPreservedReport" style="text-align:left;white-space:pre-wrap;max-height:360px;overflow:auto;font-size:12px;word-break:break-word"></pre><div id="passwordRecoveryBox" class="recovery-box hidden"><h3>Recuperação de senha</h3><p class="muted">Informe o login da conta. A solicitação de recuperação será encaminhada ao suporte. Por segurança, a senha atual nunca é exibida.</p><input id="recoveryLogin" placeholder="Login da conta" autocomplete="username"><div class="login-actions"><button type="button" onclick="requestPasswordRecovery()">Solicitar recuperação</button><button type="button" class="secondary" onclick="hidePasswordRecovery()">Cancelar</button></div><div id="recoveryMessage" class="recovery-message"></div></div></div></div>
 <div id="app" class="app hidden"><aside id="sidebar" class="sidebar"><div class="brand"><div class="logo-circle small">DG</div><div><h2>Delux Group</h2><span>Delux Makes + Delux By</span></div></div><nav id="nav"></nav><a class="site-link" href="index.html">Voltar ao site</a><button class="logout" onclick="logout()">Sair</button></aside><main class="content"><header class="topbar"><div><button class="mobile-menu secondary" onclick="toggleMenu()">☰ Menu</button><h1 id="pageTitle">Dashboard</h1><p class="muted">Controle simples e integrado para a loja. <b id="selectedStoreLabel"></b> <span id="syncStatus">Conectando...</span></p><small id="currentUserBadge"></small></div><div class="store-filter"><label>Loja</label><select id="globalStore" onchange="applyGlobalStoreFilter()"><option value="Todas">Todas</option></select></div></header>
 <section id="dashboard" class="screen active-screen"><div id="dashboardBrandBanner" class="brand-banner"><div><b id="dashboardBrandTitle">Delux Group</b><br><span class="muted">Bem-vindo ao sistema integrado</span></div></div><div class="cards"><div class="card"><span>Vendas hoje</span><strong id="todaySales">R$ 0,00</strong></div><div class="card"><span>Total em estoque</span><strong id="totalStock">0</strong></div><div class="card"><span>Produtos cadastrados</span><strong id="productCount">0</strong></div><div class="card warning"><span>Prestes a acabar</span><strong id="warningStock">0</strong></div><div class="card danger"><span>Estoque baixo</span><strong id="lowStock">0</strong></div></div><div class="grid two"><div class="panel"><h3>Últimas vendas</h3><div id="lastSales" class="list"></div></div><div class="panel"><h3>Produtos prestes a acabar</h3><div id="warningStockList" class="list"></div></div></div><div class="grid two" style="margin-top:16px"><div class="panel"><h3>TOP 10 produtos mais vendidos</h3><p class="muted">Ranking conforme a loja selecionada no topo.</p><div id="dashboardTop10" class="list"></div></div><div class="panel"><h3>Produtos com estoque baixo</h3><div id="lowStockList" class="list"></div></div></div></section>
 <section id="products" class="screen">
@@ -1686,6 +1686,7 @@ window.toggleProductSizeStock=()=>{
 function defaults(){DB.stores ||= [{id:'s1',name:'Delux Makes',code:'MK',active:true},{id:'s2',name:'Delux By',code:'BY',active:true}];DB.users ||= [{id:'u1',name:'Administrador',login:'admin',pass:'1234',role:'admin',active:true,storeIds:['s1','s2']}];DB.products ||= [];DB.sales ||= [];DB.clients ||= [];DB.exchanges ||= [];DB.employees ||= [];DB.payrolls ||= [];DB.timeEntries ||= [];DB.reportArchive ||= [];DB.fbkImportLog ||= [];DB.saleEditLog ||= [];DB.saleCancelLog ||= [];DB.onlineOrders ||= [];DB.cashOuts ||= [];DB.cashIns ||= [];DB.stockEntries ||= [];DB.stockTransfers ||= [];DB.inventories ||= [];DB.vales ||= [];DB.stockAudit ||= [];DB.branding ||= {logo:'',loginBackground:'',dashboardCover:''};DB.users.forEach(u=>{if(u.role==='admin')u.storeIds=DB.stores.map(s=>s.id);else if(!Array.isArray(u.storeIds))u.storeIds=DB.stores.map(s=>s.id);if(['funcionario','vendedor','gerente'].includes(u.role)){let e=DB.employees.find(x=>x.userId===u.id||x.id===u.employeeId);if(!e){let store=DB.stores.find(s=>(u.storeIds||[]).includes(s.id))||DB.stores[0],employeeId=uid('func');e={id:employeeId,name:u.name,document:'',roleName:u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário',storeId:store?.id||'',storeName:store?.name||'',admission:'',payType:'Mensal',baseSalary:0,dailyHours:8,pix:'',phone:'',status:u.active===false?'Inativo':'Ativo',notes:'Cadastro criado automaticamente pelo portal do vendedor. Complete os dados na folha de pagamento.',userId:u.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};DB.employees.push(e)}u.employeeId=e.id;e.userId=u.id;e.name=u.name;e.status=u.active===false?'Inativo':'Ativo'}});normalizeAllProductStocks();reconcileEmployeePortalRoles();}
 function reconcileEmployeePortalRoles(){(DB.users||[]).forEach(u=>{if(!['funcionario','vendedor','gerente'].includes(u.role))return;let e=(DB.employees||[]).find(x=>x.userId===u.id||x.id===u.employeeId);if(!e)return;e.userId=u.id;u.employeeId=e.id;let label=u.role==='gerente'?'Gerente':u.role==='vendedor'?'Vendedor':'Funcionário';if(!e.roleName||['Funcionário','Vendedor','Gerente'].includes(e.roleName))e.roleName=label})}
 async function loadDBCore(options={}){
+  if(erpRecoveryMode)return true;
   syncStatus('CARREGANDO FIREBASE • aguarde...');erpRemoteValidated=false;
   let state=null,local=await readLocalERP(),pending=readPendingDB();
   try{state=await loadRemoteERPState();erpRemoteValidated=true;erpSource='Firebase';erpLastError='';erpRemoteCounts=erpCounts(state.db)}catch(e){erpLastError=String(e.message||e);console.error('Leitura oficial falhou:',e)}
@@ -1716,6 +1717,7 @@ function loadDB(options={}){
 // Garante que o ERP antigo só seja retirado de site_config/admin depois do backup remoto,
 // releitura e validação da nova estrutura. A migração não bloqueia o LOGIN.
 async function ensureSafeERPStorage(){
+  assertWritableERP();
   if(erpStorageReady)return true;
   if(erpMigrationPromise)return erpMigrationPromise;
   erpMigrationPromise=(async()=>{
@@ -1756,6 +1758,7 @@ async function verifyIdentityPersistence(userId='',employeeId=''){
   return true;
 }
 async function performDBSave(localSnapshot,options={}){
+  assertWritableERP();
   const baseline=cloneData(options.baseline||lastSyncedDB||{}),delta=options.delta||buildDBDelta(baseline,localSnapshot);
 
   // Sempre salva primeiro no computador. Assim uma falha do Firebase nunca impede a operação.
@@ -1824,6 +1827,7 @@ async function performDBSave(localSnapshot,options={}){
 }
 
 async function saveDB(options={}){
+  assertWritableERP();
   if(dbLoadPromise)await dbLoadPromise;
   reconcileProductStores();
   const localSnapshot=cloneData(DB);persistPendingDB(localSnapshot,lastSyncedDB||{});
@@ -1844,7 +1848,7 @@ function mergeIncomingMainSnapshot(d){
 }
 function queueRemoteERPReload(){
   const run=async()=>{
-    await saveQueue;
+    await saveQueue;if(erpRecoveryMode)return;
     const state=await readShardedERP();if(!state)return;
     const incomingRevision=Number(state.revision||0);if(incomingRevision<lastKnownRevision)return;
     const localDelta=buildDBDelta(lastSyncedDB||{},DB||{});
@@ -1858,7 +1862,7 @@ onSnapshot(ref,s=>{if(!erpRemoteValidated||dbLoadPromise||!s.exists())return;let
 onSnapshot(erpMetaRef,s=>{if(!s.exists()||s.data()?.updatedBy===client)return;queueRemoteERPReload()},err=>{console.error('Listener ERP fragmentado:',err);syncStatus('Sincronização do ERP interrompida')});
 onSnapshot(usersRef,s=>{if(!erpRemoteValidated||dbLoadPromise||!s.exists()||s.data()?.updatedBy===client)return;let d=s.data()||{},items=d.items,rev=Number(d.revision||0);if(Array.isArray(items)){if((DB.users||[]).length&&rev&&rev<lastKnownRevision){console.warn('Atualização antiga de usuários ignorada.',{usersRevision:rev,erpRevision:lastKnownRevision});return}DB.users=cloneData(items);identityMirrorLoaded.users=true;lastSyncedDB={...(lastSyncedDB||{}),users:cloneData(items)};defaults();renderAll();syncStatus('Usuários atualizados do banco')}},err=>console.error('Listener usuários:',err));
 onSnapshot(employeesRef,s=>{if(!erpRemoteValidated||dbLoadPromise||!s.exists()||s.data()?.updatedBy===client)return;let items=s.data()?.items;if(Array.isArray(items)){DB.employees=cloneData(items);identityMirrorLoaded.employees=true;lastSyncedDB={...(lastSyncedDB||{}),employees:cloneData(items)};defaults();renderAll();syncStatus('Funcionários atualizados do banco')}},err=>console.error('Listener funcionários:',err));
-window.addEventListener('online',()=>{let pending=readPendingDB();if(pending?.local){syncStatus('Internet restabelecida • sincronizando alterações pendentes...');saveDB({recovery:true,silentSuccess:true}).catch(()=>{})}});
+window.addEventListener('online',()=>{if(erpRecoveryMode)return;let pending=readPendingDB();if(pending?.local){syncStatus('Internet restabelecida • sincronizando alterações pendentes...');saveDB({recovery:true,silentSuccess:true}).catch(()=>{})}});
 
 /* ===== RECUPERAÇÃO DE SENHA ===== */
 window.showPasswordRecovery=()=>{
@@ -1943,6 +1947,55 @@ async function findLoginUserReadOnly(login,password){
 }
 
 /* ===== DELUX V5: LOGIN INDEPENDENTE DO ERP ===== */
+
+let erpRecoveryMode=false,erpRecoverySnapshot=null,erpRecoverySource='';
+function assertWritableERP(){if(erpRecoveryMode)throw new Error('MODO DE CONSULTA: cópia de segurança carregada. Gravações bloqueadas para preservar a base atual.');}
+async function collectPreservedERPStates(){
+  const states=[],errors=[];
+  const add=(source,value,users=null)=>{if(value&&typeof value==='object'&&!Array.isArray(value)){const state=cloneData(value);if(!Array.isArray(state.users)&&Array.isArray(users))state.users=cloneData(users);states.push({source,db:state})}};
+  let main=null;
+  try{const snap=await getDoc(ref);main=snap.exists()?snap.data():null;if(main?.erpDB)add('ERP no documento principal',main.erpDB)}catch(e){errors.push('Documento principal: '+String(e.code||e.message||e))}
+  try{const active=await readShardedERP();if(active)add('Revisão ativa do Firebase',active.db)}catch(e){errors.push('Revisão ativa: '+String(e.code||e.message||e))}
+  if(main?.erpMigrationBackupId){try{
+    const backup=await readVerifiedMigrationBackup(main.erpMigrationBackupId,main.erpMigrationFullBackupHash||'');
+    if(!backup||backup.meta?.complete!==true)throw new Error('Backup ausente ou ainda incompleto.');
+    add('Backup remoto da migração',backup.snapshot?.admin?.erpDB,backup.snapshot?.users?.items);
+    if(Array.isArray(backup.snapshot?.users?.items))states.push({source:'Usuários preservados no backup remoto',db:{users:cloneData(backup.snapshot.users.items)}});
+  }catch(e){errors.push('Backup remoto: '+String(e.code||e.message||e))}}
+  try{const metaSnap=await getDoc(erpMetaRef),meta=metaSnap.exists()?metaSnap.data():null;
+    if(meta?.previousSetId&&Number.isInteger(Number(meta.previousChunkCount))&&Number(meta.previousChunkCount)>0&&Number(meta.previousChunkCount)<=1000){
+      const parts=await Promise.all(Array.from({length:Number(meta.previousChunkCount)},(_,i)=>getDoc(erpRevisionChunkRef(meta.previousSetId,i))));
+      const raw=parts.map((p,i)=>{if(!p.exists()||p.data()?.setId!==meta.previousSetId||typeof p.data()?.payload!=='string')throw new Error('Bloco anterior ausente/inconsistente: '+i);return p.data().payload}).join('');
+      add('Revisão anterior preservada',JSON.parse(raw));
+    }
+  }catch(e){errors.push('Revisão anterior: '+String(e.code||e.message||e))}
+  // Documentos fixos usados pelo HTML antigo. Leitura sequencial até o último JSON completo.
+  try{let raw='';for(let i=0;i<1000;i++){const snap=await getDoc(erpChunkRef(i));if(!snap.exists())break;if(typeof snap.data()?.payload!=='string')throw new Error('Bloco fixo inválido: '+i);raw+=snap.data().payload;let value=null;try{value=JSON.parse(raw)}catch(e){}if(value){add('Blocos fixos do HTML antigo (cópia candidata)',value);break}}}catch(e){errors.push('Blocos fixos antigos: '+String(e.code||e.message||e))}
+  try{add('Cópia deste navegador',await readLocalERP())}catch(e){errors.push('Cópia local: '+String(e.message||e))}
+  const pending=readPendingDB();add('Alterações locais pendentes',pending?.local);
+  try{const raw=localStorage.getItem(ERP_LOCAL_MIGRATION_BACKUP_KEY);if(raw){const wrap=JSON.parse(raw),snapshot=JSON.parse(wrap.payload||'{}');add('Backup local da migração',snapshot.admin?.erpDB,snapshot.users?.items)}}catch(e){errors.push('Backup local: '+String(e.message||e))}
+  return{states,errors};
+}
+function recoveryStateSummary(state){
+  const value=state.db,sales=[...(Array.isArray(value.sales)?value.sales:[]),...(Array.isArray(value.reportArchive)?value.reportArchive:[])];
+  const september=sales.filter(s=>String(s.businessDate||s.date||'').slice(0,7)==='2026-09');
+  const users=(value.users||[]).map(u=>({name:u.name||'',login:u.login||'',active:u.active!==false}));
+  const dates=sales.map(s=>String(s.businessDate||s.date||'').slice(0,10)).filter(Boolean).sort();
+  return{source:state.source,complete:validERPState(value),counts:erpCounts(value),septemberRecords:september.length,firstDate:dates[0]||'',lastDate:dates.at(-1)||'',users};
+}
+window.inspectPreservedERP=async()=>{
+  const output=$('erpPreservedReport');if(output)output.textContent='Consultando fontes preservadas, sem gravar no banco...';
+  try{const result=await collectPreservedERPStates();const report={checkedAt:new Date().toISOString(),project:firebaseConfig.projectId,sources:result.states.map(recoveryStateSummary),errors:result.errors};
+    const text=JSON.stringify(report,null,2);if(output)output.textContent=text;else alert(text);
+  }catch(e){if(output)output.textContent=String(e.message||e)}
+};
+async function findPreservedLogin(login,password){
+  const result=await collectPreservedERPStates();
+  // Uma identidade conhecida com senha errada não deve ser reativada por um backup.
+  for(const state of result.states){if(!validERPState(state.db))continue;const user=(state.db.users||[]).find(u=>loginMatchesUser(u,login,password));if(user)return{user:cloneData(user),source:state.source,recovery:true,recoveryDB:cloneData(state.db)}}
+  return null;
+}
+
 async function readERPUsersForLogin(){
   const snap=await getDoc(erpMetaRef);if(!snap.exists()||snap.data()?.active!==true)return null;
   const meta=snap.data(),count=checkERPChunkCount(meta),setId=String(meta.setId||'');
@@ -1964,6 +2017,7 @@ async function resolveLoginIdentity(loginValue,passValue){
   found=match(items,'erp_fragmentado');if(found)return found;
   // Só usa uma conta local quando nenhuma fonte remota de usuários foi lida.
   if(!sources.length){const local=await readLocalERP();found=match(local?.users,'cache_local');if(found)return{...found,localDB:local};const pending=readPendingDB();found=match(pending?.local?.users,'pendencia_local');if(found)return{...found,localDB:pending.local}}
+  const recovered=await findPreservedLogin(loginValue,passValue);if(recovered)return recovered;
   const detail=sources.map(x=>x.label+': '+x.items.length+' usuário(s)').concat(errors).join(' | ');
   return{user:null,source:'nenhuma',message:errors.length?'Não foi possível verificar todas as bases de usuários. '+detail:'Login não localizado nos cadastros lidos do Firebase. '+detail};
 }
@@ -1987,13 +2041,13 @@ window.login=async()=>{
   }
 
   syncStatus('Login validado • carregando cadastros...');
-  try{await loadDB({migrate:false})}catch(e){if(errBox){errBox.textContent='Não foi possível carregar uma base completa. '+String(e.message||e);errBox.style.display='block'}syncStatus('CARREGAMENTO BLOQUEADO');return}
+  try{if(auth.recovery){erpRecoveryMode=true;erpRecoverySource=auth.source;erpRecoverySnapshot=cloneData(auth.recoveryDB);DB=cloneData(auth.recoveryDB);erpSource=auth.source+' • consulta';erpRemoteValidated=false;lastSyncedDB=cloneData(DB);defaults();reconcileProductStores()}else await loadDB({migrate:false})}catch(e){if(errBox){errBox.textContent='Não foi possível carregar uma base completa. '+String(e.message||e);errBox.style.display='block'}syncStatus('CARREGAMENTO BLOQUEADO');return}
   const loadedUser=(DB.users||[]).find(x=>x.id===u.id);
   if(loadedUser&&!loginMatchesUser(loadedUser,loginValue,passValue)){if(errBox){errBox.textContent='A conta ou senha foi alterada. Verifique com o administrador.';errBox.style.display='block'}return}
   currentUser=cloneData(loadedUser||u);defaults();reconcileProductStores();
   $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');
   buildNav();renderAll();const first=firstAllowedScreen(currentUser);if(first)showScreen(first);
-  syncStatus(erpRemoteValidated?(readPendingDB()?.local?'PENDENTE • use Sincronizar para confirmar':'ONLINE • cadastros carregados'):'OFFLINE • base local • gravação remota depende de validação');
+  syncStatus(erpRecoveryMode?'CONSULTA • '+erpRecoverySource+' • gravações bloqueadas':erpRemoteValidated?(readPendingDB()?.local?'PENDENTE • use Sincronizar para confirmar':'ONLINE • cadastros carregados'):'OFFLINE • base local • gravação remota depende de validação');
 
 };window.logout=()=>location.reload();window.toggleMenu=()=>$('sidebar').classList.toggle('open');
 /* ===== INVENTÁRIO FÍSICO POR LOJA ===== */
@@ -2961,6 +3015,7 @@ function siteData(){
   return root;
 }
 async function saveSiteData(msg='Alterações do site salvas.'){
+  assertWritableERP();
   if(!siteAdminOnly())return;
   siteData();
   const localSite=siteSnapshotFrom(root),patch=buildSitePatch(lastSyncedSite||{},localSite),stamp=Date.now();
