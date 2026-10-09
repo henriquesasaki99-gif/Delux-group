@@ -844,7 +844,7 @@ th{color:#6d4c5a!important}th,td{border-bottom-color:#d39ab1!important}
 </section>
 
 <section id="accessControl" class="screen"><div class="panel"><div class="panel-title"><div><h3><span class="access-icon">🔐</span>Controle de Acessos</h3><p class="muted">Exclusivo do administrador. Selecione um vendedor ou gerente e escolha exatamente quais áreas do sistema ele poderá acessar.</p></div><span class="badge danger">Somente Administrador</span></div><div class="access-control-grid"><div><h4>Vendedores e gerentes</h4><div id="accessUserListStandalone" class="access-user-list"></div></div><div><div id="accessSelectedInfoStandalone" class="list-item"><span class="muted">Selecione um usuário para configurar os acessos.</span></div><div id="accessPermissionGridStandalone" class="access-permission-grid" style="margin-top:12px"></div><div class="actions" style="margin-top:12px"><button class="success" onclick="saveUserPermissionsStandalone()">Salvar acessos</button><button class="secondary" onclick="selectAllUserPermissionsStandalone(true)">Liberar todos</button><button class="secondary" onclick="selectAllUserPermissionsStandalone(false)">Bloquear todos</button></div><p class="muted" style="margin-top:10px">Configurações e Editar Site continuam exclusivos do Administrador.</p></div></div></div></section>
-<section id="settings" class="screen"><div class="panel db-usage-panel" id="databaseUsagePanel">
+<section id="settings" class="screen"><div class="panel"><h3>Backup diário — 21h30</h3><label><input id="dailyBackupEnabled" type="checkbox" checked onchange="setDailyBackupEnabled(this.checked)"> Baixar automaticamente neste navegador às 21h30 (Brasília)</label><p>Deixe o computador ligado, com internet e o administrador conectado. Ative em apenas um computador para evitar cópias em aparelhos diferentes. Se a aba ficar suspensa, a tentativa ocorre ao retornar, ainda no mesmo dia após 21h30.</p><p>Arquivo JSON com toda a base e histórico disponível, configurações do site e uma cópia separada dos dados e pendências deste navegador. Contém senhas internas: guarde em local privado. Fotos externas entram como links.</p><button onclick="downloadDailyBackup()">Baixar backup completo agora / tentar novamente</button><p id="dailyBackupStatus" role="status">Agendado às 21h30. Permita downloads automáticos e confira se o arquivo foi salvo. O sistema registra a solicitação, não a conclusão do download.</p></div><div class="panel db-usage-panel" id="databaseUsagePanel">
   <div class="db-usage-head">
     <div>
       <h3 style="margin:0 0 5px">🗄️ Monitor de capacidade do banco ERP</h3>
@@ -3556,5 +3556,58 @@ async function syncOnlineOrderMirrors(){
   const existing=new Set((await readOnlineInbox()).map(o=>String(o.id))),missing=DB.onlineOrders.filter(o=>!existing.has(String(o.id)));
   for(let start=0;start<missing.length;start+=15){const group=missing.slice(start,start+15);await runTransaction(db,async tx=>{const snaps=[];for(const order of group)snaps.push(await tx.get(onlineOrderRef(order.id)));group.forEach((order,i)=>{if(!snaps[i].exists())tx.set(onlineOrderRef(order.id),{...order,recordType:'delux_online_order'});});});}
 }
+
+/* Backup diário: somente leitura, sem alteração da base. */
+const dailyBackupKey='delux_daily_backup_v1',dailyBackupEnabledKey='delux_daily_backup_enabled_v1';
+let dailyBackupBusy=false,dailyBackupRetryAt=0;
+function backupClock(date=new Date()){
+  const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).map(x=>[x.type,x.value]));
+  return {day:p.year+'-'+p.month+'-'+p.day,due:Number(p.hour)*60+Number(p.minute)>=1290};
+}
+function backupStatus(message){const e=$('dailyBackupStatus');if(e)e.textContent=message;}
+function backupEnabled(){return localStorage.getItem(dailyBackupEnabledKey)!=='false';}
+function backupRecord(change){return new Promise(async(resolve,reject)=>{
+  let idb;try{idb=await openDeluxIDB();const tx=idb.transaction(DELUX_IDB_STORE,'readwrite'),store=tx.objectStore(DELUX_IDB_STORE),req=store.get(dailyBackupKey);let result;
+    req.onsuccess=()=>{try{const out=change(req.result||{});result=out.result;if(out.record)store.put(out.record,dailyBackupKey);}catch(e){tx.abort();reject(e);}};
+    tx.oncomplete=()=>{idb.close();resolve(result);};tx.onerror=tx.onabort=()=>{idb.close();reject(tx.error||new Error('Não foi possível registrar o agendamento.'));};
+  }catch(e){if(idb)idb.close();reject(e);}
+});}
+async function buildDailyBackup(){
+  if(currentUser?.role!=='admin')throw new Error('Somente o administrador pode baixar o backup completo.');
+  if(navigator.onLine===false)throw new Error('Sem internet. O backup completo será tentado novamente quando a conexão voltar.');
+  const adminId=currentUser.id;
+  const state=await loadRemoteERPState();
+  // Exigir a fila, pois a rotina normal permite abrir o ERP mesmo se essa leitura falhar.
+  const onlineOrderDocuments=await readOnlineInbox();mergeOnlineInbox(state.db,onlineOrderDocuments);
+  if(currentUser?.id!==adminId||currentUser?.role!=='admin'||!state.db.users?.some(u=>u.id===adminId&&u.role==='admin'&&u.active!==false))throw new Error('Acesso de administrador não confirmado.');
+  const payload={format:'DELUX_DAILY_BACKUP_V1',exportedAt:new Date().toISOString(),timezone:'America/Sao_Paulo',project:firebaseConfig.projectId,revision:state.revision,db:state.db,siteSettings:siteSnapshotFrom(state.root),onlineOrderDocuments,localSnapshot:cloneData(DB),localSiteSettings:siteSnapshotFrom(root),pending:cloneData(readPendingDB()),notes:['db contém a base remota validada; localSnapshot e pending preservam separadamente dados deste navegador.','Imagens externas são referências; arquivos externos, regras, contas Firebase Auth e HTMLs não estão incluídos.','Leituras do ERP e da fila de pedidos ocorrem em instantes próximos, não em uma transação única.']};
+  const serialized=JSON.stringify(payload,null,2);
+  return {payload,serialized};
+}
+async function runDailyBackup(manual=false,date=new Date()){
+  if(currentUser?.role!=='admin'||dailyBackupBusy)return false;
+  const clock=backupClock(date);let token='',requested=false;
+  try{
+    if(!manual&&(!backupEnabled()||!clock.due||Date.now()<dailyBackupRetryAt))return false;
+    dailyBackupBusy=true;
+    if(!manual){token=uid('backup');const claimed=await backupRecord(r=>r.lastDay===clock.day||Number(r.leaseUntil)>Date.now()?{result:false}:{record:{...r,owner:token,leaseUntil:Date.now()+300000},result:true});if(!claimed)return false;}
+    backupStatus('Preparando backup completo…');
+    const {serialized}=await buildDailyBackup();
+    if(token){const owned=await backupRecord(r=>({result:r.owner===token}));if(!owned)throw new Error('Outra aba assumiu o agendamento.');}
+    const suffix=manual?'_manual_'+Date.now():'';
+    download('Delux_Backup_'+clock.day+suffix+'.json',serialized,'application/json');requested=true;
+    if(token)await backupRecord(r=>r.owner===token?{record:{lastDay:clock.day,requestedAt:new Date().toISOString(),owner:'',leaseUntil:0},result:true}:{result:false});
+    backupStatus('Download solicitado em '+new Date().toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})+'. Confira a pasta de downloads; o navegador não confirma ao sistema se o arquivo foi salvo.');
+    return true;
+  }catch(e){dailyBackupRetryAt=Date.now()+300000;backupStatus((requested?'Download solicitado, mas o agendamento não foi registrado. Confira os arquivos. ':'Backup não gerado: ')+(e.message||e));if(manual)alert(e.message||String(e));return false;}
+  finally{if(token&&!requested)await backupRecord(r=>r.owner===token?{record:{...r,owner:'',leaseUntil:0},result:true}:{result:false}).catch(()=>{});dailyBackupBusy=false;}
+}
+window.downloadDailyBackup=()=>runDailyBackup(true);
+window.setDailyBackupEnabled=value=>{if(currentUser?.role!=='admin')return;try{localStorage.setItem(dailyBackupEnabledKey,String(!!value));backupStatus(value?'Agendado diariamente às 21h30 (Brasília), neste navegador.':'Backup automático desativado neste navegador.');}catch(e){backupStatus('Não foi possível salvar a preferência neste navegador.');}};
+function renderDailyBackup(){const e=$('dailyBackupEnabled');if(e){try{e.checked=backupEnabled();}catch(_){e.checked=false;}}}
+setInterval(()=>{renderDailyBackup();runDailyBackup();},30000);
+window.addEventListener('online',()=>{dailyBackupRetryAt=0;runDailyBackup();});
+window.addEventListener('focus',()=>{renderDailyBackup();runDailyBackup();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)runDailyBackup();});
 </script>
 </body></html>
